@@ -1,0 +1,1 @@
+const cornerRadius = 15.0;

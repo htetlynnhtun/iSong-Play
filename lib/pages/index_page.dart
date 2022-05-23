@@ -33,6 +33,7 @@ class _IndexPageState extends State<IndexPage> {
         return isFirstRouteInCurrentTab;
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Stack(
@@ -58,15 +59,21 @@ class _IndexPageState extends State<IndexPage> {
               selectedItemColor: primaryColor,
               items: const [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.library_music),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/ic_library.png'),
+                  ),
                   label: 'Library',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/ic_home.png'),
+                  ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.search),
+                  icon: ImageIcon(
+                    AssetImage('assets/images/ic_search.png'),
+                  ),
                   label: 'Search',
                 ),
               ],
