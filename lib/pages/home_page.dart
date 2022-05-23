@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/title_text.dart';
@@ -8,6 +9,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/constants.dart';
+import '../resources/dimens.dart';
+import '../widgets/custom_cached_image.dart';
+import '../widgets/title_and_playlist_collection_view.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,20 +20,30 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: const [
-              SizedBox(
-                height: 8,
-              ),
-              HomeTitleAndSettingIconView(),
-              SizedBox(
-                height: 16,
-              ),
-              BannerView(),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            SizedBox(
+              height: 8,
+            ),
+            HomeTitleAndSettingIconView(),
+            SizedBox(
+              height: 16,
+            ),
+            BannerView(),
+            SizedBox(
+              height: 19,
+            ),
+            RecentTracksView(),
+            SizedBox(
+              height: 19,
+            ),
+            TitleAndPlayListCollectionView(),
+            SizedBox(
+              height: 19,
+            ),
+            TitleAndPlayListCollectionView(),
+          ],
         ),
       ),
     );
@@ -49,9 +63,12 @@ class HomeTitleAndSettingIconView extends StatelessWidget {
         const Spacer(),
         GestureDetector(
             onTap: () {},
-            child: const Icon(
-              Icons.settings,
-              color: primaryColor,
+            child: const Padding(
+              padding: EdgeInsets.only(right: 16.0),
+              child: Icon(
+                Icons.settings,
+                color: primaryColor,
+              ),
             )),
       ],
     );
@@ -67,9 +84,10 @@ class BannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<HomeBloc, int>(
       selector: (context, bloc) => bloc.pageIndex,
-      builder: (_, pageIndex, __) => SizedBox(
+      builder: (_, pageIndex, __) => Container(
         height: 200,
         width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Stack(
           children: [
             CarouselSlider.builder(
@@ -125,31 +143,25 @@ class BannerImageAndSongNameView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: CachedNetworkImage(
+        Positioned.fill(
+          child: CustomCachedImage(
             imageUrl: imageUrl,
-            placeholder: (context, url) =>
-                const Center(child: CircularProgressIndicator.adaptive()),
-            errorWidget: (context, url, error) =>
-                const Center(child: Icon(Icons.error)),
-            fit: BoxFit.cover,
+            cornerRadius: cornerRadius,
           ),
         ),
         Positioned.fill(
           child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(cornerRadius),
+                bottomRight: Radius.circular(cornerRadius),
               ),
               gradient: LinearGradient(
                 begin: Alignment.center,
                 end: Alignment.bottomCenter,
-                stops: [0, 1],
                 colors: [
                   Colors.transparent,
-                  bannerGradientColor,
+                  bannerGradientEndColor,
                 ],
               ),
             ),
@@ -183,6 +195,9 @@ class BannerTitleAndArtistView extends StatelessWidget {
               color: Colors.white,
             ),
           ),
+          SizedBox(
+            height: 4,
+          ),
           Text(
             'This is Artist',
             style: TextStyle(
@@ -192,6 +207,74 @@ class BannerTitleAndArtistView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RecentTracksView extends StatelessWidget {
+  const RecentTracksView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TitleText(title: 'Recent Tracks'),
+        const SizedBox(
+          height: 8,
+        ),
+        SizedBox(
+          height: 135,
+          child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (index, context) => const TractsAndTitleView(),
+              separatorBuilder: (index, context) => const SizedBox(
+                    width: 20,
+                  ),
+              itemCount: 20),
+        ),
+      ],
+    );
+  }
+}
+
+class TractsAndTitleView extends StatelessWidget {
+  const TractsAndTitleView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const CustomCachedImage(
+          imageUrl: 'https://img.youtube.com/vi/tGvhJCkboms/maxresdefault.jpg',
+          width: 90,
+          height: 90,
+          cornerRadius: cornerRadius,
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 90),
+          child: const Text(
+            'သီချင်းခေါင်းစဉ်',
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

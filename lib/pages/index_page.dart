@@ -33,6 +33,7 @@ class _IndexPageState extends State<IndexPage> {
         return isFirstRouteInCurrentTab;
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Stack(
