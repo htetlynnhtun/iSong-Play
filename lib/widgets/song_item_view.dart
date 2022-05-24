@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/resources/colors.dart';
-
+import 'package:lottie/lottie.dart';
 import 'custom_cached_image.dart';
+import 'menu_item_button.dart';
 
 class SongItemView extends StatelessWidget {
   final String title, artist;
@@ -18,21 +20,125 @@ class SongItemView extends StatelessWidget {
             imageUrl:
                 'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg',
             cornerRadius: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title),
-            Text(artist),
+        const SizedBox(
+          width: 8,
+        ),
+        Expanded(
+            child:
+                TitleArtistAndDownloadStatusView(title: title, artist: artist)),
+        if (true)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(width: 8,),
+              Lottie.asset(
+                'assets/animation.json',
+                width: 32,
+                height: 32,
+              ),
+            ],
+          ),
+        const SizedBox(width:14,),
+        PopupMenuButton(
+          icon: const Icon(
+            Icons.more_horiz,
+            color: primaryColor,
+          ),
+          elevation: 2,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8),
+            ),
+          ),
+          onSelected: (value) {
+            // TODO: handle menu button action
+          },
+          itemBuilder: (context) => [
+            const PopupMenuItem(
+              value: 'test',
+              child: MenuItemButton(
+                title: 'Add to Library',
+                icon: Icons.add,
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'test',
+              child: MenuItemButton(
+                title: 'Add to Library',
+                icon: Icons.add,
+              ),
+            ),
+            const PopupMenuItem(
+              value: 'test',
+              child: MenuItemButton(
+                title: 'Add to Library',
+                icon: Icons.add,
+              ),
+            ),
           ],
         ),
-        const Spacer(),
-        IconButton(
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: () {},
-            icon: const Icon(Icons.more_horiz,
-            color: primaryColor,
-            )),
+      ],
+    );
+  }
+}
+
+class TitleArtistAndDownloadStatusView extends StatelessWidget {
+  const TitleArtistAndDownloadStatusView({
+    Key? key,
+    required this.title,
+    required this.artist,
+  }) : super(key: key);
+
+  final String title;
+  final String artist;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: true,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            (false)
+                ? const CupertinoActivityIndicator(
+                    radius: 6,
+                  )
+                : Image.asset(
+                    'assets/images/ic_downloaded.png',
+                    color: primaryColor,
+                    scale: 4,
+                  ),
+            const SizedBox(
+              width: 2,
+            ),
+            Expanded(
+              child: Text(
+                artist,
+                maxLines: 1,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

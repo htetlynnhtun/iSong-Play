@@ -27,8 +27,8 @@ class SearchResultsView extends StatelessWidget {
     return Expanded(
       child: ListView.separated(
           itemBuilder: (context, index) => SongItemView(
-                title: 'This is title $index',
-                artist: 'This is artist $index',
+                title: 'This is fucking long song title text $index',
+                artist: 'This is fucking long artist text name $index',
               ),
           separatorBuilder: (context, index) => const SizedBox(
                 height: 12,
