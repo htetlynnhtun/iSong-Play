@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -35,7 +36,6 @@ class MyApp extends StatelessWidget {
           title: 'Music App',
           home: child,
         ),
-
         child: const IndexPage(),
       ),
     );
