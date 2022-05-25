@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
+import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/pages/index_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HomeBloc()),
+        ChangeNotifierProvider(create: (_) => SearchBloc()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
@@ -24,6 +27,12 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (_, child) => MaterialApp(
           debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+          ),
           title: 'Music App',
           home: child,
         ),
