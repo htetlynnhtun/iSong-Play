@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 
 class SearchBloc extends ChangeNotifier {
   // ========================= States =========================
@@ -20,65 +19,36 @@ class SearchBloc extends ChangeNotifier {
     "Sug 4",
     "Sug 5",
   ];
+  var searchQuery = "";
   var currentContentView = SearchContent.recent;
   var showClearButton = false;
-  final _querySubject = BehaviorSubject.seeded("");
-  final _notEmptyQuerySubject = PublishSubject();
-
-  SearchBloc() {
-    _listenQuerySubject();
-    _listenNotEmptyQuerySubject();
-  }
-
-  void _listenQuerySubject() {
-    _querySubject.listen((query) {
-      if (query.isEmpty) {
-        currentContentView = SearchContent.recent;
-        showClearButton = false;
-        notifyListeners();
-      } else {
-        _notEmptyQuerySubject.add(query);
-      }
-    });
-  }
-
-  void _listenNotEmptyQuerySubject() {
-    _notEmptyQuerySubject.debounceTime(const Duration(seconds: 1)).listen((query) {
-      currentContentView = SearchContent.suggestion;
-      showClearButton = true;
-      // Todo: call suggestionAPI
-      print("Calling suggestionAPI for: $query");
-      notifyListeners();
-    });
-  }
 
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
     slidingValue = value;
-    if (slidingValue == 1) {
-      // Todo: search songs in library
-      print("Searching song in library");
-    }
     notifyListeners();
   }
 
   void onSearchQueryChange(String query) {
-    _querySubject.add(query);
+    searchQuery = query;
+    if (searchQuery.isEmpty) {
+      currentContentView = SearchContent.recent;
+      showClearButton = false;
+    } else {
+      currentContentView = SearchContent.suggestion;
+      showClearButton = true;
+      // Todo: call suggestionAPI
+      print("Calling suggest for: $searchQuery");
+    }
+    notifyListeners();
   }
 
   void onSearchSubmitted() {
-    final query = _querySubject.value;
-    if (query.isNotEmpty) {
+    if (searchQuery.isNotEmpty) {
       currentContentView = SearchContent.result;
-      recentSearches.add(query);
-      if (slidingValue == 0) {
-        // Todo: call searchAPI
-        print("Calling searchAPI for: $query");
-        notifyListeners();
-      } else {
-        // Todo: search songs in library
-        print("Searching song in library");
-      }
+      recentSearches.add(searchQuery);
+      // Todo: call searchAPI
+      notifyListeners();
     }
   }
 
@@ -96,7 +66,10 @@ class SearchBloc extends ChangeNotifier {
   }
 
   void clearQuery() {
-    _querySubject.add("");
+    searchQuery = "";
+    showClearButton = false;
+    currentContentView = SearchContent.recent;
+    notifyListeners();
   }
 }
 
