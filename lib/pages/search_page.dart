@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
 import '../resources/constants.dart';
-import '../widgets/clear_button.dart';
+import '../widgets/asset_image_button.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -124,8 +124,12 @@ class SearchAndCancelView extends StatelessWidget {
                 ),
                 suffixIcon: Visibility(
                   visible: true,
-                  child: ClearButton(
+                  child: AssetImageButton(
                     onTap: () {},
+                    width: 20,
+                    height: 20,
+                    imageUrl: 'assets/images/ic_clear.png',
+                    color: null,
                   ),
                 ),
                 hintText: 'Artist, Song and more',

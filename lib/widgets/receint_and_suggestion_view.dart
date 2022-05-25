@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'clear_button.dart';
+import 'asset_image_button.dart';
 
 class RecentAndSuggestionView extends StatelessWidget {
   final String title;
   final bool isRecent;
-  const RecentAndSuggestionView({
-    required this.title,
-    this.isRecent = true,
-    Key? key}) : super(key: key);
+  const RecentAndSuggestionView(
+      {required this.title, this.isRecent = true, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class RecentAndSuggestionView extends StatelessWidget {
         const SizedBox(
           width: 8,
         ),
-         Text(
+        Text(
           title,
           style: const TextStyle(
             fontWeight: FontWeight.w500,
@@ -32,10 +31,14 @@ class RecentAndSuggestionView extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        if(isRecent)
-        ClearButton(
-          onTap: () {},
-        ),
+        if (isRecent)
+          AssetImageButton(
+            onTap: () {},
+            width: 20,
+            height: 20,
+            imageUrl: 'assets/images/ic_clear.png',
+            color: null,
+          ),
       ],
     );
   }

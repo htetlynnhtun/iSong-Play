@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
-class ClearButton extends StatelessWidget {
+class AssetImageButton extends StatelessWidget {
   final Function onTap;
-  const ClearButton({
+  final double width,height;
+  final String imageUrl;
+  final Color? color;
+  const AssetImageButton({
     required this.onTap,
+    required this.width,
+    required this.height,
+    required this.imageUrl,
+    required this.color,
     Key? key}) : super(key: key);
 
   @override
@@ -12,9 +19,10 @@ class ClearButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
       icon: Image.asset(
-        'assets/images/ic_clear.png',
-        height: 20,
-        width: 20,
+        color:color,
+        imageUrl,
+        height: width,
+        width: height,
       ),
       onPressed: () {
         onTap();

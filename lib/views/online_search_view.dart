@@ -3,7 +3,7 @@ import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:music_app/widgets/song_item_view.dart';
 
-import '../widgets/clear_button.dart';
+import '../widgets/asset_image_button.dart';
 import '../widgets/receint_and_suggestion_view.dart';
 
 class OnlineSearchView extends StatelessWidget {
@@ -11,9 +11,10 @@ class OnlineSearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return const RecentSearchesView();
+    // TODO : change view here
+    return const RecentSearchesView();
     //return const SearchSuggestionsView();
-    return const SearchResultsView();
+    //return const SearchResultsView();
   }
 }
 
