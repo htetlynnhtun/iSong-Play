@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/search_bloc.dart';
-import 'package:music_app/views/offline_search_view.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
@@ -53,7 +52,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 thumbColor: CupertinoColors.white,
                 groupValue: slidingValue,
                 onValueChanged: (value) {
-                  _getBloc(context).onSlidingValueChange(value!);
+                  context.read<SearchBloc>().onSlidingValueChange(value!);
                 },
                 children: const {
                   0: Text(
@@ -83,11 +82,6 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
     );
   }
 }
-
-SearchBloc _getBloc(BuildContext context) {
-  return Provider.of<SearchBloc>(context, listen: false);
-}
-
 class SearchAndCancelView extends StatelessWidget {
   final searchController = TextEditingController();
 

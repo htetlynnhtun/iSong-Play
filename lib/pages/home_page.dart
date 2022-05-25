@@ -106,7 +106,7 @@ class BannerView extends StatelessWidget {
                   enlargeCenterPage: true,
                   viewportFraction: 1,
                   onPageChanged: (index, reason) {
-                    _getBloc(context).onBannerPageChanged(index);
+                    context.read<HomeBloc>().onBannerPageChanged(index);
                   }),
             ),
             Align(
@@ -279,6 +279,4 @@ class TractsAndTitleView extends StatelessWidget {
   }
 }
 
-HomeBloc _getBloc(BuildContext context) {
-  return Provider.of<HomeBloc>(context, listen: false);
-}
+
