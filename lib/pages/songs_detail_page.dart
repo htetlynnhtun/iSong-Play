@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/resources/colors.dart';
+import 'package:music_app/widgets/app_bar_back_icon.dart';
 
+import '../widgets/app_bar_title.dart';
 import '../widgets/asset_image_button.dart';
 import '../widgets/menu_item_button.dart';
 import '../widgets/song_item_view.dart';
@@ -16,23 +18,8 @@ class SongsDetailPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        leading: AssetImageButton(
-          imageUrl: 'assets/images/ic_back.png',
-          width: 20,
-          height: 20,
-          color: primaryColor,
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: primaryColor,
-          ),
-        ),
+        leading:const AppBarBackIcon(),
+        title: AppBarTitle(title:title),
         actions: [
           PopupMenuButton(
             icon: const Icon(

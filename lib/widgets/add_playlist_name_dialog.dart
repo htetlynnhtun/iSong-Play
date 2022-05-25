@@ -22,7 +22,7 @@ class AddPlaylistNameDialog extends StatelessWidget {
         ),
         child: Column(
           children: [
-            SizedBox(height: width * 0.1),
+            SizedBox(height: width * 0.07),
             const Text(
               'Playlist Name',
               style: TextStyle(
@@ -31,35 +31,12 @@ class AddPlaylistNameDialog extends StatelessWidget {
                 color: primaryColor,
               ),
             ),
-            TextField(
-              onChanged: (value) {
-                //  bloc.onTextChane(value);
-              },
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.normal,
-              ),
-              textAlignVertical: TextAlignVertical.center,
-              autofocus: true,
-              decoration: InputDecoration(
-                isCollapsed: true,
-                filled: true,
-                fillColor: Colors.white,
-                hintText: 'Type your Playlist Name',
-                hintStyle: const TextStyle(
-                  color: searchIconColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                    width: 1,
-                    style: BorderStyle.solid,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+            const SizedBox(
+              height: 30,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: EditTextField(),
             ),
             const Spacer(),
             Container(
@@ -104,6 +81,47 @@ class AddPlaylistNameDialog extends StatelessWidget {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditTextField extends StatelessWidget {
+  const EditTextField({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      onChanged: (value) {
+        //  bloc.onTextChane(value);
+      },
+      style: const TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.normal,
+      ),
+      textAlignVertical: TextAlignVertical.center,
+      autofocus: true,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(8), // Added this
+        isCollapsed: true,
+        filled: true,
+        fillColor: Colors.white,
+        hintText: 'Type your Playlist Name',
+        hintStyle: const TextStyle(
+          color: searchIconColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(
+            width: 0,
+            style: BorderStyle.none,
+          ),
         ),
       ),
     );

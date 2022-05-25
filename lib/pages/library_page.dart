@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/pages/playlist_detail_page.dart';
 import 'package:music_app/pages/songs_detail_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/resources/dimens.dart';
@@ -47,7 +48,9 @@ class LibraryPage extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                   itemBuilder: (context, index) => PlaylistItemView(
-                        onTap: () {},
+                        onTap: () {
+                          navigateToNextPageWithNavBar(context,const PlaylistDetailPage());
+                        },
                       ),
                   separatorBuilder: (context, index) => const SizedBox(
                         height: 12,
