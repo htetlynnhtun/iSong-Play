@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:music_app/widgets/song_item_view.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/asset_image_button.dart';
 import '../widgets/receint_and_suggestion_view.dart';
@@ -11,8 +13,18 @@ class OnlineSearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO : change view here
-    return const RecentSearchesView();
+    return Selector<SearchBloc, SearchContent>(
+        selector: (_, searchBloc) => searchBloc.currentContentView,
+        builder: (_, searchContent, __) {
+          switch (searchContent) {
+            case SearchContent.recent:
+              return const RecentSearchesView();
+            case SearchContent.suggestion:
+              return const SearchSuggestionsView();
+            case SearchContent.result:
+              return const SearchResultsView();
+          }
+        });
     //return const SearchSuggestionsView();
     //return const SearchResultsView();
   }
@@ -47,15 +59,20 @@ class SearchSuggestionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.separated(
-          itemBuilder: (context, index) => RecentAndSuggestionView(
-                title: 'This is suggestion $index',
+      child: Selector<SearchBloc, List<String>>(
+          selector: (_, searchBloc) => searchBloc.suggestions,
+          builder: (_, suggestions, __) {
+            return ListView.separated(
+              itemBuilder: (context, index) => RecentAndSuggestionView(
+                title: suggestions[index],
                 isRecent: false,
               ),
-          separatorBuilder: (context, index) => const SizedBox(
+              separatorBuilder: (context, index) => const SizedBox(
                 height: 12,
               ),
-          itemCount: 20),
+              itemCount: suggestions.length,
+            );
+          }),
     );
   }
 }
@@ -83,7 +100,7 @@ class RecentSearchesView extends StatelessWidget {
               ),
               const Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: context.read<SearchBloc>().onTapClearAllRecent,
                 style: TextButton.styleFrom(
                   minimumSize: Size.zero,
                   padding: EdgeInsets.zero,
@@ -104,14 +121,19 @@ class RecentSearchesView extends StatelessWidget {
             height: 12,
           ),
           Expanded(
-            child: ListView.separated(
-                itemBuilder: (context, index) => RecentAndSuggestionView(
-                      title: 'This is title $index',
+            child: Selector<SearchBloc, List<String>>(
+                selector: (_, searchBloc) => searchBloc.recentSearches.reversed.toList(),
+                builder: (_, recentSearches, __) {
+                  return ListView.separated(
+                    itemBuilder: (context, index) => RecentAndSuggestionView(
+                      title: recentSearches[index],
                     ),
-                separatorBuilder: (context, index) => const SizedBox(
+                    separatorBuilder: (context, index) => const SizedBox(
                       height: 12,
                     ),
-                itemCount: 20),
+                    itemCount: recentSearches.length,
+                  );
+                }),
           ),
         ],
       ),

@@ -17,15 +17,15 @@ class SearchPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
-          children: const [
-            SizedBox(
+          children: [
+            const SizedBox(
               height: 8,
             ),
             SearchAndCancelView(),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
-            OnlineAndOfflineSlidingView(),
+            const OnlineAndOfflineSlidingView(),
           ],
         ),
       ),
@@ -89,7 +89,9 @@ SearchBloc _getBloc(BuildContext context) {
 }
 
 class SearchAndCancelView extends StatelessWidget {
-  const SearchAndCancelView({
+  final searchController = TextEditingController();
+
+  SearchAndCancelView({
     Key? key,
   }) : super(key: key);
 
@@ -101,11 +103,12 @@ class SearchAndCancelView extends StatelessWidget {
           child: SizedBox(
             height: 36,
             child: TextField(
+              controller: searchController,
               onSubmitted: (value) {
-                // bloc.onSubmitted(value);
+                context.read<SearchBloc>().onSearchSubmitted(value);
               },
               onChanged: (value) {
-                //  bloc.onTextChane(value);
+                context.read<SearchBloc>().onSearchQueryChange(value);
               },
               style: const TextStyle(
                 fontSize: 17,
@@ -122,10 +125,19 @@ class SearchAndCancelView extends StatelessWidget {
                   size: 32,
                   color: searchIconColor,
                 ),
-                suffixIcon: Visibility(
-                  visible: true,
+                suffixIcon: Selector<SearchBloc, bool>(
+                  selector: (_, searchBloc) => searchBloc.showClearButton,
+                  builder: (_, showClearButton, child) {
+                    return Visibility(
+                      visible: showClearButton,
+                      child: child!,
+                    );
+                  },
                   child: AssetImageButton(
-                    onTap: () {},
+                    onTap: () {
+                      searchController.clear();
+                      context.read<SearchBloc>().clearQuery();
+                    },
                     width: 20,
                     height: 20,
                     imageUrl: 'assets/images/ic_clear.png',
@@ -153,7 +165,11 @@ class SearchAndCancelView extends StatelessWidget {
           width: 14,
         ),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              searchController.clear();
+              FocusManager.instance.primaryFocus?.unfocus();
+              context.read<SearchBloc>().clearQuery();
+            },
             child: const Text(
               'Cancel',
               style: TextStyle(
