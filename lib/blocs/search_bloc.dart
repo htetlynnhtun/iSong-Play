@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class SearchBloc extends ChangeNotifier {
   // ========================= States =========================
@@ -19,9 +20,37 @@ class SearchBloc extends ChangeNotifier {
     "Sug 4",
     "Sug 5",
   ];
-  var searchQuery = "";
   var currentContentView = SearchContent.recent;
   var showClearButton = false;
+  final _querySubject = BehaviorSubject.seeded("");
+  final _notEmptyQuerySubject = PublishSubject();
+
+  SearchBloc() {
+    _listenQuerySubject();
+    _listenNotEmptyQuerySubject();
+  }
+
+  void _listenQuerySubject() {
+    _querySubject.listen((query) {
+      if (query.isEmpty) {
+        currentContentView = SearchContent.recent;
+        showClearButton = false;
+        notifyListeners();
+      } else {
+        _notEmptyQuerySubject.add(query);
+      }
+    });
+  }
+
+  void _listenNotEmptyQuerySubject() {
+    _notEmptyQuerySubject.debounceTime(const Duration(seconds: 1)).listen((query) {
+      currentContentView = SearchContent.suggestion;
+      showClearButton = true;
+      // Todo: call suggestionAPI
+      print("Calling suggestionAPI for: $query");
+      notifyListeners();
+    });
+  }
 
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
@@ -30,24 +59,16 @@ class SearchBloc extends ChangeNotifier {
   }
 
   void onSearchQueryChange(String query) {
-    searchQuery = query;
-    if (searchQuery.isEmpty) {
-      currentContentView = SearchContent.recent;
-      showClearButton = false;
-    } else {
-      currentContentView = SearchContent.suggestion;
-      showClearButton = true;
-      // Todo: call suggestionAPI
-    }
-    notifyListeners();
+    _querySubject.add(query);
   }
 
-  void onSearchSubmitted(String query) {
+  void onSearchSubmitted() {
+    final query = _querySubject.value;
     if (query.isNotEmpty) {
-      searchQuery = query;
       currentContentView = SearchContent.result;
-      recentSearches.add(searchQuery);
+      recentSearches.add(query);
       // Todo: call searchAPI
+      print("Calling searchAPI for: $query");
       notifyListeners();
     }
   }
@@ -66,10 +87,7 @@ class SearchBloc extends ChangeNotifier {
   }
 
   void clearQuery() {
-    searchQuery = "";
-    showClearButton = false;
-    currentContentView = SearchContent.recent;
-    notifyListeners();
+    _querySubject.add("");
   }
 }
 

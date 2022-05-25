@@ -105,7 +105,7 @@ class SearchAndCancelView extends StatelessWidget {
             child: TextField(
               controller: searchController,
               onSubmitted: (value) {
-                context.read<SearchBloc>().onSearchSubmitted(value);
+                context.read<SearchBloc>().onSearchSubmitted();
               },
               onChanged: (value) {
                 context.read<SearchBloc>().onSearchQueryChange(value);
