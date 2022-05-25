@@ -55,6 +55,10 @@ class SearchBloc extends ChangeNotifier {
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
     slidingValue = value;
+    if (slidingValue == 1) {
+      // Todo: search songs in library
+      print("Searching song in library");
+    }
     notifyListeners();
   }
 
@@ -67,9 +71,14 @@ class SearchBloc extends ChangeNotifier {
     if (query.isNotEmpty) {
       currentContentView = SearchContent.result;
       recentSearches.add(query);
-      // Todo: call searchAPI
-      print("Calling searchAPI for: $query");
-      notifyListeners();
+      if (slidingValue == 0) {
+        // Todo: call searchAPI
+        print("Calling searchAPI for: $query");
+        notifyListeners();
+      } else {
+        // Todo: search songs in library
+        print("Searching song in library");
+      }
     }
   }
 
