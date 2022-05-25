@@ -5,62 +5,70 @@ import '../resources/colors.dart';
 import 'menu_item_button.dart';
 
 class PlaylistItemView extends StatelessWidget {
-  const PlaylistItemView({Key? key}) : super(key: key);
+  final Function onTap;
+  const PlaylistItemView({
+    required this.onTap,
+    Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const CustomCachedImage(
-          imageUrl: 'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg',
-          cornerRadius: 10,
-          width: 99,
-          height: 56,
-        ),
-        const SizedBox(
-          width: 16,
-        ),
-        const PlaylistTitleAndTracksView(),
-        const Spacer(),
-        PopupMenuButton(
-          icon: const Icon(
-            Icons.more_horiz,
-            color: primaryColor,
+    return GestureDetector(
+      onTap: (){
+        onTap();
+      },
+      child: Row(
+        children: [
+          const CustomCachedImage(
+            imageUrl: 'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg',
+            cornerRadius: 10,
+            width: 99,
+            height: 56,
           ),
-          elevation: 2,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
+          const SizedBox(
+            width: 16,
           ),
-          onSelected: (value) {
-            // TODO: handle menu button action
-          },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'test',
-              child: MenuItemButton(
-                title: 'Add to Library',
-                icon: Icons.add,
+          const PlaylistTitleAndTracksView(),
+          const Spacer(),
+          PopupMenuButton(
+            icon: const Icon(
+              Icons.more_horiz,
+              color: primaryColor,
+            ),
+            elevation: 2,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
               ),
             ),
-            const PopupMenuItem(
-              value: 'test',
-              child: MenuItemButton(
-                title: 'Add to Library',
-                icon: Icons.add,
+            onSelected: (value) {
+              // TODO: handle menu button action
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'test',
+                child: MenuItemButton(
+                  title: 'Add to Library',
+                  icon: Icons.add,
+                ),
               ),
-            ),
-            const PopupMenuItem(
-              value: 'test',
-              child: MenuItemButton(
-                title: 'Add to Library',
-                icon: Icons.add,
+              const PopupMenuItem(
+                value: 'test',
+                child: MenuItemButton(
+                  title: 'Add to Library',
+                  icon: Icons.add,
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+              const PopupMenuItem(
+                value: 'test',
+                child: MenuItemButton(
+                  title: 'Add to Library',
+                  icon: Icons.add,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

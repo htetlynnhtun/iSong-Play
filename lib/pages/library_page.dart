@@ -5,6 +5,7 @@ import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/library_header_view.dart';
 
+import '../widgets/add_playlist_name_dialog.dart';
 import '../widgets/playlist_item_vew.dart';
 import '../widgets/title_and_icon_view.dart';
 
@@ -35,7 +36,9 @@ class LibraryPage extends StatelessWidget {
             ),
             TitleAndIconButtonView(
               title: 'Playlist',
-              onTap: () {},
+              onTap: () {
+                showDialog(context: context, builder: (context)=>const AddPlaylistNameDialog());
+              },
               imageUrl: 'assets/images/ic_add.png',
             ),
             const SizedBox(
@@ -43,10 +46,12 @@ class LibraryPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView.separated(
-                  itemBuilder: (context, index) => const PlaylistItemView(),
+                  itemBuilder: (context, index) => PlaylistItemView(
+                        onTap: () {},
+                      ),
                   separatorBuilder: (context, index) => const SizedBox(
-                    height: 12,
-                  ),
+                        height: 12,
+                      ),
                   itemCount: 10),
             )
           ],
