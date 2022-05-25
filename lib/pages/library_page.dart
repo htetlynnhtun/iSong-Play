@@ -5,6 +5,7 @@ import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/library_header_view.dart';
 
+import '../widgets/playlist_item_vew.dart';
 import '../widgets/title_and_icon_view.dart';
 
 class LibraryPage extends StatelessWidget {
@@ -28,7 +29,26 @@ class LibraryPage extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            const YourSongAndFavouriteHeaderView()
+            const YourSongAndFavouriteHeaderView(),
+            const SizedBox(
+              height: 28,
+            ),
+            TitleAndIconButtonView(
+              title: 'Playlist',
+              onTap: () {},
+              imageUrl: 'assets/images/ic_add.png',
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Expanded(
+              child: ListView.separated(
+                  itemBuilder: (context, index) => const PlaylistItemView(),
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 12,
+                  ),
+                  itemCount: 10),
+            )
           ],
         ),
       ),
