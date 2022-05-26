@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/vos/song_vo.dart';
 
 import '../widgets/song_item_view.dart';
 
@@ -9,10 +10,7 @@ class OfflineSearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.separated(
-          itemBuilder: (context, index) => SongItemView(
-                title: 'This is title $index',
-                artist: 'This is artist $index',
-              ),
+          itemBuilder: (context, index) => SongItemView(SongVO.dummySong()),
           separatorBuilder: (context, index) => const SizedBox(
                 height: 12,
               ),

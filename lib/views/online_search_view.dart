@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
+import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:music_app/widgets/song_item_view.dart';
 import 'package:provider/provider.dart';
@@ -38,15 +39,17 @@ class SearchResultsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.separated(
-          itemBuilder: (context, index) => SongItemView(
-                title: 'This is fucking long song title text $index',
-                artist: 'This is fucking long artist text name $index',
-              ),
-          separatorBuilder: (context, index) => const SizedBox(
+      child: Selector<SearchBloc, List<SongVO>>(
+          selector: (_, searchBloc) => searchBloc.searchResults,
+          builder: (_, searchResults, __) {
+            return ListView.separated(
+              itemBuilder: (context, index) => SongItemView(searchResults[index]),
+              separatorBuilder: (context, index) => const SizedBox(
                 height: 12,
               ),
-          itemCount: 10),
+              itemCount: searchResults.length,
+            );
+          }),
     );
   }
 }
@@ -63,9 +66,18 @@ class SearchSuggestionsView extends StatelessWidget {
           selector: (_, searchBloc) => searchBloc.suggestions,
           builder: (_, suggestions, __) {
             return ListView.separated(
-              itemBuilder: (context, index) => RecentAndSuggestionView(
-                title: suggestions[index],
-                isRecent: false,
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  // Todo: Add loading indicator
+                  // show loading
+                  await context.read<SearchBloc>().onTapRecentOrSuggestion(suggestions[index]);
+                  // stop loading
+                },
+                child: RecentAndSuggestionView(
+                  title: suggestions[index],
+                  isRecent: false,
+                ),
               ),
               separatorBuilder: (context, index) => const SizedBox(
                 height: 12,

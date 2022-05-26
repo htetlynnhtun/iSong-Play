@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/services/youtube_service.dart';
+import 'package:music_app/vos/song_vo.dart';
 
 class SearchBloc extends ChangeNotifier {
   final _youtubeService = YoutubeService();
@@ -14,9 +15,11 @@ class SearchBloc extends ChangeNotifier {
     "Search five",
   ];
   var suggestions = <String>[];
+  var searchResults = <SongVO>[];
   var searchQuery = "";
   var currentContentView = SearchContent.recent;
   var showClearButton = false;
+  var tappedQuery = "";
 
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
@@ -37,13 +40,23 @@ class SearchBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onSearchSubmitted() {
+  Future<void> onSearchSubmitted() async {
     if (searchQuery.isNotEmpty) {
       currentContentView = SearchContent.result;
       recentSearches.add(searchQuery);
-      // Todo: call searchAPI
+      searchResults = await _youtubeService.getSongs(searchQuery);
       notifyListeners();
     }
+  }
+
+  Future<void> onTapRecentOrSuggestion(String query) async {
+    tappedQuery = query;
+    searchResults = [];
+    notifyListeners();
+    currentContentView = SearchContent.result;
+    recentSearches.add(query);
+    searchResults = await _youtubeService.getSongs(query);
+    notifyListeners();
   }
 
   void onTapClearAllRecent() {
