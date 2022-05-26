@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/services/youtube_service.dart';
 
 class SearchBloc extends ChangeNotifier {
+  final _youtubeService = YoutubeService();
   // ========================= States =========================
   int slidingValue = 0;
   // Todo: Just dummy, real data will come from hive.
@@ -11,14 +13,7 @@ class SearchBloc extends ChangeNotifier {
     "Search four",
     "Search five",
   ];
-  // Todo: Just dummy, real data will come from api call.
-  var suggestions = [
-    "Sug 1",
-    "Sug 2",
-    "Sug 3",
-    "Sug 4",
-    "Sug 5",
-  ];
+  var suggestions = <String>[];
   var searchQuery = "";
   var currentContentView = SearchContent.recent;
   var showClearButton = false;
@@ -29,7 +24,7 @@ class SearchBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onSearchQueryChange(String query) {
+  void onSearchQueryChange(String query) async {
     searchQuery = query;
     if (searchQuery.isEmpty) {
       currentContentView = SearchContent.recent;
@@ -37,8 +32,7 @@ class SearchBloc extends ChangeNotifier {
     } else {
       currentContentView = SearchContent.suggestion;
       showClearButton = true;
-      // Todo: call suggestionAPI
-      print("Calling suggest for: $searchQuery");
+      suggestions = await _youtubeService.getSuggestion(query);
     }
     notifyListeners();
   }
@@ -70,6 +64,12 @@ class SearchBloc extends ChangeNotifier {
     showClearButton = false;
     currentContentView = SearchContent.recent;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _youtubeService.dispose();
   }
 }
 
