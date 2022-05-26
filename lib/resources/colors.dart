@@ -9,3 +9,4 @@ const searchBackgroundColor = Color(0xffDDDDDD);
 const dialogBackgroundColor = Color(0xffDDDDDD);
 
 const libraryHeadCircleColor = Color.fromRGBO(101, 9, 163, 1.0);
+const playlistButtonUnselectedColor = Color(0xffF4F4F5);
