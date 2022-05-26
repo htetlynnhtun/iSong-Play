@@ -4,11 +4,11 @@ import 'package:music_app/widgets/title_text.dart';
 
 import '../resources/colors.dart';
 
-class TitleAndIconButtonView extends StatelessWidget {
+class TitleAndSettingIconButtonView extends StatelessWidget {
   final String title;
   final Function onTap;
   final String imageUrl;
-  const TitleAndIconButtonView(
+  const TitleAndSettingIconButtonView(
       {required this.title,
       required this.onTap,
         required this.imageUrl,

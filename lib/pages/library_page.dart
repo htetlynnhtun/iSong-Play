@@ -6,6 +6,7 @@ import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/library_header_view.dart';
 
+import '../views/playlist_bottom_sheet.dart';
 import '../widgets/add_playlist_name_dialog.dart';
 import '../widgets/playlist_item_vew.dart';
 import '../widgets/title_and_icon_view.dart';
@@ -23,9 +24,17 @@ class LibraryPage extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            TitleAndIconButtonView(
+            TitleAndSettingIconButtonView(
               title: 'Library',
-              onTap: () {},
+              onTap: () {
+                showModalBottomSheet(
+                  isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  useRootNavigator: true,
+                  context: context,
+                  builder: (context)=>const PlaylistBottomSheet(),
+                );
+              },
               imageUrl: 'assets/images/ic_setting.png',
             ),
             const SizedBox(
@@ -35,7 +44,7 @@ class LibraryPage extends StatelessWidget {
             const SizedBox(
               height: 28,
             ),
-            TitleAndIconButtonView(
+            TitleAndSettingIconButtonView(
               title: 'Playlist',
               onTap: () {
                 showDialog(context: context, builder: (context)=>const AddPlaylistNameDialog());

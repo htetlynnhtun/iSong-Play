@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-           TitleAndIconButtonView(title: 'Home',onTap: (){},
+           TitleAndSettingIconButtonView(title: 'Home',onTap: (){},
            imageUrl: 'assets/images/ic_setting.png',
            ),
             const SizedBox(
