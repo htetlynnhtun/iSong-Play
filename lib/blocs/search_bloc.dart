@@ -20,6 +20,7 @@ class SearchBloc extends ChangeNotifier {
   var currentContentView = SearchContent.recent;
   var showClearButton = false;
   var tappedQuery = "";
+  var showSearchingLoadingIndicator = false;
 
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
@@ -44,7 +45,10 @@ class SearchBloc extends ChangeNotifier {
     if (searchQuery.isNotEmpty) {
       currentContentView = SearchContent.result;
       recentSearches.add(searchQuery);
+      showSearchingLoadingIndicator = true;
+      notifyListeners();
       searchResults = await _youtubeService.getSongs(searchQuery);
+      showSearchingLoadingIndicator = false;
       notifyListeners();
     }
   }
@@ -52,10 +56,12 @@ class SearchBloc extends ChangeNotifier {
   Future<void> onTapRecentOrSuggestion(String query) async {
     tappedQuery = query;
     searchResults = [];
-    notifyListeners();
     currentContentView = SearchContent.result;
     recentSearches.add(query);
+    showSearchingLoadingIndicator = true;
+    notifyListeners();
     searchResults = await _youtubeService.getSongs(query);
+    showSearchingLoadingIndicator = false;
     notifyListeners();
   }
 

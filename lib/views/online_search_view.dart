@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
@@ -38,19 +39,34 @@ class SearchResultsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Selector<SearchBloc, List<SongVO>>(
-          selector: (_, searchBloc) => searchBloc.searchResults,
-          builder: (_, searchResults, __) {
-            return ListView.separated(
-              itemBuilder: (context, index) => SongItemView(searchResults[index]),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 12,
+    return Selector<SearchBloc, bool>(
+        selector: (_, searchBloc) => searchBloc.showSearchingLoadingIndicator,
+        builder: (_, showSearchingLoadingIndicator, __) {
+          if (showSearchingLoadingIndicator) {
+            return const Expanded(
+              child: Center(
+                child: CupertinoActivityIndicator(
+                  animating: true,
+                  radius: 16,
+                  color: primaryColor,
+                ),
               ),
-              itemCount: searchResults.length,
             );
-          }),
-    );
+          }
+          return Expanded(
+            child: Selector<SearchBloc, List<SongVO>>(
+                selector: (_, searchBloc) => searchBloc.searchResults,
+                builder: (_, searchResults, __) {
+                  return ListView.separated(
+                    itemBuilder: (context, index) => SongItemView(searchResults[index]),
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 12,
+                    ),
+                    itemCount: searchResults.length,
+                  );
+                }),
+          );
+        });
   }
 }
 
