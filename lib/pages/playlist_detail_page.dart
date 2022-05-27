@@ -3,6 +3,7 @@ import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 
 import '../resources/colors.dart';
+import '../resources/constants.dart';
 import '../widgets/app_bar_back_icon.dart';
 import '../widgets/app_bar_title.dart';
 import '../widgets/menu_item_button.dart';
@@ -145,8 +146,7 @@ class SongsCollectionView extends StatelessWidget {
     return Expanded(
       child: ListView.separated(
           itemBuilder: (context, index) => SongItemView(
-            title: 'This is title $index',
-            artist: 'This is artist $index',
+              songVO,
           ),
           separatorBuilder: (context, index) => const SizedBox(
             height: 12,
