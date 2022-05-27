@@ -27,8 +27,7 @@ class PlaylistItemView extends StatelessWidget {
           const SizedBox(
             width: 16,
           ),
-          const PlaylistTitleAndTracksView(),
-          const Spacer(),
+          const Expanded(child: PlaylistTitleAndTracksView()),
           PopupMenuButton(
             icon: const Icon(
               Icons.more_horiz,
@@ -84,7 +83,9 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const [
         Text(
-          'Fav Song ',
+          'This is fucking long text for playlist text',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,

@@ -108,7 +108,9 @@ class PlaylistHeaderView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
-                  'Girl Selection',
+                  'This is fucking long text for favorite text',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

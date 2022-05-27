@@ -8,7 +8,7 @@ class SearchBloc extends ChangeNotifier {
   int slidingValue = 0;
   // Todo: Just dummy, real data will come from hive.
   var recentSearches = [
-    "Search one",
+    "Search one this is fucking long text for recent search",
     "Search two",
     "Search three",
     "Search four",
