@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../resources/constants.dart';
 import '../resources/dimens.dart';
 import '../widgets/custom_cached_image.dart';
+import '../widgets/title_and_icon_view.dart';
 import '../widgets/title_and_playlist_collection_view.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,27 +23,29 @@ class HomePage extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            SizedBox(
+          children:  [
+            const SizedBox(
               height: 8,
             ),
-            HomeTitleAndSettingIconView(),
-            SizedBox(
+           TitleAndSettingIconButtonView(title: 'Home',onTap: (){},
+           imageUrl: 'assets/images/ic_setting.png',
+           ),
+            const SizedBox(
               height: 16,
             ),
-            BannerView(),
-            SizedBox(
+            const BannerView(),
+            const SizedBox(
               height: 19,
             ),
-            RecentTracksView(),
-            SizedBox(
+            const RecentTracksView(),
+            const SizedBox(
               height: 19,
             ),
-            TitleAndPlayListCollectionView(),
-            SizedBox(
+            const TitleAndPlayListCollectionView(),
+            const SizedBox(
               height: 19,
             ),
-            TitleAndPlayListCollectionView(),
+            const TitleAndPlayListCollectionView(),
           ],
         ),
       ),
@@ -50,30 +53,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeTitleAndSettingIconView extends StatelessWidget {
-  const HomeTitleAndSettingIconView({
-    Key? key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const TitleText(title: 'Home'),
-        const Spacer(),
-        GestureDetector(
-            onTap: () {},
-            child: const Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: Icon(
-                Icons.settings,
-                color: primaryColor,
-              ),
-            )),
-      ],
-    );
-  }
-}
 
 class BannerView extends StatelessWidget {
   const BannerView({
