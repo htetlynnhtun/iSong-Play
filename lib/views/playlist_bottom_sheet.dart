@@ -84,28 +84,33 @@ class PlayListItemView extends StatelessWidget {
         const SizedBox(
           width: 8,
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'This is Playlist,',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 18,
-                color: primaryColor,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'This is Playlist fucking long playlist name',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18,
+                  color: primaryColor,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Text(
-              '100 Tracks,',
-              style: TextStyle(
-                fontSize: 14,
-                color: primaryColor,
+              SizedBox(
+                height: 6,
               ),
-            ),
-          ],
+              Text(
+                '100 Tracks',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: primaryColor,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
