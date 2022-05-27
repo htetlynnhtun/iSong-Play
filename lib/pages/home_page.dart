@@ -41,11 +41,11 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 19,
             ),
-            const TitleAndPlayListCollectionView(),
+             const TitleAndPlayListCollectionView(title: 'Editor Choice',),
             const SizedBox(
-              height: 19,
+              height: 20,
             ),
-            const TitleAndPlayListCollectionView(),
+            const TitleAndPlayListCollectionView(title: 'Trending',),
           ],
         ),
       ),
