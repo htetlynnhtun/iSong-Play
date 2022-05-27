@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/vos/recent_search_vo.dart';
+import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/pages/index_page.dart';
-import 'package:provider/provider.dart';
+import 'package:music_app/persistance/box_names.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(RecentSearchVOAdapter());
+  await Hive.openBox<RecentSearchVO>(recentSearchBox);
+
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {

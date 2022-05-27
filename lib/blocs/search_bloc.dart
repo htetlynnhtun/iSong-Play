@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/persistance/recent_search_dao.dart';
 import 'package:music_app/services/youtube_service.dart';
+import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 
 class SearchBloc extends ChangeNotifier {
   final _youtubeService = YoutubeService();
+  final _recentSearchDao = RecentSearchDao();
+
+  SearchBloc() {
+    _recentSearchDao.watchItems().listen((data) {
+      recentSearches = data;
+      recentSearches.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      notifyListeners();
+    });
+  }
+
   // ========================= States =========================
-  int slidingValue = 0;
-  // Todo: Just dummy, real data will come from hive.
-  var recentSearches = [
-    "Search one this is fucking long text for recent search",
-    "Search two",
-    "Search three",
-    "Search four",
-    "Search five",
-  ];
+  var slidingValue = 0;
+  var recentSearches = <RecentSearchVO>[];
   var suggestions = <String>[];
   var searchResults = <SongVO>[];
   var searchQuery = "";
@@ -43,8 +48,8 @@ class SearchBloc extends ChangeNotifier {
 
   Future<void> onSearchSubmitted() async {
     if (searchQuery.isNotEmpty) {
+      await _cacheRecentSearch(searchQuery);
       currentContentView = SearchContent.result;
-      recentSearches.add(searchQuery);
       showSearchingLoadingIndicator = true;
       notifyListeners();
       searchResults = await _youtubeService.getSongs(searchQuery);
@@ -55,9 +60,9 @@ class SearchBloc extends ChangeNotifier {
 
   Future<void> onTapRecentOrSuggestion(String query) async {
     tappedQuery = query;
+    await _cacheRecentSearch(query);
     searchResults = [];
     currentContentView = SearchContent.result;
-    recentSearches.add(query);
     showSearchingLoadingIndicator = true;
     notifyListeners();
     searchResults = await _youtubeService.getSongs(query);
@@ -65,17 +70,12 @@ class SearchBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onTapClearAllRecent() {
-    // Todo: delete from hive
-    recentSearches.clear();
-    notifyListeners();
+  Future<void> onTapClearAllRecent() async {
+    await _recentSearchDao.deleteAll();
   }
 
-  void onTapDeleteRecent(String recent) {
-    // Todo: delete from hive
-    final index = recentSearches.indexOf(recent);
-    recentSearches.removeAt(index);
-    notifyListeners();
+  Future<void> onTapDeleteRecent(String recent) async {
+    await _recentSearchDao.deleteItem(recent);
   }
 
   void clearQuery() {
@@ -89,6 +89,22 @@ class SearchBloc extends ChangeNotifier {
   void dispose() {
     super.dispose();
     _youtubeService.dispose();
+  }
+}
+
+// ========================= Internal Logics =========================
+extension InternalLogic on SearchBloc {
+  Future<void> _cacheRecentSearch(String query) async {
+    final savedItem = _recentSearchDao.getItem(query);
+    if (savedItem == null) {
+      await _recentSearchDao.saveItem(RecentSearchVO(
+        createdAt: DateTime.now(),
+        query: query,
+      ));
+    } else {
+      savedItem.createdAt = DateTime.now();
+      await savedItem.save();
+    }
   }
 }
 

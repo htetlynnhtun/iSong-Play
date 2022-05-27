@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
+import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:music_app/widgets/song_item_view.dart';
@@ -90,9 +91,7 @@ class SearchSuggestionsView extends StatelessWidget {
                   FocusManager.instance.primaryFocus?.unfocus();
                   // Todo: Add loading indicator
                   // show loading
-                  await context
-                      .read<SearchBloc>()
-                      .onTapRecentOrSuggestion(suggestions[index]);
+                  await context.read<SearchBloc>().onTapRecentOrSuggestion(suggestions[index]);
                   // stop loading
                 },
                 child: RecentAndSuggestionView(
@@ -154,20 +153,27 @@ class RecentSearchesView extends StatelessWidget {
             height: 12,
           ),
           Expanded(
-            child: Selector<SearchBloc, List<String>>(
-                selector: (_, searchBloc) =>
-                    searchBloc.recentSearches.reversed.toList(),
-                builder: (_, recentSearches, __) {
-                  return ListView.separated(
-                    itemBuilder: (context, index) => RecentAndSuggestionView(
-                      title: recentSearches[index],
-                    ),
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 12,
-                    ),
-                    itemCount: recentSearches.length,
-                  );
-                }),
+            child: Selector<SearchBloc, List<RecentSearchVO>>(
+              selector: (_, searchBloc) => searchBloc.recentSearches.reversed.toList(),
+              builder: (_, recentSearches, __) {
+                return ListView.separated(
+                  itemBuilder: (context, index) {
+                    final title = recentSearches[index].query;
+                    return GestureDetector(
+                      onTap: () async {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        await context.read<SearchBloc>().onTapRecentOrSuggestion(title);
+                      },
+                      child: RecentAndSuggestionView(title: title),
+                    );
+                  },
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 12,
+                  ),
+                  itemCount: recentSearches.length,
+                );
+              },
+            ),
           ),
         ],
       ),
