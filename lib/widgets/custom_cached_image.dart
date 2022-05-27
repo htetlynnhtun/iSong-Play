@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CustomCachedImage extends StatelessWidget {
+  final bool isSearch;
   final String imageUrl;
   final double? width, height;
   final double cornerRadius;
@@ -11,6 +12,7 @@ class CustomCachedImage extends StatelessWidget {
       this.width,
       this.height,
       required this.cornerRadius,
+      this.isSearch = false,
       Key? key})
       : super(key: key);
 
@@ -27,10 +29,31 @@ class CustomCachedImage extends StatelessWidget {
           image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
         ),
       ),
-      placeholder: (context, url) =>
-          const Center(child: CircularProgressIndicator.adaptive()),
+      placeholder: (context, url) => (isSearch)
+          ? LogoImageView(width: width, height: height)
+          : const Center(child: CircularProgressIndicator.adaptive()),
       errorWidget: (context, url, error) =>
           const Center(child: Icon(Icons.error)),
+    );
+  }
+}
+
+class LogoImageView extends StatelessWidget {
+  const LogoImageView({
+    Key? key,
+    required this.width,
+    required this.height,
+  }) : super(key: key);
+
+  final double? width;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      'assets/images/logo.png',
+      width: width,
+      height: height,
     );
   }
 }

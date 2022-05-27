@@ -18,7 +18,12 @@ List<Widget> searchViewList = [
   const OfflineSearchView(),
 ];
 
-
 ///test song vo
-var songVO =SongVO(filePath: '', id: '1', title: 'This is fucking long title text',
-    thumbnail: 'https://img.youtube.com/vi/tGvhJCkboms/maxresdefault.jpg', artist: 'This is fucking long title text', createdAt:DateTime(2022) , duration: const Duration(days: 0));
+var songVO = SongVO(
+    filePath: '',
+    id: '1',
+    title: 'This is fucking long title text',
+    thumbnail: 'https://img.youtube.com/vi/tGvhJCkboms/maxresdefault.jpg',
+    artist: 'This is fucking long title text',
+    createdAt: DateTime(2022),
+    duration: const Duration(days: 0));

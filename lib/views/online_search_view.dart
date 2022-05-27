@@ -58,7 +58,10 @@ class SearchResultsView extends StatelessWidget {
                 selector: (_, searchBloc) => searchBloc.searchResults,
                 builder: (_, searchResults, __) {
                   return ListView.separated(
-                    itemBuilder: (context, index) => SongItemView(searchResults[index]),
+                    itemBuilder: (context, index) => SongItemView(
+                      searchResults[index],
+                      isSearch: true,
+                    ),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 12,
                     ),
@@ -87,7 +90,9 @@ class SearchSuggestionsView extends StatelessWidget {
                   FocusManager.instance.primaryFocus?.unfocus();
                   // Todo: Add loading indicator
                   // show loading
-                  await context.read<SearchBloc>().onTapRecentOrSuggestion(suggestions[index]);
+                  await context
+                      .read<SearchBloc>()
+                      .onTapRecentOrSuggestion(suggestions[index]);
                   // stop loading
                 },
                 child: RecentAndSuggestionView(
@@ -150,7 +155,8 @@ class RecentSearchesView extends StatelessWidget {
           ),
           Expanded(
             child: Selector<SearchBloc, List<String>>(
-                selector: (_, searchBloc) => searchBloc.recentSearches.reversed.toList(),
+                selector: (_, searchBloc) =>
+                    searchBloc.recentSearches.reversed.toList(),
                 builder: (_, recentSearches, __) {
                   return ListView.separated(
                     itemBuilder: (context, index) => RecentAndSuggestionView(

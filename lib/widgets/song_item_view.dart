@@ -8,17 +8,26 @@ import 'menu_item_button.dart';
 
 class SongItemView extends StatelessWidget {
   final SongVO songVO;
-  const SongItemView(this.songVO, {Key? key}) : super(key: key);
+  final bool isSearch;
+  const SongItemView(this.songVO, {this.isSearch = false, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, cornerRadius: 10),
+        CustomCachedImage(
+            width: 56,
+            height: 56,
+            imageUrl: songVO.thumbnail,
+            isSearch: isSearch,
+            cornerRadius: 10),
         const SizedBox(
           width: 8,
         ),
-        Expanded(child: TitleArtistAndDownloadStatusView(title: songVO.title, artist: songVO.artist)),
+        Expanded(
+            child: TitleArtistAndDownloadStatusView(
+                title: songVO.title, artist: songVO.artist)),
         if (true)
           Row(
             mainAxisSize: MainAxisSize.min,
