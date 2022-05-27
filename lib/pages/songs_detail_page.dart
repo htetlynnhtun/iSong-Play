@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/app_bar_back_icon.dart';
+import 'package:music_app/vos/song_vo.dart';
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/asset_image_button.dart';
@@ -75,14 +76,12 @@ class SongsDetailPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView.separated(
-                  itemBuilder: (context, index) => SongItemView(
-                        title: 'This is fucking long song title text $index',
-                        artist: 'This is fucking long artist text name $index',
-                      ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                        height: 12,
-                      ),
-                  itemCount: 100),
+                itemBuilder: (context, index) => SongItemView(SongVO.dummySong()),
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 12,
+                ),
+                itemCount: 100,
+              ),
             ),
           ],
         ),
@@ -109,21 +108,11 @@ class SongCountPlayShuffleView extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        AssetImageButton(
-            onTap: () {},
-            width: 20,
-            height: 20,
-            imageUrl: 'assets/images/ic_play.png',
-            color: primaryColor),
+        AssetImageButton(onTap: () {}, width: 20, height: 20, imageUrl: 'assets/images/ic_play.png', color: primaryColor),
         const SizedBox(
           width: 16,
         ),
-        AssetImageButton(
-            onTap: () {},
-            width: 20,
-            height: 20,
-            imageUrl: 'assets/images/ic_shuffle.png',
-            color: primaryColor),
+        AssetImageButton(onTap: () {}, width: 20, height: 20, imageUrl: 'assets/images/ic_shuffle.png', color: primaryColor),
       ],
     );
   }

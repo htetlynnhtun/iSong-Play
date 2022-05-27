@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/search_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'asset_image_button.dart';
 
 class RecentAndSuggestionView extends StatelessWidget {
   final String title;
   final bool isRecent;
-  const RecentAndSuggestionView(
-      {required this.title, this.isRecent = true, Key? key})
-      : super(key: key);
+  const RecentAndSuggestionView({required this.title, this.isRecent = true, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,9 @@ class RecentAndSuggestionView extends StatelessWidget {
         const Spacer(),
         if (isRecent)
           AssetImageButton(
-            onTap: () {},
+            onTap: () {
+              context.read<SearchBloc>().onTapDeleteRecent(title);
+            },
             width: 20,
             height: 20,
             imageUrl: 'assets/images/ic_clear.png',

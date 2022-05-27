@@ -2,35 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:lottie/lottie.dart';
+import 'package:music_app/vos/song_vo.dart';
 import 'custom_cached_image.dart';
 import 'menu_item_button.dart';
 
 class SongItemView extends StatelessWidget {
-  final String title, artist;
-  const SongItemView({required this.title, required this.artist, Key? key})
-      : super(key: key);
+  final SongVO songVO;
+  const SongItemView(this.songVO, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const CustomCachedImage(
-            width: 56,
-            height: 56,
-            imageUrl:
-                'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg',
-            cornerRadius: 10),
+        CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, cornerRadius: 10),
         const SizedBox(
           width: 8,
         ),
-        Expanded(
-            child:
-                TitleArtistAndDownloadStatusView(title: title, artist: artist)),
+        Expanded(child: TitleArtistAndDownloadStatusView(title: songVO.title, artist: songVO.artist)),
         if (true)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(width: 8,),
+              const SizedBox(
+                width: 8,
+              ),
               Lottie.asset(
                 'assets/animation.json',
                 width: 32,
@@ -38,7 +33,9 @@ class SongItemView extends StatelessWidget {
               ),
             ],
           ),
-        const SizedBox(width:14,),
+        const SizedBox(
+          width: 14,
+        ),
         PopupMenuButton(
           icon: const Icon(
             Icons.more_horiz,

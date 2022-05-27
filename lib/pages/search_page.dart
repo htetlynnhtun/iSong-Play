@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/search_bloc.dart';
-import 'package:music_app/views/offline_search_view.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
@@ -17,15 +16,15 @@ class SearchPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
-          children: const [
-            SizedBox(
+          children: [
+            const SizedBox(
               height: 8,
             ),
             SearchAndCancelView(),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
-            OnlineAndOfflineSlidingView(),
+            const OnlineAndOfflineSlidingView(),
           ],
         ),
       ),
@@ -53,7 +52,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 thumbColor: CupertinoColors.white,
                 groupValue: slidingValue,
                 onValueChanged: (value) {
-                  _getBloc(context).onSlidingValueChange(value!);
+                  context.read<SearchBloc>().onSlidingValueChange(value!);
                 },
                 children: const {
                   0: Text(
@@ -84,12 +83,10 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
   }
 }
 
-SearchBloc _getBloc(BuildContext context) {
-  return Provider.of<SearchBloc>(context, listen: false);
-}
-
 class SearchAndCancelView extends StatelessWidget {
-  const SearchAndCancelView({
+  final searchController = TextEditingController();
+
+  SearchAndCancelView({
     Key? key,
   }) : super(key: key);
 
@@ -100,60 +97,79 @@ class SearchAndCancelView extends StatelessWidget {
         Expanded(
           child: SizedBox(
             height: 36,
-            child: TextField(
-              onSubmitted: (value) {
-                // bloc.onSubmitted(value);
-              },
-              onChanged: (value) {
-                //  bloc.onTextChane(value);
-              },
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.normal,
-              ),
-              textAlignVertical: TextAlignVertical.center,
-              // autofocus: true,
-              decoration: InputDecoration(
-                isCollapsed: true,
-                filled: true,
-                fillColor: searchBackgroundColor,
-                prefixIcon: const Icon(
-                  Icons.search,
-                  size: 32,
-                  color: searchIconColor,
-                ),
-                suffixIcon: Visibility(
-                  visible: true,
-                  child: AssetImageButton(
-                    onTap: () {},
-                    width: 20,
-                    height: 20,
-                    imageUrl: 'assets/images/ic_clear.png',
-                    color: null,
-                  ),
-                ),
-                hintText: 'Artist, Song and more',
-                hintStyle: const TextStyle(
-                  color: searchIconColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                    width: 0,
-                    style: BorderStyle.none,
-                  ),
-                ),
-              ),
-            ),
+            child: Selector<SearchBloc, String>(
+                selector: (_, searchBloc) => searchBloc.tappedQuery,
+                builder: (_, tappedQuery, __) {
+                  searchController.text = tappedQuery;
+                  return TextField(
+                    controller: searchController,
+                    onSubmitted: (value) {
+                      context.read<SearchBloc>().onSearchSubmitted();
+                    },
+                    onChanged: (value) {
+                      context.read<SearchBloc>().onSearchQueryChange(value);
+                    },
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    textAlignVertical: TextAlignVertical.center,
+                    // autofocus: true,
+                    decoration: InputDecoration(
+                      isCollapsed: true,
+                      filled: true,
+                      fillColor: searchBackgroundColor,
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        size: 32,
+                        color: searchIconColor,
+                      ),
+                      suffixIcon: Selector<SearchBloc, bool>(
+                        selector: (_, searchBloc) => searchBloc.showClearButton,
+                        builder: (_, showClearButton, child) {
+                          return Visibility(
+                            visible: showClearButton,
+                            child: child!,
+                          );
+                        },
+                        child: AssetImageButton(
+                          onTap: () {
+                            searchController.clear();
+                            context.read<SearchBloc>().clearQuery();
+                          },
+                          width: 20,
+                          height: 20,
+                          imageUrl: 'assets/images/ic_clear.png',
+                          color: null,
+                        ),
+                      ),
+                      hintText: 'Artist, Song and more',
+                      hintStyle: const TextStyle(
+                        color: searchIconColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
           ),
         ),
         const SizedBox(
           width: 14,
         ),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              searchController.clear();
+              FocusManager.instance.primaryFocus?.unfocus();
+              context.read<SearchBloc>().clearQuery();
+            },
             child: const Text(
               'Cancel',
               style: TextStyle(
