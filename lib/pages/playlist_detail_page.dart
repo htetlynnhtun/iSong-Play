@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/resources/dimens.dart';
+import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 
 import '../resources/colors.dart';
@@ -148,7 +149,7 @@ class SongsCollectionView extends StatelessWidget {
     return Expanded(
       child: ListView.separated(
           itemBuilder: (context, index) => SongItemView(
-              songVO,
+              SongVO.dummySong(),
           ),
           separatorBuilder: (context, index) => const SizedBox(
             height: 12,
