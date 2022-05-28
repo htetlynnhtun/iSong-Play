@@ -1,56 +1,64 @@
-// import 'package:hive/hive.dart';
+import 'dart:ui';
 
-// part 'song_vo.g.dart';
+import 'package:hive/hive.dart';
+import 'package:music_app/persistance/box_names.dart';
 
-// @HiveType(typeId: 1, adapterName: 'SongVOAdapter')
+part 'song_vo.g.dart';
+
+@HiveType(typeId: songTypeId)
 class SongVO {
-  // @HiveField(0)
+  @HiveField(0)
+  DateTime createdAt;
+
+  @HiveField(1)
   String id;
 
-  // @HiveField(1)
+  @HiveField(2)
   String title;
 
-  // @HiveField(2)
+  @HiveField(3)
   String artist;
 
-  // @HiveField(3)
+  @HiveField(4)
   String thumbnail;
 
-  // @HiveField(4)
+  @HiveField(5)
   bool isDownloadFinished = false;
 
-  // @HiveField(5)
+  @HiveField(6)
   Duration duration;
 
-  // @HiveField(6)
+  @HiveField(7)
   String filePath;
 
-  // @HiveField(7)
-  DateTime createdAt;
+  @HiveField(8)
+  List<Color?> dominantColor;
 
   double percent = 0.0;
   bool isDownloadStarted = false;
   bool isDownloading = false;
 
   SongVO({
+    required this.createdAt,
     required this.id,
     required this.title,
     required this.artist,
     required this.thumbnail,
     required this.duration,
     required this.filePath,
-    required this.createdAt,
+    required this.dominantColor,
   });
 
   static SongVO dummySong() {
     return SongVO(
+      createdAt: DateTime.now(),
       id: "asdf",
       title: "Shake it off",
       artist: "Taylor Swift",
       thumbnail: "https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg",
       duration: Duration.zero,
       filePath: "",
-      createdAt: DateTime.now(),
+      dominantColor: [],
     );
   }
 }
