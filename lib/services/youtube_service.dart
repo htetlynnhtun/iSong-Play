@@ -38,9 +38,18 @@ class YoutubeService {
     }
   }
 
-  Future<List<SongVO>> getSongs(String query) {
-    return SearchQuery.search(YoutubeHttpClient(), query).then((value) {
-      return value.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10).map((e) => e.toSongVO()).toList();
-    });
+  Future<List<SongVO>> getSongs(String query) async {
+    final searchQuery = await SearchQuery.search(YoutubeHttpClient(), query);
+    final searchVideos = searchQuery.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10);
+    final songs = <SongVO>[];
+    for (var video in searchVideos) {
+      final song = await video.toSongVO();
+      songs.add(song);
+    }
+
+    return songs;
+    // return SearchQuery.search(YoutubeHttpClient(), query).then((value) {
+    //   return value.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10).map((e) => e.toSongVO()).toList();
+    // });
   }
 }

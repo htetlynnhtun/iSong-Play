@@ -1,3 +1,4 @@
+import 'package:music_app/services/donminant_color.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -22,15 +23,18 @@ extension Casting on SearchVideo {
     );
   }
 
-  SongVO toSongVO() {
+  Future<SongVO> toSongVO() async {
+    final imageUrl = thumbnails[0].url.toString();
+    
     return SongVO(
+      createdAt: DateTime.now(),
       id: id.toString(),
       title: title,
       artist: author,
-      thumbnail: thumbnails[0].url.toString(),
+      thumbnail: imageUrl,
       duration: _ytDurationToDuration(duration),
       filePath: "",
-      createdAt: DateTime.now(),
+      dominantColor: await DominantColor.getDominantColor(imageUrl),
     );
   }
 }
