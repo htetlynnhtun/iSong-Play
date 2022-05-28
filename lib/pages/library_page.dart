@@ -17,14 +17,14 @@ class LibraryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 8,
-            ),
-            TitleAndSettingIconButtonView(
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 8,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: TitleAndSettingIconButtonView(
               title: 'Library',
               onTap: () {
                 showModalBottomSheet(
@@ -32,42 +32,52 @@ class LibraryPage extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   useRootNavigator: true,
                   context: context,
-                  builder: (context)=>const PlaylistBottomSheet(),
+                  builder: (context) => const PlaylistBottomSheet(),
                 );
               },
               imageUrl: 'assets/images/ic_setting.png',
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            const YourSongAndFavouriteHeaderView(),
-            const SizedBox(
-              height: 28,
-            ),
-            TitleAndSettingIconButtonView(
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: YourSongAndFavouriteHeaderView(),
+          ),
+          const SizedBox(
+            height: 28,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: TitleAndSettingIconButtonView(
               title: 'Playlist',
               onTap: () {
-                showDialog(context: context, builder: (context)=>const AddPlaylistNameDialog());
+                showDialog(
+                    context: context,
+                    builder: (context) => const AddPlaylistNameDialog());
               },
               imageUrl: 'assets/images/ic_add.png',
             ),
-            const SizedBox(
-              height: 24,
-            ),
-            Expanded(
-              child: ListView.separated(
-                  itemBuilder: (context, index) => PlaylistItemView(
-                        onTap: () {
-                          navigateToNextPageWithNavBar(context,const PlaylistDetailPage());
-                        },
-                      ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                        height: 12,
-                      ),
-                  itemCount: 10),
-            )
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          Expanded(
+            child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemBuilder: (context, index) => PlaylistItemView(
+                      onTap: () {
+                        navigateToNextPageWithNavBar(
+                            context, const PlaylistDetailPage());
+                      },
+                    ),
+                separatorBuilder: (context, index) => const SizedBox(
+                      height: 12,
+                    ),
+                itemCount: 10),
+          )
+        ],
       ),
     );
   }

@@ -46,16 +46,12 @@ class MiniPlayer extends StatelessWidget {
           const SizedBox(
             width: 20,
           ),
-          SizedBox(
-            width: 28,
-            height: 28,
-            child: AssetImageButton(
-                onTap: () {},
-                width: 28,
-                height: 28,
-                imageUrl: 'assets/images/ic_next.png',
-                color: Colors.white),
-          )
+          AssetImageButton(
+              onTap: () {},
+              width: 28,
+              height: 28,
+              imageUrl: 'assets/images/ic_next.png',
+              color: Colors.white)
         ],
       ),
     );
@@ -75,6 +71,11 @@ class TitleAndArtistView extends StatelessWidget {
       children: const [
         MarqueeText(
           title: 'Hello world this is fucking long title',
+          textStyle: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: Colors.white,
+          ),
         ),
         SizedBox(
           height: 4,

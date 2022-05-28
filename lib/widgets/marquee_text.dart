@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 class MarqueeText extends StatefulWidget {
   final String title;
-  const MarqueeText({Key? key, required this.title}) : super(key: key);
+  final TextStyle textStyle;
+  const MarqueeText({Key? key, required this.title,
+    required this.textStyle,
+  }) : super(key: key);
 
   @override
   State<MarqueeText> createState() => _MarqueeTextState();
@@ -49,11 +52,7 @@ class _MarqueeTextState extends State<MarqueeText> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       controller: scrollController,
-      child: Text(widget.title,style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 14,
-        color: Colors.white,
-      ),),
+      child: Text(widget.title,style: widget.textStyle),
     );
   }
 }

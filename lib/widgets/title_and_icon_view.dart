@@ -21,17 +21,14 @@ class TitleAndSettingIconButtonView extends StatelessWidget {
       children: [
         TitleText(title: title),
         const Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(right: 16),
-          child: AssetImageButton(
-            height: 20,
-            width: 20,
-            imageUrl: imageUrl,
-            color: primaryColor,
-            onTap: () {
-              onTap();
-            },
-          ),
+        AssetImageButton(
+          height: 20,
+          width: 20,
+          imageUrl: imageUrl,
+          color: primaryColor,
+          onTap: () {
+            onTap();
+          },
         ),
       ],
     );

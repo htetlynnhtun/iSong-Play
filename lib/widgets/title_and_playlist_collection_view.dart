@@ -128,16 +128,12 @@ class SongTitleAndPlayerIconView extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            width: 48,
+          AssetImageButton(
+            onTap: () {},
+            imageUrl: (true)?'assets/images/ic_play_circle.png':'assets/images/ic_pause_circle.png',
+            color: null,
             height: 48,
-            child: AssetImageButton(
-              onTap: () {},
-              imageUrl: (true)?'assets/images/ic_play_circle.png':'assets/images/ic_pause_circle.png',
-              color: null,
-              height: 48,
-              width: 48,
-            ),
+            width: 48,
           )
         ],
       ),
