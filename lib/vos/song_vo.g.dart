@@ -25,13 +25,14 @@ class SongVOAdapter extends TypeAdapter<SongVO> {
       duration: fields[6] as Duration,
       filePath: fields[7] as String,
       dominantColor: (fields[8] as List).cast<Color?>(),
+      isFavorite: fields[9] as bool,
     )..isDownloadFinished = fields[5] as bool;
   }
 
   @override
   void write(BinaryWriter writer, SongVO obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.createdAt)
       ..writeByte(1)
@@ -49,7 +50,9 @@ class SongVOAdapter extends TypeAdapter<SongVO> {
       ..writeByte(7)
       ..write(obj.filePath)
       ..writeByte(8)
-      ..write(obj.dominantColor);
+      ..write(obj.dominantColor)
+      ..writeByte(9)
+      ..write(obj.isFavorite);
   }
 
   @override

@@ -35,6 +35,7 @@ extension Casting on SearchVideo {
       duration: _ytDurationToDuration(duration),
       filePath: "",
       dominantColor: await DominantColor.getDominantColor(imageUrl),
+      isFavorite: false,
     );
   }
 }

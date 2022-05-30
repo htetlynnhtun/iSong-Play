@@ -34,6 +34,9 @@ class SongVO {
   @HiveField(8)
   List<Color?> dominantColor;
 
+  @HiveField(9)
+  bool isFavorite;
+
   double percent = 0.0;
   bool isDownloadStarted = false;
   bool isDownloading = false;
@@ -47,6 +50,7 @@ class SongVO {
     required this.duration,
     required this.filePath,
     required this.dominantColor,
+    required this.isFavorite,
   });
 
   static SongVO dummySong() {
@@ -59,6 +63,7 @@ class SongVO {
       duration: Duration.zero,
       filePath: "",
       dominantColor: [],
+      isFavorite: false,
     );
   }
 }
