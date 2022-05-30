@@ -5,3 +5,5 @@ const songBox = "song";
 const songTypeId = 1;
 
 const colorTypeId = 2;
+
+const durationTypeId = 3;
