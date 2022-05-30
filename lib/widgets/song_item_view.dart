@@ -1,33 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:music_app/blocs/library_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:lottie/lottie.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:music_app/utils/extension.dart';
 import 'custom_cached_image.dart';
 import 'menu_item_button.dart';
 
 class SongItemView extends StatelessWidget {
   final SongVO songVO;
   final bool isSearch;
-  const SongItemView(this.songVO, {this.isSearch = false, Key? key})
-      : super(key: key);
+  const SongItemView(this.songVO, {this.isSearch = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CustomCachedImage(
-            width: 56,
-            height: 56,
-            imageUrl: songVO.thumbnail,
-            isSearch: isSearch,
-            cornerRadius: 10),
+        CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, isSearch: isSearch, cornerRadius: 10),
         const SizedBox(
           width: 8,
         ),
-        Expanded(
-            child: TitleArtistAndDownloadStatusView(
-                title: songVO.title, artist: songVO.artist)),
+        Expanded(child: TitleArtistAndDownloadStatusView(title: songVO.title, artist: songVO.artist)),
         if (true)
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -56,29 +52,45 @@ class SongItemView extends StatelessWidget {
               Radius.circular(8),
             ),
           ),
-          onSelected: (value) {
-            // TODO: handle menu button action
+          onSelected: (value) async {
+            switch (value) {
+              case "library":
+                final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                switch (result) {
+                  case AddToLibraryResult.success:
+                    showToast("Successfully added to Library");
+                    break;
+                  case AddToLibraryResult.alreadyInLibrary:
+                    showToast("Already in Library");
+                }
+                break;
+              case "queue":
+                print("add to queue");
+                break;
+              case "playlist":
+                print("add to playlist");
+            }
           },
           itemBuilder: (context) => [
             const PopupMenuItem(
-              value: 'test',
+              value: "library",
               child: MenuItemButton(
                 title: 'Add to Library',
                 icon: Icons.add,
               ),
             ),
             const PopupMenuItem(
-              value: 'test',
+              value: "queue",
               child: MenuItemButton(
-                title: 'Add to Library',
-                icon: Icons.add,
+                title: 'Add to Queue',
+                icon: Icons.queue_music,
               ),
             ),
             const PopupMenuItem(
-              value: 'test',
+              value: "playlist",
               child: MenuItemButton(
-                title: 'Add to Library',
-                icon: Icons.add,
+                title: 'Add to Playlist',
+                icon: Icons.playlist_add,
               ),
             ),
           ],
