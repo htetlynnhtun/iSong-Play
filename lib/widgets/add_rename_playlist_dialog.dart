@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../resources/colors.dart';
 
-class CustomDialog extends StatelessWidget {
+class AddRenamePlaylistDialog extends StatelessWidget {
   final String? initialText;
   final String title;
   final String onTapTitle;
   final VoidCallback onTapCallback;
 
-  const CustomDialog({
+  const AddRenamePlaylistDialog({
     this.initialText,
     required this.title,
     required this.onTapTitle,
