@@ -11,30 +11,30 @@ class SongDao {
   }
 
   Stream<List<SongVO>> watchItems() {
-    return _getBox().watch().map((event) => _getAll()).startWith(_getAll());
+    return getBox().watch().map((event) => _getAll()).startWith(_getAll());
   }
 
   Future<void> saveItem(SongVO song) {
-    return _getBox().put(song.id, song);
+    return getBox().put(song.id, song);
   }
 
   SongVO? getItem(String id) {
-    return _getBox().get(id);
+    return getBox().get(id);
   }
 
   Future<void> deleteItem(String id) {
-    return _getBox().delete(id);
+    return getBox().delete(id);
   }
 
   Future<void> deleteAll() {
-    return _getBox().clear();
+    return getBox().clear();
   }
 
   List<SongVO> _getAll() {
-    return _getBox().values.toList();
+    return getBox().values.toList();
   }
 
-  Box<SongVO> _getBox() {
+  Box<SongVO> getBox() {
     return Hive.box<SongVO>(songBox);
   }
 }
