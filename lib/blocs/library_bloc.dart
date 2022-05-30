@@ -9,6 +9,18 @@ class LibraryBloc extends ChangeNotifier {
   final _songDao = SongDao();
   final _downloader = DownloaderService();
 
+  LibraryBloc() {
+    _songDao.watchItems().listen((data) {
+      songs = data;
+      songs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      notifyListeners();
+    });
+  }
+
+  // ========================= States =========================
+  var songs = <SongVO>[];
+
+  // ========================= UI Callbacks =========================
   Future<AddToLibraryResult> onTapAddToLibrary(SongVO songVO) {
     final completer = Completer<AddToLibraryResult>();
     final songInHive = _songDao.getItem(songVO.id);
