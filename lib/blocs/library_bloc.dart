@@ -12,7 +12,7 @@ class LibraryBloc extends ChangeNotifier {
   LibraryBloc() {
     _songDao.watchItems().listen((data) {
       songs = data;
-      songs.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      songs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     });
   }
