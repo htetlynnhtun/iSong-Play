@@ -2,16 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../resources/colors.dart';
 
-class AddPlaylistNameDialog extends StatelessWidget {
-  const AddPlaylistNameDialog({Key? key}) : super(key: key);
+class CustomDialog extends StatelessWidget {
+  final String? initialText;
+  final String title;
+  final String onTapTitle;
+  final VoidCallback onTapCallback;
+
+  const CustomDialog({
+    this.initialText,
+    required this.title,
+    required this.onTapTitle,
+    required this.onTapCallback,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Dialog(
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
       child: Container(
         width: width * 0.8,
         height: height * 0.25,
@@ -23,9 +33,9 @@ class AddPlaylistNameDialog extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: width * 0.07),
-            const Text(
-              'Playlist Name',
-              style: TextStyle(
+            Text(
+              title,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
@@ -34,9 +44,9 @@ class AddPlaylistNameDialog extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: EditTextField(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: EditTextField(initialText),
             ),
             const Spacer(),
             Container(
@@ -67,10 +77,13 @@ class AddPlaylistNameDialog extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Add',
-                        style: TextStyle(
+                      onPressed: () {
+                        onTapCallback();
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        onTapTitle,
+                        style: const TextStyle(
                           fontSize: 18,
                           color: primaryColor,
                         ),
@@ -88,13 +101,16 @@ class AddPlaylistNameDialog extends StatelessWidget {
 }
 
 class EditTextField extends StatelessWidget {
-  const EditTextField({
+  final String? initialText;
+  const EditTextField(
+    this.initialText, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      initialValue: initialText,
       onChanged: (value) {
         //  bloc.onTextChane(value);
       },

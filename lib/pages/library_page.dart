@@ -10,7 +10,7 @@ import 'package:music_app/widgets/library_header_view.dart';
 import 'package:provider/provider.dart';
 
 import '../views/playlist_bottom_sheet.dart';
-import '../widgets/add_playlist_name_dialog.dart';
+import '../widgets/custom_dialog.dart';
 import '../widgets/playlist_item_vew.dart';
 import '../widgets/title_and_icon_view.dart';
 
@@ -50,7 +50,16 @@ class LibraryPage extends StatelessWidget {
             TitleAndSettingIconButtonView(
               title: 'Playlist',
               onTap: () {
-                showDialog(context: context, builder: (context) => const AddPlaylistNameDialog());
+                showDialog(
+                  context: context,
+                  builder: (context) => CustomDialog(
+                    title: "Playlist Name",
+                    onTapTitle: "Add",
+                    onTapCallback: () {
+                      print("Add to playlist");
+                    },
+                  ),
+                );
               },
               imageUrl: 'assets/images/ic_add.png',
             ),

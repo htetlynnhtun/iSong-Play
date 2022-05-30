@@ -3,7 +3,7 @@ import 'package:music_app/resources/colors.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 
-import '../widgets/add_playlist_name_dialog.dart';
+import '../widgets/custom_dialog.dart';
 import '../widgets/asset_image_button.dart';
 import '../widgets/title_text.dart';
 
@@ -125,9 +125,16 @@ class AddToPlaylistView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.pop(context);
-        showDialog(context: context, builder: (context)=>const AddPlaylistNameDialog());
+        showDialog(
+          context: context,
+          builder: (context) => CustomDialog(
+            title: "Playlist Name",
+            onTapTitle: "Add",
+            onTapCallback: () {},
+          ),
+        );
       },
       child: Row(
         children: [
@@ -141,7 +148,9 @@ class AddToPlaylistView extends StatelessWidget {
             width: 14,
             color: primaryColor,
           ),
-          SizedBox(width: 16,),
+          SizedBox(
+            width: 16,
+          ),
         ],
       ),
     );
