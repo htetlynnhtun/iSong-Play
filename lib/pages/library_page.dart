@@ -5,6 +5,7 @@ import 'package:music_app/pages/songs_detail_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/utils/extension.dart';
+import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/library_header_view.dart';
 import 'package:provider/provider.dart';
 
@@ -82,44 +83,45 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Selector<LibraryBloc, int>(
-            selector: (_, libraryBloc) => libraryBloc.songs.length,
-            builder: (_, songCount, __) {
-              return LibraryHeaderView(
-                title: 'Your Song',
-                songs: songCount,
-                imageUrl: 'assets/images/ic_library.png',
-                onTap: () {
-                  navigateToNextPageWithNavBar(
-                    context,
-                    const SongsDetailPage(
-                      title: 'Your Song',
-                      isFavorite: false,
-                    ),
-                  );
-                },
-              );
-            }),
-        const SizedBox(
-          width: 16,
-        ),
-        LibraryHeaderView(
-          title: 'Favorite',
-          songs: 100,
-          imageUrl: 'assets/images/ic_favorite.png',
-          onTap: () {
-            navigateToNextPageWithNavBar(
-              context,
-              const SongsDetailPage(
-                title: 'Favorite',
-                isFavorite: true,
-              ),
-            );
-          },
-        ),
-      ],
+    return Selector<LibraryBloc, List<SongVO>>(
+      selector: (_, libraryBloc) => libraryBloc.songs,
+      builder: (_, songs, __) {
+        return Row(
+          children: [
+            LibraryHeaderView(
+              title: 'Your Song',
+              songs: songs.length,
+              imageUrl: 'assets/images/ic_library.png',
+              onTap: () {
+                navigateToNextPageWithNavBar(
+                  context,
+                  const SongsDetailPage(
+                    title: 'Your Song',
+                    isFavorite: false,
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              width: 16,
+            ),
+            LibraryHeaderView(
+              title: 'Favorite',
+              songs: songs.where((e) => e.isFavorite).length,
+              imageUrl: 'assets/images/ic_favorite.png',
+              onTap: () {
+                navigateToNextPageWithNavBar(
+                  context,
+                  const SongsDetailPage(
+                    title: 'Favorite',
+                    isFavorite: true,
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

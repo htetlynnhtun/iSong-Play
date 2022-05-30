@@ -71,28 +71,34 @@ class SongsDetailPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 16,
-            ),
-            const SongCountPlayShuffleView(),
-            const SizedBox(
-              height: 22,
-            ),
-            Expanded(
-              child: Selector<LibraryBloc, List<SongVO>>(
-                  selector: (_, libraryBloc) => libraryBloc.songs,
-                  builder: (_, songs, __) {
-                    return ListView.separated(
-                      itemBuilder: (context, index) => SongItemView(songs[index]),
-                      separatorBuilder: (context, index) => const SizedBox(height: 12),
-                      itemCount: songs.length,
-                    );
-                  }),
-            ),
-          ],
+        child: Selector<LibraryBloc, List<SongVO>>(
+          selector: (_, libraryBloc) {
+            if (isFavorite) {
+              return libraryBloc.songs.where((e) => e.isFavorite).toList();
+            }
+            return libraryBloc.songs;
+          },
+          builder: (_, songs, __) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 16,
+                ),
+                SongCountPlayShuffleView(songCount: songs.length),
+                const SizedBox(
+                  height: 22,
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    itemBuilder: (context, index) => SongItemView(songs[index]),
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    itemCount: songs.length,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -100,7 +106,9 @@ class SongsDetailPage extends StatelessWidget {
 }
 
 class SongCountPlayShuffleView extends StatelessWidget {
+  final int songCount;
   const SongCountPlayShuffleView({
+    required this.songCount,
     Key? key,
   }) : super(key: key);
 
@@ -108,18 +116,14 @@ class SongCountPlayShuffleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Selector<LibraryBloc, int>(
-            selector: (_, libraryBloc) => libraryBloc.songs.length,
-            builder: (_, songCount, __) {
-              return Text(
-                '$songCount Songs',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: primaryColor,
-                ),
-              );
-            }),
+        Text(
+          '$songCount Songs',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: primaryColor,
+          ),
+        ),
         const Spacer(),
         AssetImageButton(onTap: () {}, width: 20, height: 20, imageUrl: 'assets/images/ic_play.png', color: primaryColor),
         const SizedBox(
