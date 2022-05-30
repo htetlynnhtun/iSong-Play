@@ -6,7 +6,7 @@ import 'package:music_app/persistance/box_names.dart';
 part 'song_vo.g.dart';
 
 @HiveType(typeId: songTypeId)
-class SongVO {
+class SongVO  extends HiveObject{
   @HiveField(0)
   DateTime createdAt;
 
