@@ -94,7 +94,10 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
                 onTap: () {
                   navigateToNextPageWithNavBar(
                     context,
-                    const SongsDetailPage(title: 'Your Song'),
+                    const SongsDetailPage(
+                      title: 'Your Song',
+                      isFavorite: false,
+                    ),
                   );
                 },
               );
@@ -108,10 +111,12 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
           imageUrl: 'assets/images/ic_favorite.png',
           onTap: () {
             navigateToNextPageWithNavBar(
-                context,
-                const SongsDetailPage(
-                  title: 'Favorite',
-                ));
+              context,
+              const SongsDetailPage(
+                title: 'Favorite',
+                isFavorite: true,
+              ),
+            );
           },
         ),
       ],

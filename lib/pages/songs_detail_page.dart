@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/app_bar_back_icon.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/app_bar_title.dart';
 import '../widgets/asset_image_button.dart';
@@ -10,7 +12,12 @@ import '../widgets/song_item_view.dart';
 
 class SongsDetailPage extends StatelessWidget {
   final String title;
-  const SongsDetailPage({required this.title, Key? key}) : super(key: key);
+  final bool isFavorite;
+  const SongsDetailPage({
+    required this.title,
+    required this.isFavorite,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +26,8 @@ class SongsDetailPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        leading:const AppBarBackIcon(),
-        title: AppBarTitle(title:title),
+        leading: const AppBarBackIcon(),
+        title: AppBarTitle(title: title),
         actions: [
           PopupMenuButton(
             icon: const Icon(
@@ -75,13 +82,15 @@ class SongsDetailPage extends StatelessWidget {
               height: 22,
             ),
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) => SongItemView(SongVO.dummySong()),
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 12,
-                ),
-                itemCount: 100,
-              ),
+              child: Selector<LibraryBloc, List<SongVO>>(
+                  selector: (_, libraryBloc) => libraryBloc.songs,
+                  builder: (_, songs, __) {
+                    return ListView.separated(
+                      itemBuilder: (context, index) => SongItemView(songs[index]),
+                      separatorBuilder: (context, index) => const SizedBox(height: 12),
+                      itemCount: songs.length,
+                    );
+                  }),
             ),
           ],
         ),
@@ -99,14 +108,18 @@ class SongCountPlayShuffleView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Text(
-          '7 Songs',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: primaryColor,
-          ),
-        ),
+        Selector<LibraryBloc, int>(
+            selector: (_, libraryBloc) => libraryBloc.songs.length,
+            builder: (_, songCount, __) {
+              return Text(
+                '$songCount Songs',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: primaryColor,
+                ),
+              );
+            }),
         const Spacer(),
         AssetImageButton(onTap: () {}, width: 20, height: 20, imageUrl: 'assets/images/ic_play.png', color: primaryColor),
         const SizedBox(
