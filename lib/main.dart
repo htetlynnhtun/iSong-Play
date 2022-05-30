@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/persistance/color_adapter.dart';
 import 'package:music_app/persistance/duration_adapter.dart';
+import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +20,11 @@ void main() async {
   Hive.registerAdapter(SongVOAdapter());
   Hive.registerAdapter(ColorAdapter());
   Hive.registerAdapter(DurationAdapter());
+  Hive.registerAdapter(PlaylistVoAdapter());
 
   await Hive.openBox<RecentSearchVO>(recentSearchBox);
   await Hive.openBox<SongVO>(songBox);
+  await Hive.openBox<PlaylistVo>(playlistBox);
 
   runApp(const MyApp());
 }
