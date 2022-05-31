@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:music_app/persistance/box_names.dart';
 import 'package:music_app/persistance/song_dao.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:uuid/uuid.dart';
 
 part 'playlist_vo.g.dart';
 
@@ -11,17 +12,21 @@ class PlaylistVo extends HiveObject {
   DateTime createdAt;
 
   @HiveField(1)
-  String name;
+  late String id;
 
   @HiveField(2)
-  String thumbnail;
+  String name;
 
   @HiveField(3)
+  String? thumbnail;
+
+  @HiveField(4)
   HiveList<SongVO> songList = HiveList(SongDao().getBox());
 
   PlaylistVo({
     required this.createdAt,
     required this.name,
-    required this.thumbnail,
-  });
+  }) {
+    id = const Uuid().v1();
+  }
 }

@@ -18,22 +18,26 @@ class PlaylistVoAdapter extends TypeAdapter<PlaylistVo> {
     };
     return PlaylistVo(
       createdAt: fields[0] as DateTime,
-      name: fields[1] as String,
-      thumbnail: fields[2] as String,
-    )..songList = (fields[3] as HiveList).castHiveList();
+      name: fields[2] as String,
+    )
+      ..id = fields[1] as String
+      ..thumbnail = fields[3] as String?
+      ..songList = (fields[4] as HiveList).castHiveList();
   }
 
   @override
   void write(BinaryWriter writer, PlaylistVo obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.createdAt)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.thumbnail)
+      ..write(obj.name)
       ..writeByte(3)
+      ..write(obj.thumbnail)
+      ..writeByte(4)
       ..write(obj.songList);
   }
 
