@@ -134,7 +134,7 @@ class AddToPlaylistView extends StatelessWidget {
           builder: (context) => AddRenamePlaylistDialog(
             onAdd: context.read<LibraryBloc>().onTapAddPlaylist,
             title: "Playlist Name",
-            onTapTitle: "Save",
+            onTapTitle: "Add",
           ),
         );
       },
