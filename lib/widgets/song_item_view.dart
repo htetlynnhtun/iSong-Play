@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/views/playlist_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:lottie/lottie.dart';
@@ -68,7 +69,13 @@ class SongItemView extends StatelessWidget {
                 print("add to queue");
                 break;
               case "playlist":
-                print("add to playlist");
+                showModalBottomSheet(
+                  isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  useRootNavigator: true,
+                  context: context,
+                  builder: (context) => PlaylistBottomSheet(songVO),
+                );
             }
           },
           itemBuilder: (context) => [

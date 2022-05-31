@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/resources/dimens.dart';
+import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 
@@ -11,7 +12,8 @@ import '../widgets/menu_item_button.dart';
 import '../widgets/song_item_view.dart';
 
 class PlaylistDetailPage extends StatelessWidget {
-  const PlaylistDetailPage({Key? key}) : super(key: key);
+  final PlaylistVo playlistVo;
+  const PlaylistDetailPage(this.playlistVo, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +68,15 @@ class PlaylistDetailPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
-          children: const [
-            SizedBox(
+          children: [
+            const SizedBox(
               height: 16,
             ),
-            PlaylistHeaderView(),
-            SizedBox(height: 32,),
-            SongsCollectionView()
+            PlaylistHeaderView(playlistVo: playlistVo),
+            const SizedBox(
+              height: 32,
+            ),
+            SongsCollectionView(songs: playlistVo.songList),
           ],
         ),
       ),
@@ -81,13 +85,16 @@ class PlaylistDetailPage extends StatelessWidget {
 }
 
 class PlaylistHeaderView extends StatelessWidget {
+  final PlaylistVo playlistVo;
   const PlaylistHeaderView({
+    required this.playlistVo,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width * 0.45;
+    final imageUrl = playlistVo.thumbnail ?? 'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
     return SizedBox(
       height: 100,
       child: Row(
@@ -95,41 +102,41 @@ class PlaylistHeaderView extends StatelessWidget {
         children: [
           Flexible(
             flex: 1,
-            child:  CustomCachedImage(
-              imageUrl:
-                  'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg',
+            child: CustomCachedImage(
+              imageUrl: imageUrl,
               cornerRadius: cornerRadius,
               width: _width,
             ),
           ),
-          const SizedBox(width: 16,),
+          const SizedBox(
+            width: 16,
+          ),
           Flexible(
             flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  'This is fucking long text for favorite text',
+                  playlistVo.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 14,
                 ),
                 Text(
-                  '20 Tracks',
-                  style: TextStyle(
+                  "${playlistVo.songList.length} Tracks",
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Spacer(),
-                PlayAndShuffleView(),
-
+                const Spacer(),
+                const PlayAndShuffleView(),
               ],
             ),
           )
@@ -140,7 +147,9 @@ class PlaylistHeaderView extends StatelessWidget {
 }
 
 class SongsCollectionView extends StatelessWidget {
+  final List<SongVO> songs;
   const SongsCollectionView({
+    required this.songs,
     Key? key,
   }) : super(key: key);
 
@@ -148,13 +157,10 @@ class SongsCollectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.separated(
-          itemBuilder: (context, index) => SongItemView(
-              SongVO.dummySong(),
-          ),
-          separatorBuilder: (context, index) => const SizedBox(
-            height: 12,
-          ),
-          itemCount: 10),
+        itemBuilder: (_, index) => SongItemView(songs[index]),
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemCount: songs.length,
+      ),
     );
   }
 }
@@ -217,7 +223,7 @@ class PlaylistButton extends StatelessWidget {
             ),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,

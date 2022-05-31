@@ -31,13 +31,13 @@ class LibraryPage extends StatelessWidget {
             TitleAndSettingIconButtonView(
               title: 'Library',
               onTap: () {
-                showModalBottomSheet(
-                  isDismissible: true,
-                  backgroundColor: Colors.transparent,
-                  useRootNavigator: true,
-                  context: context,
-                  builder: (context) => const PlaylistBottomSheet(),
-                );
+                // showModalBottomSheet(
+                //   isDismissible: true,
+                //   backgroundColor: Colors.transparent,
+                //   useRootNavigator: true,
+                //   context: context,
+                //   builder: (context) => const PlaylistBottomSheet(),
+                // );
               },
               imageUrl: 'assets/images/ic_setting.png',
             ),
@@ -71,12 +71,18 @@ class LibraryPage extends StatelessWidget {
                 shouldRebuild: (_, __) => true,
                 builder: (_, playlists, __) {
                   return ListView.separated(
-                      itemBuilder: (context, index) => PlaylistItemView(
-                            playlistVO: playlists[index],
-                            onTap: () {
-                              navigateToNextPageWithNavBar(context, const PlaylistDetailPage());
-                            },
-                          ),
+                      itemBuilder: (context, index) {
+                        final playlistVo = playlists[index];
+                        return PlaylistItemView(
+                          playlistVO: playlistVo,
+                          onTap: () {
+                            navigateToNextPageWithNavBar(
+                              context,
+                              PlaylistDetailPage(playlistVo),
+                            );
+                          },
+                        );
+                      },
                       separatorBuilder: (context, index) => const SizedBox(height: 12),
                       itemCount: playlists.length);
                 },
