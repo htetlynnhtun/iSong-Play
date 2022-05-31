@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/utils/callback_typedefs.dart';
+import 'package:music_app/utils/extension.dart';
 
 import '../resources/colors.dart';
 
 class AddRenamePlaylistDialog extends StatelessWidget {
   final String? initialText;
+  final OnAddPlayListName? onAdd;
+  final OnRenamePlayListName? onRename;
   final String title;
   final String onTapTitle;
-  final VoidCallback onTapCallback;
 
   const AddRenamePlaylistDialog({
     this.initialText,
+    this.onAdd,
+    this.onRename,
     required this.title,
     required this.onTapTitle,
-    required this.onTapCallback,
     Key? key,
   }) : super(key: key);
 
@@ -77,9 +83,25 @@ class AddRenamePlaylistDialog extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: TextButton(
-                      onPressed: () {
-                        onTapCallback();
-                        Navigator.pop(context);
+                      onPressed: () async {
+                        SavePlaylistResult result;
+
+                        if (initialText == null) {
+                          result = await onAdd!();
+                        } else {
+                          result = await onRename!(initialText!);
+                        }
+                        switch (result) {
+                          case SavePlaylistResult.emptyName:
+                            showToast("Playlist name must not be empty");
+                            break;
+                          case SavePlaylistResult.sameName:
+                            showToast("A playlist exists with that name");
+                            break;
+                          case SavePlaylistResult.success:
+                            Navigator.pop(context);
+                            break;
+                        }
                       },
                       child: Text(
                         onTapTitle,
@@ -112,7 +134,7 @@ class EditTextField extends StatelessWidget {
     return TextFormField(
       initialValue: initialText,
       onChanged: (value) {
-        //  bloc.onTextChane(value);
+        context.read<LibraryBloc>().onPlaylistNameChanged(value);
       },
       style: const TextStyle(
         fontSize: 17,

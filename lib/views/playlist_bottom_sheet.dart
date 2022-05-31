@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/library_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 
-import '../widgets/custom_dialog.dart';
+import '../widgets/add_rename_playlist_dialog.dart';
 import '../widgets/asset_image_button.dart';
 import '../widgets/title_text.dart';
 
@@ -129,10 +131,10 @@ class AddToPlaylistView extends StatelessWidget {
         Navigator.pop(context);
         showDialog(
           context: context,
-          builder: (context) => CustomDialog(
+          builder: (context) => AddRenamePlaylistDialog(
+            onAdd: context.read<LibraryBloc>().onTapAddPlaylist,
             title: "Playlist Name",
-            onTapTitle: "Add",
-            onTapCallback: () {},
+            onTapTitle: "Save",
           ),
         );
       },

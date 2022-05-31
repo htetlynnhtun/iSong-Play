@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/library_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:music_app/vos/playlist_vo.dart';
+import 'package:music_app/widgets/add_rename_playlist_dialog.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 
 import '../resources/colors.dart';
@@ -6,20 +10,25 @@ import 'menu_item_button.dart';
 
 class PlaylistItemView extends StatelessWidget {
   final Function onTap;
+  final PlaylistVo playlistVO;
   const PlaylistItemView({
+    required this.playlistVO,
     required this.onTap,
-    Key? key}) : super(key: key);
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Todo: If thumbnail is null, show a default playlist thumbnail.
+    final imageUrl = playlistVO.thumbnail ?? 'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg';
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         onTap();
       },
       child: Row(
         children: [
-          const CustomCachedImage(
-            imageUrl: 'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg',
+          CustomCachedImage(
+            imageUrl: imageUrl,
             cornerRadius: 10,
             width: 99,
             height: 56,
@@ -27,8 +36,13 @@ class PlaylistItemView extends StatelessWidget {
           const SizedBox(
             width: 16,
           ),
-          const Expanded(child: PlaylistTitleAndTracksView()),
-          PopupMenuButton(
+          Expanded(
+            child: PlaylistTitleAndTracksView(
+              title: playlistVO.name,
+              songCount: playlistVO.songList.length,
+            ),
+          ),
+          PopupMenuButton<String>(
             icon: const Icon(
               Icons.more_horiz,
               color: primaryColor,
@@ -39,29 +53,34 @@ class PlaylistItemView extends StatelessWidget {
                 Radius.circular(8),
               ),
             ),
-            onSelected: (value) {
-              // TODO: handle menu button action
+            onSelected: (value) async {
+              if (value == "rename") {
+                showDialog(
+                  context: context,
+                  builder: (context) => AddRenamePlaylistDialog(
+                    initialText: playlistVO.name,
+                    onRename: (oldName) => context.read<LibraryBloc>().onTapRenamePlaylist(oldName),
+                    title: "Playlist Name",
+                    onTapTitle: "Rename",
+                  ),
+                );
+              } else if (value == "delete") {
+                await context.read<LibraryBloc>().onTapDeletePlaylist(playlistVO);
+              }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                value: 'test',
+                value: "rename",
                 child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
+                  title: "Rename",
+                  icon: Icons.edit,
                 ),
               ),
               const PopupMenuItem(
-                value: 'test',
+                value: "delete",
                 child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'test',
-                child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
+                  title: "Delete",
+                  icon: Icons.delete,
                 ),
               ),
             ],
@@ -73,7 +92,11 @@ class PlaylistItemView extends StatelessWidget {
 }
 
 class PlaylistTitleAndTracksView extends StatelessWidget {
+  final String title;
+  final int songCount;
   const PlaylistTitleAndTracksView({
+    required this.title,
+    required this.songCount,
     Key? key,
   }) : super(key: key);
 
@@ -81,22 +104,22 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
-          'This is fucking long text for playlist text',
+          title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 6,
         ),
         Text(
-          '20 Tracks ',
-          style: TextStyle(
+          '$songCount Tracks ',
+          style: const TextStyle(
             fontSize: 14,
           ),
         ),
