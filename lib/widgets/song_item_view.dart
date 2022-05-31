@@ -9,7 +9,9 @@ import 'menu_item_button.dart';
 class SongItemView extends StatelessWidget {
   final SongVO songVO;
   final bool isSearch;
-  const SongItemView(this.songVO, {this.isSearch = false, Key? key})
+  final bool isUpNext;
+  const SongItemView(this.songVO,
+      {this.isSearch = false, this.isUpNext = false, Key? key})
       : super(key: key);
 
   @override
@@ -27,7 +29,10 @@ class SongItemView extends StatelessWidget {
         ),
         Expanded(
             child: TitleArtistAndDownloadStatusView(
-                title: songVO.title, artist: songVO.artist)),
+          title: songVO.title,
+          artist: songVO.artist,
+              isUpNext: isUpNext,
+        )),
         if (true)
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -89,8 +94,10 @@ class SongItemView extends StatelessWidget {
 }
 
 class TitleArtistAndDownloadStatusView extends StatelessWidget {
+  final bool isUpNext;
   const TitleArtistAndDownloadStatusView({
     Key? key,
+    this.isUpNext = false,
     required this.title,
     required this.artist,
   }) : super(key: key);
@@ -109,8 +116,9 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: true,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
+            color: (isUpNext) ? Colors.white : null,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -138,8 +146,9 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
                 maxLines: 1,
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 14,
+                  color: (isUpNext) ? Colors.white : null,
                 ),
               ),
             ),

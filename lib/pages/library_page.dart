@@ -28,7 +28,6 @@ class LibraryPage extends StatelessWidget {
               title: 'Library',
               onTap: () {
                 showModalBottomSheet(
-                  isDismissible: true,
                   backgroundColor: Colors.transparent,
                   useRootNavigator: true,
                   context: context,
@@ -110,7 +109,7 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
         LibraryHeaderView(
           title: 'Favorite',
           songs: 100,
-          imageUrl: 'assets/images/ic_favorite.png',
+          imageUrl: 'assets/images/ic_library_favorite.png',
           onTap: () {
             navigateToNextPageWithNavBar(
                 context,

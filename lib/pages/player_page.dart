@@ -6,9 +6,11 @@ import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../resources/colors.dart';
+import '../views/up_next_view.dart';
 import '../widgets/app_bar_back_icon.dart';
 import '../widgets/marquee_text.dart';
 import '../widgets/menu_item_button.dart';
+import '../widgets/up_next_button.dart';
 
 class PlayerPage extends StatelessWidget {
   const PlayerPage({Key? key}) : super(key: key);
@@ -73,49 +75,70 @@ class PlayerPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          SizedBox(
-            height: 64,
+      body: Stack(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              SizedBox(
+                height: 64,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: CustomCachedImage(
+                  imageUrl:
+                      'https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg',
+                  width: 360,
+                  height: 200,
+                  cornerRadius: cornerRadius,
+                ),
+              ),
+              SizedBox(
+                height: 48,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: TitleArtistAndDownloadButtonView(),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: SongSeekBarAndDurationView(),
+              ),
+              SizedBox(
+                height: 60,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: PlayerIconsCollectionView(),
+              ),
+              SizedBox(
+                height: 42,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: FavoriteAndTimerView(),
+              )
+            ],
           ),
           Align(
-            alignment: Alignment.center,
-            child: CustomCachedImage(
-              imageUrl:
-                  'https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg',
-              width: 360,
-              height: 200,
-              cornerRadius: cornerRadius,
-            ),
-          ),
-          SizedBox(
-            height: 48,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14),
-            child: TitleArtistAndDownloadButtonView(),
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14),
-            child: SongSeekBarAndDurationView(),
-          ),
-          SizedBox(
-            height: 60,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14),
-            child: PlayerIconsCollectionView(),
-          ),
-          SizedBox(
-            height: 42,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 14),
-            child: FavoriteAndTimerView(),
+            alignment: Alignment.bottomCenter,
+            child: InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                      backgroundColor: Colors.black,
+                      context: context,
+                      builder: (context) => const UpNextView());
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(bottom: 46),
+                  child: UpNextButton(
+                    iconUrl: 'assets/images/ic_up_next.png',
+                  ),
+                )),
           )
         ],
       ),
