@@ -32,6 +32,7 @@ class LibraryBloc extends ChangeNotifier {
   var songs = <SongVO>[];
   var playlists = <PlaylistVo>[];
   var playlistName = "";
+  PlaylistVo? currentPlaylistDetail;
 }
 
 extension UICallbacks on LibraryBloc {
@@ -151,6 +152,11 @@ extension UICallbacks on LibraryBloc {
     }
 
     return completer.future;
+  }
+
+  void onViewPlaylistDetail(PlaylistVo selected) {
+    currentPlaylistDetail = selected;
+    notifyListeners();
   }
 
   void sortAllSongsByTitle() {

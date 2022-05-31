@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/library_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:music_app/widgets/add_rename_playlist_dialog.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
+import 'package:music_app/utils/extension.dart';
 
 import '../resources/colors.dart';
 import '../resources/constants.dart';
@@ -12,75 +16,85 @@ import '../widgets/menu_item_button.dart';
 import '../widgets/song_item_view.dart';
 
 class PlaylistDetailPage extends StatelessWidget {
-  final PlaylistVo playlistVo;
-  const PlaylistDetailPage(this.playlistVo, {Key? key}) : super(key: key);
+  const PlaylistDetailPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        leading: const AppBarBackIcon(),
-        title: const AppBarTitle(title: 'Playlist'),
-        actions: [
-          PopupMenuButton(
-            icon: const Icon(
-              Icons.more_horiz,
-              color: primaryColor,
-            ),
-            elevation: 2,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
-              ),
-            ),
-            onSelected: (value) {
-              // TODO: handle menu button action
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'test',
-                child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
+    return Selector<LibraryBloc, PlaylistVo>(
+        selector: (_, libraryBloc) => libraryBloc.currentPlaylistDetail!,
+        shouldRebuild: (_, __) => true,
+        builder: (_, playlistVo, __) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              automaticallyImplyLeading: false,
+              leading: const AppBarBackIcon(),
+              title: const AppBarTitle(title: 'Playlist'),
+              actions: [
+                PopupMenuButton(
+                  icon: const Icon(
+                    Icons.more_horiz,
+                    color: primaryColor,
+                  ),
+                  elevation: 2,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  onSelected: (value) async {
+                    if (value == "rename") {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AddRenamePlaylistDialog(
+                          initialText: playlistVo.name,
+                          onRename: (oldName) => context.read<LibraryBloc>().onTapRenamePlaylist(oldName),
+                          title: "Playlist Name",
+                          onTapTitle: "Rename",
+                        ),
+                      );
+                    } else if (value == "delete") {
+                      await context.read<LibraryBloc>().onTapDeletePlaylist(playlistVo);
+                      Navigator.pop(context);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: "rename",
+                      child: MenuItemButton(
+                        title: "Rename",
+                        icon: Icons.edit,
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: "delete",
+                      child: MenuItemButton(
+                        title: "Delete",
+                        icon: Icons.delete,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const PopupMenuItem(
-                value: 'test',
-                child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'test',
-                child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 16,
+              ],
             ),
-            PlaylistHeaderView(playlistVo: playlistVo),
-            const SizedBox(
-              height: 32,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  PlaylistHeaderView(playlistVo: playlistVo),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  SongsCollectionView(songs: playlistVo.songList),
+                ],
+              ),
             ),
-            SongsCollectionView(songs: playlistVo.songList),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 

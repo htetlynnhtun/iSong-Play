@@ -76,9 +76,10 @@ class LibraryPage extends StatelessWidget {
                         return PlaylistItemView(
                           playlistVO: playlistVo,
                           onTap: () {
+                            context.read<LibraryBloc>().onViewPlaylistDetail(playlistVo);
                             navigateToNextPageWithNavBar(
                               context,
-                              PlaylistDetailPage(playlistVo),
+                              const PlaylistDetailPage(),
                             );
                           },
                         );
