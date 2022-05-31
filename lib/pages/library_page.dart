@@ -128,7 +128,7 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
             LibraryHeaderView(
               title: 'Favorite',
               songs: songs.where((e) => e.isFavorite).length,
-              imageUrl: 'assets/images/ic_favorite.png',
+              imageUrl: 'assets/images/ic_library_favorite.png',
               onTap: () {
                 navigateToNextPageWithNavBar(
                   context,

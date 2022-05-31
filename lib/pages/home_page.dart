@@ -27,8 +27,11 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-           TitleAndSettingIconButtonView(title: 'Home',onTap: (){},
-           imageUrl: 'assets/images/ic_setting.png',
+           Padding(
+             padding: const EdgeInsets.only(right: 16.0),
+             child: TitleAndSettingIconButtonView(title: 'Home',onTap: (){},
+             imageUrl: 'assets/images/ic_setting.png',
+             ),
            ),
             const SizedBox(
               height: 16,
@@ -41,11 +44,11 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 19,
             ),
-            const TitleAndPlayListCollectionView(),
+             const TitleAndPlayListCollectionView(title: 'Editor Choice',),
             const SizedBox(
-              height: 19,
+              height: 20,
             ),
-            const TitleAndPlayListCollectionView(),
+            const TitleAndPlayListCollectionView(title: 'Trending',),
           ],
         ),
       ),
@@ -67,7 +70,7 @@ class BannerView extends StatelessWidget {
       builder: (_, pageIndex, __) => Container(
         height: 200,
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+       // padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Stack(
           children: [
             CarouselSlider.builder(
@@ -124,9 +127,12 @@ class BannerImageAndSongNameView extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: CustomCachedImage(
-            imageUrl: imageUrl,
-            cornerRadius: cornerRadius,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomCachedImage(
+              imageUrl: imageUrl,
+              cornerRadius: cornerRadius,
+            ),
           ),
         ),
         Positioned.fill(

@@ -15,18 +15,22 @@ class AssetImageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(),
-      icon: Image.asset(
-        color:color,
-        imageUrl,
-        height: width,
-        width: height,
+    return SizedBox(
+      width: width,
+      height: height,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        icon: Image.asset(
+          color:color,
+          imageUrl,
+          height: width,
+          width: height,
+        ),
+        onPressed: () {
+          onTap();
+        },
       ),
-      onPressed: () {
-        onTap();
-      },
     );
   }
 }

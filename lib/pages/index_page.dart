@@ -6,6 +6,7 @@ import 'package:music_app/pages/search_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/mini_player.dart';
 
+import '../utils/animate_route.dart';
 import 'home_page.dart';
 
 class IndexPage extends StatefulWidget {
@@ -49,10 +50,11 @@ class _IndexPageState extends State<IndexPage> {
           children: [
             GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PlayerPage()));
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => const PlayerPage()));
+                  Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
                 },
                 child: const MiniPlayer()),
             BottomNavigationBar(

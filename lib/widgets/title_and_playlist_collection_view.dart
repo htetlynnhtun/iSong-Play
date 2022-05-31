@@ -4,15 +4,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/resources/constants.dart';
+import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/title_text.dart';
 import 'package:provider/provider.dart';
-
-import '../resources/colors.dart';
 import '../resources/dimens.dart';
 import 'custom_cached_image.dart';
 
 class TitleAndPlayListCollectionView extends StatelessWidget {
+  final String title;
   const TitleAndPlayListCollectionView({
+    required this.title,
     Key? key,
   }) : super(key: key);
 
@@ -22,7 +23,7 @@ class TitleAndPlayListCollectionView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const TitleText(title: 'Trending'),
+         TitleText(title: title),
         const SizedBox(
           height: 8,
         ),
@@ -35,7 +36,7 @@ class TitleAndPlayListCollectionView extends StatelessWidget {
                     imageUrl: bannerImage[index],
                   ),
               separatorBuilder: (context, index) => const SizedBox(
-                    width: 8,
+                    width: 16,
                   ),
               itemCount: bannerImage.length),
         )
@@ -72,11 +73,8 @@ class PlaylistAndPlayerView extends StatelessWidget {
             child: GradientBackgroundAndPlayerView()),
         const Align(
           alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: SongTitleAndPlayerIconView(),
-          ),
-        )
+          child: SongTitleAndPlayerIconView(),
+        ),
       ],
     );
   }
@@ -89,31 +87,56 @@ class SongTitleAndPlayerIconView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Column(
-        //   crossAxisAlignment: CrossAxisAlignment.start,
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: const [
-        //     Text(
-        //       'This is Title',
-        //       style: TextStyle(
-        //         fontSize: 16,
-        //         fontWeight: FontWeight.w500,
-        //       ),
-        //     ),
-        //     SizedBox(height: 8,),
-        //     Text(
-        //       'This is Artist',
-        //       style: TextStyle(
-        //         fontSize: 12,
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // Spacer(),
-      ],
+    return SizedBox(
+      height: 60,
+      width: 175,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Text(
+                    'This is fucking long song Title ',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    'This is fucking long song Artist',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AssetImageButton(
+            onTap: () {},
+            imageUrl: (true)?'assets/images/ic_play_circle.png':'assets/images/ic_pause_circle.png',
+            color: null,
+            height: 48,
+            width: 48,
+          )
+        ],
+      ),
     );
   }
 }
