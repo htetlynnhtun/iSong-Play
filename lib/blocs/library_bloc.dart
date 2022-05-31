@@ -88,6 +88,10 @@ extension UICallbacks on LibraryBloc {
     }
   }
 
+  void onStartRenamePlaylist(String oldName) {
+    playlistName = oldName;
+  }
+
   Future<SavePlaylistResult> onTapRenamePlaylist(String oldName) async {
     playlistName = playlistName.trim();
 
@@ -100,6 +104,10 @@ extension UICallbacks on LibraryBloc {
     await playlist.save();
     playlistName = "";
     return SavePlaylistResult.success;
+  }
+
+  void onTapCancelAddRenamePlaylist() {
+    playlistName = "";
   }
 
   Future<void> onTapDeletePlaylist(PlaylistVo playlistVo) {

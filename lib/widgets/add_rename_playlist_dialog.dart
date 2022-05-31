@@ -69,6 +69,7 @@ class AddRenamePlaylistDialog extends StatelessWidget {
                     flex: 1,
                     child: TextButton(
                       onPressed: () {
+                        context.read<LibraryBloc>().onTapCancelAddRenamePlaylist();
                         Navigator.pop(context);
                       },
                       child: const Text(

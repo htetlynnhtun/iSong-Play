@@ -54,6 +54,7 @@ class PlaylistItemView extends StatelessWidget {
               ),
             ),
             onSelected: (value) async {
+              context.read<LibraryBloc>().onStartRenamePlaylist(playlistVO.name);
               if (value == "rename") {
                 showDialog(
                   context: context,
