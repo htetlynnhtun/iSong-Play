@@ -29,7 +29,7 @@ class SongsDetailPage extends StatelessWidget {
         leading: const AppBarBackIcon(),
         title: AppBarTitle(title: title),
         actions: [
-          PopupMenuButton(
+          PopupMenuButton<String>(
             icon: const Icon(
               Icons.sort,
               color: primaryColor,
@@ -41,27 +41,24 @@ class SongsDetailPage extends StatelessWidget {
               ),
             ),
             onSelected: (value) {
-              // TODO: handle menu button action
+              if (value == "title") {
+                context.read<LibraryBloc>().sortAllSongsByTitle();
+              } else if (value == "date") {
+                context.read<LibraryBloc>().sortAllSongsByDate();
+              }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                value: 'test',
+                value: "title",
                 child: MenuItemButton(
-                  title: 'Add to Library',
+                  title: "By Title",
                   icon: Icons.add,
                 ),
               ),
               const PopupMenuItem(
-                value: 'test',
+                value: "date",
                 child: MenuItemButton(
-                  title: 'Add to Library',
-                  icon: Icons.add,
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'test',
-                child: MenuItemButton(
-                  title: 'Add to Library',
+                  title: "By Date",
                   icon: Icons.add,
                 ),
               ),
@@ -78,6 +75,7 @@ class SongsDetailPage extends StatelessWidget {
             }
             return libraryBloc.songs;
           },
+          shouldRebuild: (_, __) => true,
           builder: (_, songs, __) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

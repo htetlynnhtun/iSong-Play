@@ -152,6 +152,16 @@ extension UICallbacks on LibraryBloc {
 
     return completer.future;
   }
+
+  void sortAllSongsByTitle() {
+    songs.sort((a, b) => a.title.compareTo(b.title));
+    notifyListeners();
+  }
+
+  void sortAllSongsByDate() {
+    songs.sort(((a, b) => b.createdAt.compareTo(a.createdAt)));
+    notifyListeners();
+  }
 }
 
 enum AddToLibraryResult {
