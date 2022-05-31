@@ -156,7 +156,7 @@ class AddToPlaylistView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        // Navigator.pop(context);
         showDialog(
           context: context,
           builder: (context) => AddRenamePlaylistDialog(
