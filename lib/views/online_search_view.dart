@@ -61,6 +61,11 @@ class SearchResultsView extends StatelessWidget {
                   return ListView.separated(
                     itemBuilder: (context, index) => SongItemView(
                       searchResults[index],
+                      menus: const [
+                        SongItemPopupMenu.addToQueue,
+                        SongItemPopupMenu.addToLibrary,
+                        SongItemPopupMenu.addToPlaylist,
+                      ],
                       isSearch: true,
                     ),
                     separatorBuilder: (context, index) => const SizedBox(

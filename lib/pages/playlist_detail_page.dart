@@ -171,7 +171,15 @@ class SongsCollectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView.separated(
-        itemBuilder: (_, index) => SongItemView(songs[index]),
+        itemBuilder: (_, index) => SongItemView(
+          songs[index],
+          menus: const [
+            SongItemPopupMenu.addToQueue,
+            SongItemPopupMenu.addToPlaylist,
+            SongItemPopupMenu.deleteFromPlaylist,
+            SongItemPopupMenu.deleteFromLibrary,
+          ],
+        ),
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemCount: songs.length,
       ),

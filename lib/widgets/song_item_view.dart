@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/utils/callback_typedefs.dart';
 import 'package:music_app/views/playlist_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
@@ -15,9 +16,14 @@ class SongItemView extends StatelessWidget {
   final SongVO songVO;
   final bool isSearch;
   final bool isUpNext;
-  const SongItemView(this.songVO,
-      {this.isSearch = false, this.isUpNext = false, Key? key})
-      : super(key: key);
+  final List<SongItemPopupMenu> menus;
+  const SongItemView(
+    this.songVO, {
+    this.menus = const [],
+    this.isSearch = false,
+    this.isUpNext = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +33,11 @@ class SongItemView extends StatelessWidget {
         const SizedBox(
           width: 8,
         ),
-
         Expanded(
             child: TitleArtistAndDownloadStatusView(
           title: songVO.title,
           artist: songVO.artist,
-              isUpNext: isUpNext,
+          isUpNext: isUpNext,
         )),
         if (true)
           Row(
@@ -51,7 +56,7 @@ class SongItemView extends StatelessWidget {
         const SizedBox(
           width: 14,
         ),
-        PopupMenuButton(
+        PopupMenuButton<SongItemPopupMenu>(
           icon: const Icon(
             Icons.more_horiz,
             color: primaryColor,
@@ -64,20 +69,30 @@ class SongItemView extends StatelessWidget {
           ),
           onSelected: (value) async {
             switch (value) {
-              case "library":
+              case SongItemPopupMenu.addToLibrary:
                 final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
                 switch (result) {
                   case AddToLibraryResult.success:
-                    showToast("Successfully added to Library");
+                    showToast("Successfully added to library");
                     break;
                   case AddToLibraryResult.alreadyInLibrary:
-                    showToast("Already in Library");
+                    showToast("Song is already in library");
+                    break;
                 }
                 break;
-              case "queue":
-                print("add to queue");
+              case SongItemPopupMenu.deleteFromLibrary:
+                print("delete library");
                 break;
-              case "playlist":
+              case SongItemPopupMenu.addToFavorite:
+                print("add fav");
+                break;
+              case SongItemPopupMenu.deleteFromFavorite:
+                print("delete fav");
+                break;
+              case SongItemPopupMenu.addToQueue:
+                print("add queue");
+                break;
+              case SongItemPopupMenu.addToPlaylist:
                 showModalBottomSheet(
                   isDismissible: true,
                   backgroundColor: Colors.transparent,
@@ -85,31 +100,22 @@ class SongItemView extends StatelessWidget {
                   context: context,
                   builder: (context) => PlaylistBottomSheet(songVO),
                 );
+                break;
+              case SongItemPopupMenu.deleteFromPlaylist:
+                final playlistVO = context.read<LibraryBloc>().currentPlaylistDetail!;
+                print("delete song from playlist ${playlistVO.name}");
+                break;
             }
           },
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: "library",
-              child: MenuItemButton(
-                title: 'Add to Library',
-                icon: Icons.add,
-              ),
-            ),
-            const PopupMenuItem(
-              value: "queue",
-              child: MenuItemButton(
-                title: 'Add to Queue',
-                icon: Icons.queue_music,
-              ),
-            ),
-            const PopupMenuItem(
-              value: "playlist",
-              child: MenuItemButton(
-                title: 'Add to Playlist',
-                icon: Icons.playlist_add,
-              ),
-            ),
-          ],
+          itemBuilder: (context) => menus
+              .map((menu) => PopupMenuItem(
+                    value: menu,
+                    child: MenuItemButton(
+                      title: menu.title,
+                      icon: menu.icon,
+                    ),
+                  ))
+              .toList(),
         ),
       ],
     );
@@ -169,7 +175,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
                 maxLines: 1,
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
-                style:  TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   color: (isUpNext) ? Colors.white : null,
                 ),
@@ -179,5 +185,54 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+enum SongItemPopupMenu {
+  addToLibrary,
+  deleteFromLibrary,
+  addToFavorite,
+  deleteFromFavorite,
+  addToQueue,
+  addToPlaylist,
+  deleteFromPlaylist,
+}
+
+extension MenuName on SongItemPopupMenu {
+  String get title {
+    switch (this) {
+      case SongItemPopupMenu.addToLibrary:
+        return "Add To Library";
+      case SongItemPopupMenu.deleteFromLibrary:
+        return "Delete";
+      case SongItemPopupMenu.addToFavorite:
+        return "Add To Favorite";
+      case SongItemPopupMenu.deleteFromFavorite:
+        return "Delete From Favorite";
+      case SongItemPopupMenu.addToQueue:
+        return "Add To Queue";
+      case SongItemPopupMenu.addToPlaylist:
+        return "Add To Playlist";
+      case SongItemPopupMenu.deleteFromPlaylist:
+        return "Delete From Playlist";
+    }
+  }
+
+  IconData get icon {
+    switch (this) {
+      case SongItemPopupMenu.addToLibrary:
+        return Icons.add;
+      case SongItemPopupMenu.deleteFromLibrary:
+        return Icons.delete;
+      case SongItemPopupMenu.addToFavorite:
+      case SongItemPopupMenu.deleteFromFavorite:
+        return Icons.favorite;
+      case SongItemPopupMenu.addToQueue:
+        return Icons.queue;
+      case SongItemPopupMenu.addToPlaylist:
+        return Icons.playlist_add;
+      case SongItemPopupMenu.deleteFromPlaylist:
+        return Icons.playlist_remove;
+    }
   }
 }

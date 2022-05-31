@@ -77,6 +77,21 @@ class SongsDetailPage extends StatelessWidget {
           },
           shouldRebuild: (_, __) => true,
           builder: (_, songs, __) {
+            List<SongItemPopupMenu> menus;
+            if (isFavorite) {
+              menus = [
+                SongItemPopupMenu.addToQueue,
+                SongItemPopupMenu.addToPlaylist,
+                SongItemPopupMenu.deleteFromFavorite,
+                SongItemPopupMenu.deleteFromLibrary,
+              ];
+            } else {
+              menus = [
+                SongItemPopupMenu.addToQueue,
+                SongItemPopupMenu.addToPlaylist,
+                SongItemPopupMenu.deleteFromLibrary,
+              ];
+            }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -89,7 +104,10 @@ class SongsDetailPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    itemBuilder: (context, index) => SongItemView(songs[index]),
+                    itemBuilder: (context, index) => SongItemView(
+                      songs[index],
+                      menus: menus,
+                    ),
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemCount: songs.length,
                   ),
