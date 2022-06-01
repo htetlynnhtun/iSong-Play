@@ -31,7 +31,7 @@ class PlayerBloc extends ChangeNotifier {
 
   PlayerBloc() {
     _init();
-    // Todo: get the last recent track and feed it to player 
+    // Todo: get the last recent track and feed it to player
   }
 
   void _init() async {
@@ -54,12 +54,23 @@ class PlayerBloc extends ChangeNotifier {
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
   void onTapSong(int index, List<SongVO> songs) async {
+    await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
+    isShuffleModeEnabled = false;
+    notifyListeners();
     print("wtbug: onTapSong");
 
     List<MediaItem> mediaItems = await _songsToMediaItems(songs);
 
     await _playerHandler.updateQueue(mediaItems);
     await _playerHandler.skipToQueueItem(index);
+    await _playerHandler.play();
+  }
+
+  void onTapShufflePlay(List<SongVO> songs) async {
+    List<MediaItem> mediaItems = await _songsToMediaItems(songs);
+
+    await _playerHandler.setShuffleMode(AudioServiceShuffleMode.all);
+    await _playerHandler.updateQueue(mediaItems);
     await _playerHandler.play();
   }
 
@@ -221,7 +232,9 @@ extension InternalLogic on PlayerBloc {
       if (song.isDownloadFinished) {
         urls.add(song.filePath);
       } else {
+        // final stopwatch = Stopwatch()..start();
         final url = await _youtubeService.getLink(song.id);
+        // print("Parsing a song took ${stopwatch.elapsed}");
         urls.add(url.toString());
       }
     }
