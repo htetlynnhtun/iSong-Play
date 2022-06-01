@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
@@ -59,14 +60,17 @@ class SearchResultsView extends StatelessWidget {
                 selector: (_, searchBloc) => searchBloc.searchResults,
                 builder: (_, searchResults, __) {
                   return ListView.separated(
-                    itemBuilder: (context, index) => SongItemView(
-                      searchResults[index],
-                      menus: const [
-                        SongItemPopupMenu.addToQueue,
-                        SongItemPopupMenu.addToLibrary,
-                        SongItemPopupMenu.addToPlaylist,
-                      ],
-                      isSearch: true,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
+                      child: SongItemView(
+                        searchResults[index],
+                        menus: const [
+                          SongItemPopupMenu.addToQueue,
+                          SongItemPopupMenu.addToLibrary,
+                          SongItemPopupMenu.addToPlaylist,
+                        ],
+                        isSearch: true,
+                      ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(
                       height: 12,

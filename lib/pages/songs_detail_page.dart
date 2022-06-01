@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/widgets/app_bar_back_icon.dart';
 import 'package:music_app/vos/song_vo.dart';
@@ -104,9 +105,12 @@ class SongsDetailPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    itemBuilder: (context, index) => SongItemView(
-                      songs[index],
-                      menus: menus,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
+                      child: SongItemView(
+                        songs[index],
+                        menus: menus,
+                      ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemCount: songs.length,
