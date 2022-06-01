@@ -79,6 +79,7 @@ class SongsDetailPage extends StatelessWidget {
           shouldRebuild: (_, __) => true,
           builder: (_, songs, __) {
             List<SongItemPopupMenu> menus;
+            List<SongVO> filteredSongs;
             if (isFavorite) {
               menus = [
                 SongItemPopupMenu.addToQueue,
@@ -86,12 +87,14 @@ class SongsDetailPage extends StatelessWidget {
                 SongItemPopupMenu.deleteFromFavorite,
                 SongItemPopupMenu.deleteFromLibrary,
               ];
+              filteredSongs = songs.where((e) => e.isFavorite).toList();
             } else {
               menus = [
                 SongItemPopupMenu.addToQueue,
                 SongItemPopupMenu.addToPlaylist,
                 SongItemPopupMenu.deleteFromLibrary,
               ];
+              filteredSongs = songs;
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,21 +102,21 @@ class SongsDetailPage extends StatelessWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                SongCountPlayShuffleView(songCount: songs.length),
+                SongCountPlayShuffleView(songs: filteredSongs),
                 const SizedBox(
                   height: 22,
                 ),
                 Expanded(
                   child: ListView.separated(
                     itemBuilder: (context, index) => GestureDetector(
-                      onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
+                      onTap: () => context.read<PlayerBloc>().onTapSong(index, filteredSongs),
                       child: SongItemView(
-                        songs[index],
+                        filteredSongs[index],
                         menus: menus,
                       ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(height: 12),
-                    itemCount: songs.length,
+                    itemCount: filteredSongs.length,
                   ),
                 ),
               ],
@@ -126,9 +129,9 @@ class SongsDetailPage extends StatelessWidget {
 }
 
 class SongCountPlayShuffleView extends StatelessWidget {
-  final int songCount;
+  final List<SongVO> songs;
   const SongCountPlayShuffleView({
-    required this.songCount,
+    required this.songs,
     Key? key,
   }) : super(key: key);
 
@@ -137,7 +140,7 @@ class SongCountPlayShuffleView extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '$songCount Songs',
+          '${songs.length} Songs',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -145,11 +148,23 @@ class SongCountPlayShuffleView extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        AssetImageButton(onTap: () {}, width: 20, height: 20, imageUrl: 'assets/images/ic_play.png', color: primaryColor),
+        AssetImageButton(
+          onTap: () => context.read<PlayerBloc>().onTapSong(0, songs),
+          width: 20,
+          height: 20,
+          imageUrl: 'assets/images/ic_play.png',
+          color: primaryColor,
+        ),
         const SizedBox(
           width: 16,
         ),
-        AssetImageButton(onTap: () {}, width: 20, height: 20, imageUrl: 'assets/images/ic_shuffle.png', color: primaryColor),
+        AssetImageButton(
+          onTap: () => context.read<PlayerBloc>().onTapShufflePlay(songs),
+          width: 20,
+          height: 20,
+          imageUrl: 'assets/images/ic_shuffle.png',
+          color: primaryColor,
+        ),
       ],
     );
   }
