@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/player_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../vos/song_vo.dart';
 import '../widgets/song_item_view.dart';
@@ -26,16 +28,32 @@ class UpNextView extends StatelessWidget {
           height: 16,
         ),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemBuilder: (context, index) => SongItemView(
-                    SongVO.dummySong(),
-                    isUpNext: true,
-                  ),
-              separatorBuilder: (context, index) => const SizedBox(
-                    height: 12,
-                  ),
-              itemCount: 10),
+          child: Selector<PlayerBloc, List<SongVO>>(
+            selector: (_, playerBloc) => playerBloc.queueState,
+            builder: (_, queueState, __) {
+              return ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemBuilder: (context, index) {
+                  return Selector<PlayerBloc, String?>(
+                    selector: (_, playerBloc) => playerBloc.nowPlayingSongID,
+                    builder: (_, nowPlayingSongID, __) {
+                      final songVO = queueState[index];
+                      return GestureDetector(
+                        onTap: () => context.read<PlayerBloc>().skipTo(index),
+                        child: SongItemView(
+                          songVO,
+                          isUpNext: true,
+                          nowPlaying: songVO.id == nowPlayingSongID,
+                        ),
+                      );
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                itemCount: queueState.length,
+              );
+            },
+          ),
         )
       ],
     );

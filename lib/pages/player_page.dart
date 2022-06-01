@@ -1,9 +1,11 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
 import '../views/up_next_view.dart';
@@ -80,45 +82,48 @@ class PlayerPage extends StatelessWidget {
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              SizedBox(
+            children: [
+              const SizedBox(
                 height: 64,
               ),
               Align(
                 alignment: Alignment.center,
-                child: CustomCachedImage(
-                  imageUrl:
-                      'https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg',
-                  width: 360,
-                  height: 200,
-                  cornerRadius: cornerRadius,
-                ),
+                child: Selector<PlayerBloc, String>(
+                    selector: (_, playerBloc) => playerBloc.currentSongThumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg",
+                    builder: (_, thumbnail, __) {
+                      return CustomCachedImage(
+                        imageUrl: thumbnail,
+                        width: 360,
+                        height: 200,
+                        cornerRadius: cornerRadius,
+                      );
+                    }),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 48,
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14),
                 child: TitleArtistAndDownloadButtonView(),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14),
                 child: SongSeekBarAndDurationView(),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 60,
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14),
                 child: PlayerIconsCollectionView(),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 42,
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 14),
                 child: FavoriteAndTimerView(),
               )
@@ -128,10 +133,7 @@ class PlayerPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: InkWell(
                 onTap: () {
-                  showModalBottomSheet(
-                      backgroundColor: Colors.black,
-                      context: context,
-                      builder: (context) => const UpNextView());
+                  showModalBottomSheet(backgroundColor: Colors.black, context: context, builder: (context) => const UpNextView());
                 },
                 child: const Padding(
                   padding: EdgeInsets.only(bottom: 46),
@@ -159,19 +161,11 @@ class FavoriteAndTimerView extends StatelessWidget {
             onTap: () {},
             width: 36,
             height: 36,
-            imageUrl: (true)
-                ? 'assets/images/ic_favorite_done.png'
-                : 'assets/images/ic_favorite.png',
+            imageUrl: (true) ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
             color: null),
         const Spacer(),
         AssetImageButton(
-            onTap: () {},
-            width: 36,
-            height: 36,
-            imageUrl: (true)
-                ? 'assets/images/ic_timer_done.png'
-                : 'assets/images/ic_timer.png',
-            color: null),
+            onTap: () {}, width: 36, height: 36, imageUrl: (true) ? 'assets/images/ic_timer_done.png' : 'assets/images/ic_timer.png', color: null),
       ],
     );
   }
@@ -186,50 +180,115 @@ class PlayerIconsCollectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        AssetImageButton(
-            onTap: () {},
-            width: 32,
-            height: 32,
-            imageUrl: 'assets/images/ic_shuffle.png',
-            color: (true) ? primaryColor : Colors.white),
+        Selector<PlayerBloc, bool>(
+          selector: (_, playerBloc) => playerBloc.isShuffleModeEnabled,
+          builder: (_, isShuffleModeEnabled, __) {
+            return AssetImageButton(
+              onTap: context.read<PlayerBloc>().shuffle,
+              width: 32,
+              height: 32,
+              imageUrl: 'assets/images/ic_shuffle.png',
+              color: isShuffleModeEnabled ? primaryColor : Colors.white,
+            );
+          },
+        ),
         const Spacer(),
         Row(
           children: [
-            AssetImageButton(
-                onTap: () {},
-                width: 42,
-                height: 42,
-                imageUrl: 'assets/images/ic_previous.png',
-                color: Colors.white),
+            Selector<PlayerBloc, bool>(
+                selector: (_, playerBloc) => playerBloc.isFirstSong,
+                builder: (_, isFirstSong, __) {
+                  return AssetImageButton(
+                    onTap: () {
+                      if (!isFirstSong) {
+                        context.read<PlayerBloc>().skipToPrevious();
+                      }
+                    },
+                    width: 42,
+                    height: 42,
+                    imageUrl: 'assets/images/ic_previous.png',
+                    color: Colors.white,
+                  );
+                }),
             const SizedBox(
               width: 42,
             ),
-            AssetImageButton(
-                onTap: () {},
-                width: 80,
-                height: 80,
-                imageUrl: (true)
-                    ? 'assets/images/ic_play_circle.png'
-                    : 'assets/images/ic_pause_circle.png',
-                color: Colors.white),
+            Selector<PlayerBloc, ButtonState>(
+              selector: (_, playerBloc) => playerBloc.buttonState,
+              builder: (_, buttonState, __) {
+                VoidCallback onTap;
+                String imageUrl;
+                switch (buttonState) {
+                  case ButtonState.loading:
+                    onTap = () {};
+                    // Todo: Swap with loading icon
+                    imageUrl = 'assets/images/ic_pause_circle.png';
+                    break;
+                  case ButtonState.playing:
+                    onTap = context.read<PlayerBloc>().pause;
+                    imageUrl = "assets/images/ic_pause_circle.png";
+                    break;
+                  case ButtonState.paused:
+                    onTap = context.read<PlayerBloc>().play;
+                    imageUrl = "assets/images/ic_play_circle.png";
+                    break;
+                }
+                return AssetImageButton(
+                  onTap: onTap,
+                  width: 80,
+                  height: 80,
+                  imageUrl: imageUrl,
+                  color: Colors.white,
+                );
+              },
+            ),
             const SizedBox(
               width: 42,
             ),
-            AssetImageButton(
-                onTap: () {},
-                width: 42,
-                height: 42,
-                imageUrl: 'assets/images/ic_next.png',
-                color: Colors.white),
+            Selector<PlayerBloc, bool>(
+              selector: (_, playerBloc) => playerBloc.isLastSong,
+              builder: (_, isLastSong, __) {
+                return AssetImageButton(
+                  onTap: () {
+                    if (!isLastSong) {
+                      context.read<PlayerBloc>().skipToNext();
+                    }
+                  },
+                  width: 42,
+                  height: 42,
+                  imageUrl: 'assets/images/ic_next.png',
+                  color: Colors.white,
+                );
+              },
+            ),
           ],
         ),
         const Spacer(),
-        AssetImageButton(
-            onTap: () {},
-            width: 32,
-            height: 32,
-            imageUrl: 'assets/images/ic_loop.png',
-            color: (true) ? primaryColor : Colors.white),
+        Selector<PlayerBloc, RepeatState>(
+            selector: (_, playerBloc) => playerBloc.repeatState,
+            builder: (_, repeatState, __) {
+              String imageUrl;
+              switch (repeatState) {
+                case RepeatState.off:
+                  // Todo: Swap with repeat off image
+                  imageUrl = "assets/images/ic_add.png";
+                  break;
+                case RepeatState.one:
+                  // Todo: Swap with repeat one image
+                  imageUrl = "assets/images/ic_back.png";
+                  break;
+                case RepeatState.playlist:
+                  imageUrl = "assets/images/ic_loop.png";
+                  break;
+              }
+              return AssetImageButton(
+                onTap: context.read<PlayerBloc>().repeat,
+                width: 32,
+                height: 32,
+                imageUrl: imageUrl,
+                color: (true) ? primaryColor : Colors.white,
+              );
+            }),
       ],
     );
   }
@@ -242,24 +301,28 @@ class SongSeekBarAndDurationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProgressBar(
-      progress: const Duration(minutes: 1),
-      buffered: Duration.zero,
-      total: const Duration(minutes: 3),
-      progressBarColor: primaryColor,
-      baseBarColor: seekBarBackgroundColor,
-      bufferedBarColor: Colors.grey,
-      thumbColor: primaryColor,
-      thumbGlowRadius: 0,
-      barHeight: 5.0,
-      thumbRadius: 6.0,
-      onSeek: (duration) {},
-      timeLabelTextStyle: const TextStyle(
-        color: seekBarBackgroundColor,
-        fontSize: 12,
-        fontWeight: FontWeight.w400,
-      ),
-    );
+    return Selector<PlayerBloc, ProgressBarState>(
+        selector: (_, playerBloc) => playerBloc.progressBarState,
+        builder: (_, progressBarState, __) {
+          return ProgressBar(
+            progress: progressBarState.current,
+            buffered: progressBarState.buffered,
+            total: progressBarState.total,
+            progressBarColor: primaryColor,
+            baseBarColor: seekBarBackgroundColor,
+            bufferedBarColor: Colors.grey,
+            thumbColor: primaryColor,
+            thumbGlowRadius: 0,
+            barHeight: 5.0,
+            thumbRadius: 6.0,
+            onSeek: context.read<PlayerBloc>().onSeek,
+            timeLabelTextStyle: const TextStyle(
+              color: seekBarBackgroundColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
+          );
+        });
   }
 }
 
@@ -273,34 +336,39 @@ class TitleArtistAndDownloadButtonView extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              MarqueeText(
-                title:
-                    'Hello world this is fucking long title Hello world this is fucking long title',
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                  color: Colors.white,
+          child: Selector<PlayerBloc, List<String>>(selector: (_, playerBloc) {
+            final title = playerBloc.currentSongTitle ?? "Title";
+            final artist = playerBloc.currentSongArtist ?? "Artist";
+            return [title, artist];
+          }, builder: (_, titleAndArtist, __) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MarqueeText(
+                  title: titleAndArtist[0],
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 6,
-              ),
-              Text(
-                'This is artist name',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
+                const SizedBox(
+                  height: 6,
                 ),
-              ),
-            ],
-          ),
+                Text(
+                  titleAndArtist[1],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            );
+          }),
         ),
         const SizedBox(
           width: 42,
@@ -322,12 +390,7 @@ class DownloadProcessView extends StatelessWidget {
         ? SizedBox(
             width: 36,
             height: 36,
-            child: AssetImageButton(
-                onTap: () {},
-                width: 36,
-                height: 36,
-                imageUrl: 'assets/images/ic_download.png',
-                color: searchIconColor),
+            child: AssetImageButton(onTap: () {}, width: 36, height: 36, imageUrl: 'assets/images/ic_download.png', color: searchIconColor),
           )
         : CircularPercentIndicator(
             radius: 22.0,
