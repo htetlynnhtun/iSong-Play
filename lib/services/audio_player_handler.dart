@@ -13,7 +13,7 @@ abstract class AudioPlayerHandler implements AudioHandler {
 
 class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implements AudioPlayerHandler {
   final _player = AudioPlayer();
-  final _playlist = ConcatenatingAudioSource(children: []);
+  var _playlist = ConcatenatingAudioSource(children: []);
 
   // The mappings between MediaItem(audio_handler) and AudioSource(just_audio) - this solves the problem of wrong duration on iOS Lock screen.
   final _mediaItemExpando = Expando<MediaItem>();
@@ -193,8 +193,10 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implement
 
   @override
   Future<void> updateQueue(List<MediaItem> queue) async {
-    await _playlist.clear();
-    await _playlist.addAll(_itemsToSources(queue));
+    _playlist = ConcatenatingAudioSource(children: _itemsToSources(queue));
+    await _player.setAudioSource(_playlist, preload: false);
+    // await _playlist.clear();
+    // await _playlist.addAll(_itemsToSources(queue));
   }
 
   @override
