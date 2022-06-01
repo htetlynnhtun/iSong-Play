@@ -16,12 +16,14 @@ class SongItemView extends StatelessWidget {
   final SongVO songVO;
   final bool isSearch;
   final bool isUpNext;
+  final bool nowPlaying;
   final List<SongItemPopupMenu> menus;
   const SongItemView(
     this.songVO, {
     this.menus = const [],
     this.isSearch = false,
     this.isUpNext = false,
+    this.nowPlaying = false,
     Key? key,
   }) : super(key: key);
 
@@ -39,7 +41,7 @@ class SongItemView extends StatelessWidget {
           artist: songVO.artist,
           isUpNext: isUpNext,
         )),
-        if (true)
+        if (nowPlaying)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
