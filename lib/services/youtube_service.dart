@@ -52,4 +52,10 @@ class YoutubeService {
     //   return value.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10).map((e) => e.toSongVO()).toList();
     // });
   }
+
+  Future<Uri> getLink(String id) async {
+    final manifest = await _yt.videos.streams.getManifest(id);
+    final url = manifest.audioOnly.firstWhere((audio) => audio.tag == 140).url;
+    return url;
+  }
 }
