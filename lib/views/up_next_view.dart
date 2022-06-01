@@ -34,19 +34,12 @@ class UpNextView extends StatelessWidget {
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemBuilder: (context, index) {
-                  return Selector<PlayerBloc, String?>(
-                    selector: (_, playerBloc) => playerBloc.nowPlayingSongID,
-                    builder: (_, nowPlayingSongID, __) {
-                      final songVO = queueState[index];
-                      return GestureDetector(
-                        onTap: () => context.read<PlayerBloc>().skipTo(index),
-                        child: SongItemView(
-                          songVO,
-                          isUpNext: true,
-                          nowPlaying: songVO.id == nowPlayingSongID,
-                        ),
-                      );
-                    },
+                  return GestureDetector(
+                    onTap: () => context.read<PlayerBloc>().skipTo(index),
+                    child: SongItemView(
+                      queueState[index],
+                      isUpNext: true,
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) => const SizedBox(height: 12),

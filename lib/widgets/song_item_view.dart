@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/utils/callback_typedefs.dart';
 import 'package:music_app/views/playlist_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -16,111 +17,113 @@ class SongItemView extends StatelessWidget {
   final SongVO songVO;
   final bool isSearch;
   final bool isUpNext;
-  final bool nowPlaying;
   final List<SongItemPopupMenu> menus;
   const SongItemView(
     this.songVO, {
     this.menus = const [],
     this.isSearch = false,
     this.isUpNext = false,
-    this.nowPlaying = false,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, isSearch: isSearch, cornerRadius: 10),
-        const SizedBox(
-          width: 8,
-        ),
-        Expanded(
-            child: TitleArtistAndDownloadStatusView(
-          title: songVO.title,
-          artist: songVO.artist,
-          isUpNext: isUpNext,
-        )),
-        if (nowPlaying)
-          Row(
-            mainAxisSize: MainAxisSize.min,
+    return Selector<PlayerBloc, String?>(
+        selector: (_, playerBloc) => playerBloc.nowPlayingSongID,
+        builder: (_, nowPlayingSongID, __) {
+          return Row(
             children: [
+              CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, isSearch: isSearch, cornerRadius: 10),
               const SizedBox(
                 width: 8,
               ),
-              Lottie.asset(
-                'assets/animation.json',
-                width: 32,
-                height: 32,
+              Expanded(
+                  child: TitleArtistAndDownloadStatusView(
+                title: songVO.title,
+                artist: songVO.artist,
+                isUpNext: isUpNext,
+              )),
+              if (nowPlayingSongID == songVO.id)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Lottie.asset(
+                      'assets/animation.json',
+                      width: 32,
+                      height: 32,
+                    ),
+                  ],
+                ),
+              const SizedBox(
+                width: 14,
+              ),
+              PopupMenuButton<SongItemPopupMenu>(
+                icon: const Icon(
+                  Icons.more_horiz,
+                  color: primaryColor,
+                ),
+                elevation: 2,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+                onSelected: (value) async {
+                  switch (value) {
+                    case SongItemPopupMenu.addToLibrary:
+                      final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                      switch (result) {
+                        case AddToLibraryResult.success:
+                          showToast("Successfully added to library");
+                          break;
+                        case AddToLibraryResult.alreadyInLibrary:
+                          showToast("Song is already in library");
+                          break;
+                      }
+                      break;
+                    case SongItemPopupMenu.deleteFromLibrary:
+                      print("delete library");
+                      break;
+                    case SongItemPopupMenu.addToFavorite:
+                      print("add fav");
+                      break;
+                    case SongItemPopupMenu.deleteFromFavorite:
+                      print("delete fav");
+                      break;
+                    case SongItemPopupMenu.addToQueue:
+                      print("add queue");
+                      break;
+                    case SongItemPopupMenu.addToPlaylist:
+                      showModalBottomSheet(
+                        isDismissible: true,
+                        backgroundColor: Colors.transparent,
+                        useRootNavigator: true,
+                        context: context,
+                        builder: (context) => PlaylistBottomSheet(songVO),
+                      );
+                      break;
+                    case SongItemPopupMenu.deleteFromPlaylist:
+                      final playlistVO = context.read<LibraryBloc>().currentPlaylistDetail!;
+                      print("delete song from playlist ${playlistVO.name}");
+                      break;
+                  }
+                },
+                itemBuilder: (context) => menus
+                    .map((menu) => PopupMenuItem(
+                          value: menu,
+                          child: MenuItemButton(
+                            title: menu.title,
+                            icon: menu.icon,
+                          ),
+                        ))
+                    .toList(),
               ),
             ],
-          ),
-        const SizedBox(
-          width: 14,
-        ),
-        PopupMenuButton<SongItemPopupMenu>(
-          icon: const Icon(
-            Icons.more_horiz,
-            color: primaryColor,
-          ),
-          elevation: 2,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-          onSelected: (value) async {
-            switch (value) {
-              case SongItemPopupMenu.addToLibrary:
-                final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
-                switch (result) {
-                  case AddToLibraryResult.success:
-                    showToast("Successfully added to library");
-                    break;
-                  case AddToLibraryResult.alreadyInLibrary:
-                    showToast("Song is already in library");
-                    break;
-                }
-                break;
-              case SongItemPopupMenu.deleteFromLibrary:
-                print("delete library");
-                break;
-              case SongItemPopupMenu.addToFavorite:
-                print("add fav");
-                break;
-              case SongItemPopupMenu.deleteFromFavorite:
-                print("delete fav");
-                break;
-              case SongItemPopupMenu.addToQueue:
-                print("add queue");
-                break;
-              case SongItemPopupMenu.addToPlaylist:
-                showModalBottomSheet(
-                  isDismissible: true,
-                  backgroundColor: Colors.transparent,
-                  useRootNavigator: true,
-                  context: context,
-                  builder: (context) => PlaylistBottomSheet(songVO),
-                );
-                break;
-              case SongItemPopupMenu.deleteFromPlaylist:
-                final playlistVO = context.read<LibraryBloc>().currentPlaylistDetail!;
-                print("delete song from playlist ${playlistVO.name}");
-                break;
-            }
-          },
-          itemBuilder: (context) => menus
-              .map((menu) => PopupMenuItem(
-                    value: menu,
-                    child: MenuItemButton(
-                      title: menu.title,
-                      icon: menu.icon,
-                    ),
-                  ))
-              .toList(),
-        ),
-      ],
-    );
+          );
+        });
   }
 }
 
