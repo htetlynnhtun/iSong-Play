@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/blocs/player_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/vos/playlist_vo.dart';
@@ -150,7 +151,7 @@ class PlaylistHeaderView extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                const PlayAndShuffleView(),
+                PlayAndShuffleView(playlistVo),
               ],
             ),
           )
@@ -188,24 +189,29 @@ class SongsCollectionView extends StatelessWidget {
 }
 
 class PlayAndShuffleView extends StatelessWidget {
-  const PlayAndShuffleView({
-    Key? key,
-  }) : super(key: key);
+  final PlaylistVo playlistVo;
+  const PlayAndShuffleView(this.playlistVo, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
-        PlaylistButton(
-          isSelected: true,
-          title: 'Play All',
-          imageUrl: 'assets/images/ic_play.png',
+      children: [
+        GestureDetector(
+          onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
+          child: const PlaylistButton(
+            isSelected: true,
+            title: 'Play All',
+            imageUrl: 'assets/images/ic_play.png',
+          ),
         ),
-        Spacer(),
-        PlaylistButton(
-          isSelected: true,
-          title: 'Play All',
-          imageUrl: 'assets/images/ic_shuffle.png',
+        const Spacer(),
+        GestureDetector(
+          onTap: () => context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
+          child: const PlaylistButton(
+            isSelected: true,
+            title: 'Play All',
+            imageUrl: 'assets/images/ic_shuffle.png',
+          ),
         )
       ],
     );
