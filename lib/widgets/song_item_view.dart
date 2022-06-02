@@ -87,11 +87,11 @@ class SongItemView extends StatelessWidget {
                     case SongItemPopupMenu.deleteFromLibrary:
                       print("delete library");
                       break;
-                    case SongItemPopupMenu.addToFavorite:
-                      print("add fav");
-                      break;
+                    // case SongItemPopupMenu.addToFavorite:
+                    //   print("add fav");
+                    //   break;
                     case SongItemPopupMenu.deleteFromFavorite:
-                      print("delete fav");
+                      context.read<LibraryBloc>().onTapDeleteFromFavorite(songVO);
                       break;
                     case SongItemPopupMenu.addToQueue:
                       print("add queue");
@@ -196,7 +196,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
 enum SongItemPopupMenu {
   addToLibrary,
   deleteFromLibrary,
-  addToFavorite,
+  // addToFavorite,
   deleteFromFavorite,
   addToQueue,
   addToPlaylist,
@@ -210,8 +210,8 @@ extension MenuName on SongItemPopupMenu {
         return "Add To Library";
       case SongItemPopupMenu.deleteFromLibrary:
         return "Delete";
-      case SongItemPopupMenu.addToFavorite:
-        return "Add To Favorite";
+      // case SongItemPopupMenu.addToFavorite:
+      //   return "Add To Favorite";
       case SongItemPopupMenu.deleteFromFavorite:
         return "Delete From Favorite";
       case SongItemPopupMenu.addToQueue:
@@ -229,7 +229,7 @@ extension MenuName on SongItemPopupMenu {
         return Icons.add;
       case SongItemPopupMenu.deleteFromLibrary:
         return Icons.delete;
-      case SongItemPopupMenu.addToFavorite:
+      // case SongItemPopupMenu.addToFavorite:
       case SongItemPopupMenu.deleteFromFavorite:
         return Icons.favorite;
       case SongItemPopupMenu.addToQueue:
