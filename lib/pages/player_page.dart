@@ -1,4 +1,5 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
@@ -415,25 +416,56 @@ class DownloadProcessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (false)
-        ? SizedBox(
-            width: 36,
-            height: 36,
-            child: AssetImageButton(onTap: () {}, width: 36, height: 36, imageUrl: 'assets/images/ic_download.png', color: searchIconColor),
-          )
-        : CircularPercentIndicator(
-            radius: 22.0,
-            lineWidth: 4.5,
-            percent: 0.2,
-            center: const Text(
-              '100 %',
-              style: TextStyle(
-                color: primaryColor,
-                fontSize: 10,
-              ),
-            ),
-            backgroundColor: searchIconColor,
-            progressColor: primaryColor,
+    return Selector<PlayerBloc, SongVO?>(
+      selector: (_, playerBloc) => playerBloc.nowPlayingSong,
+      shouldRebuild: (_, __) => true,
+      builder: (_, nowPlayingSong, __) {
+        if (nowPlayingSong == null) {
+          return Container();
+        }
+
+        if (nowPlayingSong.isDownloadFinished) {
+          return const Icon(
+            Icons.download_done,
+            color: primaryColor,
+            size: 36,
           );
+        }
+
+        return Selector<LibraryBloc, String?>(
+          selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == nowPlayingSong.id, orElse: () => null),
+          builder: (_, id, __) {
+            if (id == null) {
+              return AssetImageButton(
+                onTap: () => context.read<LibraryBloc>().onTapDownload(nowPlayingSong),
+                width: 36,
+                height: 36,
+                imageUrl: 'assets/images/ic_download.png',
+                color: searchIconColor,
+              );
+            } else {
+              if (nowPlayingSong.percent == 0) {
+                return const CupertinoActivityIndicator(radius: 6);
+              } else {
+                return CircularPercentIndicator(
+                  radius: 22.0,
+                  lineWidth: 4.5,
+                  percent: nowPlayingSong.percent,
+                  center: Text(
+                    '${(nowPlayingSong.percent * 100).toStringAsFixed(0)} %',
+                    style: const TextStyle(
+                      color: primaryColor,
+                      fontSize: 10,
+                    ),
+                  ),
+                  backgroundColor: searchIconColor,
+                  progressColor: primaryColor,
+                );
+              }
+            }
+          },
+        );
+      },
+    );
   }
 }

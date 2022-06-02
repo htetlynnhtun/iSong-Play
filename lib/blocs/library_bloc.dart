@@ -33,6 +33,7 @@ class LibraryBloc extends ChangeNotifier {
   var playlists = <PlaylistVo>[];
   var playlistName = "";
   PlaylistVo? currentPlaylistDetail;
+  var activeDownloadIDs = <String?>{};
 }
 
 extension UICallbacks on LibraryBloc {
@@ -41,19 +42,24 @@ extension UICallbacks on LibraryBloc {
     final songInHive = _songDao.getItem(songVO.id);
 
     if (songInHive == null) {
+      activeDownloadIDs.add(songVO.id);
+      notifyListeners();
       _downloader.requestDownload(
         songVO,
         onProgress: (received, total) {
           if (total != -1) {
             songVO.percent = received / total;
-            // notifyListeners();
+            notifyListeners();
+            // percent = received / total;
           }
         },
         onDownloadFinished: (filePath) async {
+          activeDownloadIDs.remove(songVO.id);
+          // percent = 0;
           songVO.filePath = filePath;
           songVO.isDownloadFinished = true;
           await _songDao.saveItem(songVO);
-          // notifyListeners();
+          notifyListeners();
           completer.complete(AddToLibraryResult.success);
         },
       );
@@ -62,6 +68,27 @@ extension UICallbacks on LibraryBloc {
     }
 
     return completer.future;
+  }
+
+  void onTapDownload(SongVO songVO) {
+    activeDownloadIDs.add(songVO.id);
+    notifyListeners();
+    _downloader.requestDownload(
+      songVO,
+      onProgress: (received, total) {
+        if (total != -1) {
+          songVO.percent = received / total;
+          notifyListeners();
+        }
+      },
+      onDownloadFinished: (filePath) async {
+        activeDownloadIDs.remove(songVO.id);
+        songVO.filePath = filePath;
+        songVO.isDownloadFinished = true;
+        await _songDao.saveItem(songVO);
+        notifyListeners();
+      },
+    );
   }
 
   void onTapFavorite(SongVO songVO) async {
@@ -137,22 +164,25 @@ extension UICallbacks on LibraryBloc {
     } else {
       var songInHive = _songDao.getItem(songVO.id);
       if (songInHive == null) {
+        activeDownloadIDs.add(songVO.id);
+        notifyListeners();
         _downloader.requestDownload(
           songVO,
           onProgress: (received, total) {
             if (total != -1) {
               songVO.percent = received / total;
-              // notifyListeners();
+              notifyListeners();
             }
           },
           onDownloadFinished: (filePath) async {
+            activeDownloadIDs.remove(songVO.id);
             songVO.filePath = filePath;
             songVO.isDownloadFinished = true;
             await _songDao.saveItem(songVO);
             playlistVo.songList.add(songVO);
             playlistVo.thumbnail = songVO.thumbnail;
             await playlistVo.save();
-            // notifyListeners();
+            notifyListeners();
 
             completer.complete(AddToPlaylistResult.success);
           },

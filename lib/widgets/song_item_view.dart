@@ -39,8 +39,7 @@ class SongItemView extends StatelessWidget {
               ),
               Expanded(
                   child: TitleArtistAndDownloadStatusView(
-                title: songVO.title,
-                artist: songVO.artist,
+                songVO: songVO,
                 isUpNext: isUpNext,
               )),
               if (nowPlayingSong?.id == songVO.id)
@@ -128,16 +127,13 @@ class SongItemView extends StatelessWidget {
 }
 
 class TitleArtistAndDownloadStatusView extends StatelessWidget {
+  final SongVO songVO;
   final bool isUpNext;
   const TitleArtistAndDownloadStatusView({
     Key? key,
     this.isUpNext = false,
-    required this.title,
-    required this.artist,
+    required this.songVO,
   }) : super(key: key);
-
-  final String title;
-  final String artist;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +142,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          title,
+          songVO.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: true,
@@ -162,21 +158,29 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            (false)
-                ? const CupertinoActivityIndicator(
-                    radius: 6,
-                  )
-                : Image.asset(
+            Selector<LibraryBloc, String?>(
+              selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == songVO.id, orElse: () => null),
+              builder: (_, id, __) {
+                print("builder download status");
+                if (id != null) {
+                  return const CupertinoActivityIndicator(radius: 6);
+                }
+                if (songVO.isDownloadFinished) {
+                  return Image.asset(
                     'assets/images/ic_downloaded.png',
                     color: primaryColor,
                     scale: 4,
-                  ),
+                  );
+                }
+                return Container();
+              },
+            ),
             const SizedBox(
               width: 2,
             ),
             Expanded(
               child: Text(
-                artist,
+                songVO.artist,
                 maxLines: 1,
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
