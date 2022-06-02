@@ -28,9 +28,9 @@ class SongItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerBloc, String?>(
-        selector: (_, playerBloc) => playerBloc.nowPlayingSongID,
-        builder: (_, nowPlayingSongID, __) {
+    return Selector<PlayerBloc, SongVO?>(
+        selector: (_, playerBloc) => playerBloc.nowPlayingSong,
+        builder: (_, nowPlayingSong, __) {
           return Row(
             children: [
               CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, isSearch: isSearch, cornerRadius: 10),
@@ -43,7 +43,7 @@ class SongItemView extends StatelessWidget {
                 artist: songVO.artist,
                 isUpNext: isUpNext,
               )),
-              if (nowPlayingSongID == songVO.id)
+              if (nowPlayingSong?.id == songVO.id)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

@@ -1,7 +1,9 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/dimens.dart';
+import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -79,56 +81,65 @@ class PlayerPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 64,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Selector<PlayerBloc, String>(
-                    selector: (_, playerBloc) => playerBloc.currentSongThumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg",
-                    builder: (_, thumbnail, __) {
-                      return CustomCachedImage(
-                        imageUrl: thumbnail,
+          Selector<PlayerBloc, SongVO?>(
+              selector: (_, playerBloc) => playerBloc.nowPlayingSong,
+              shouldRebuild: (_, __) => true,
+              builder: (_, nowPlayingSong, __) {
+                final imageUrl = nowPlayingSong?.thumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg";
+                final title = nowPlayingSong?.title ?? "Title";
+                final artist = nowPlayingSong?.artist ?? "Artist";
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 64,
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: CustomCachedImage(
+                        imageUrl: imageUrl,
                         width: 360,
                         height: 200,
                         cornerRadius: cornerRadius,
-                      );
-                    }),
-              ),
-              const SizedBox(
-                height: 48,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: TitleArtistAndDownloadButtonView(),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: SongSeekBarAndDurationView(),
-              ),
-              const SizedBox(
-                height: 60,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: PlayerIconsCollectionView(),
-              ),
-              const SizedBox(
-                height: 42,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: FavoriteAndTimerView(),
-              )
-            ],
-          ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 48,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: TitleArtistAndDownloadButtonView(
+                        title: title,
+                        artist: artist,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: SongSeekBarAndDurationView(),
+                    ),
+                    const SizedBox(
+                      height: 60,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 14),
+                      child: PlayerIconsCollectionView(),
+                    ),
+                    const SizedBox(
+                      height: 42,
+                    ),
+                    if (nowPlayingSong != null && nowPlayingSong.isDownloadFinished)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: FavoriteAndTimerView(songVO: nowPlayingSong),
+                      )
+                  ],
+                );
+              }),
           Align(
             alignment: Alignment.bottomCenter,
             child: InkWell(
@@ -149,7 +160,9 @@ class PlayerPage extends StatelessWidget {
 }
 
 class FavoriteAndTimerView extends StatelessWidget {
+  final SongVO songVO;
   const FavoriteAndTimerView({
+    required this.songVO,
     Key? key,
   }) : super(key: key);
 
@@ -158,14 +171,20 @@ class FavoriteAndTimerView extends StatelessWidget {
     return Row(
       children: [
         AssetImageButton(
-            onTap: () {},
-            width: 36,
-            height: 36,
-            imageUrl: (true) ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
-            color: null),
+          onTap: () => context.read<LibraryBloc>().onTapFavorite(songVO),
+          width: 36,
+          height: 36,
+          imageUrl: songVO.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
+          color: null,
+        ),
         const Spacer(),
         AssetImageButton(
-            onTap: () {}, width: 36, height: 36, imageUrl: (true) ? 'assets/images/ic_timer_done.png' : 'assets/images/ic_timer.png', color: null),
+          onTap: () {},
+          width: 36,
+          height: 36,
+          imageUrl: (true) ? 'assets/images/ic_timer_done.png' : 'assets/images/ic_timer.png',
+          color: null,
+        ),
       ],
     );
   }
@@ -327,7 +346,12 @@ class SongSeekBarAndDurationView extends StatelessWidget {
 }
 
 class TitleArtistAndDownloadButtonView extends StatelessWidget {
+  final String title;
+  final String artist;
+
   const TitleArtistAndDownloadButtonView({
+    required this.title,
+    required this.artist,
     Key? key,
   }) : super(key: key);
 
@@ -336,39 +360,33 @@ class TitleArtistAndDownloadButtonView extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Selector<PlayerBloc, List<String>>(selector: (_, playerBloc) {
-            final title = playerBloc.currentSongTitle ?? "Title";
-            final artist = playerBloc.currentSongArtist ?? "Artist";
-            return [title, artist];
-          }, builder: (_, titleAndArtist, __) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                MarqueeText(
-                  title: titleAndArtist[0],
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MarqueeText(
+                title: title,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 18,
+                  color: Colors.white,
                 ),
-                const SizedBox(
-                  height: 6,
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                artist,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
                 ),
-                Text(
-                  titleAndArtist[1],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            );
-          }),
+              ),
+            ],
+          ),
         ),
         const SizedBox(
           width: 42,
