@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
+import 'dart:ffi';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/song_dao.dart';
@@ -19,6 +21,7 @@ class PlayerBloc extends ChangeNotifier {
   String? currentSongThumbnail;
   String? currentSongArtist;
   SongVO? nowPlayingSong;
+  List<Color?> dominantColor = [];
   var queueState = <SongVO>[];
   var progressBarState = const ProgressBarState(
     buffered: Duration.zero,
@@ -205,8 +208,13 @@ extension InternalLogic on PlayerBloc {
         currentSongTitle = mediaItem.title;
         currentSongThumbnail = mediaItem.artUri.toString();
         currentSongArtist = mediaItem.artist!;
+        dominantColor = [
+          Color(mediaItem.extras!["beginColor"] as int),
+          Color(mediaItem.extras!["endColor"] as int),
+        ];
+        print("dominantColor: $dominantColor");
         nowPlayingSong = _getNowPlayingSong(mediaItem);
-        _logNowPlaying(mediaItem);
+        // _logNowPlaying(mediaItem);
 
         if (queue.length < 2) {
           isFirstSong = true;
@@ -257,6 +265,9 @@ extension InternalLogic on PlayerBloc {
           extras: {
             "isOffline": true,
             "filePath": urls[i],
+            // if color is null, provide default color
+            "beginColor": song.dominantColor[0]?.value ?? 0,
+            "endColor": song.dominantColor[1]?.value ?? 0
           },
         );
       } else {
@@ -269,6 +280,9 @@ extension InternalLogic on PlayerBloc {
           extras: {
             "isOffline": false,
             "url": urls[i],
+            // if color is null, provide default color
+            "beginColor": song.dominantColor[0]?.value ?? 0,
+            "endColor": song.dominantColor[1]?.value ?? 0
           },
         );
       }
@@ -313,8 +327,10 @@ List<SongVO> _mediaItemsToSongs(List<MediaItem> mediaItems) {
         thumbnail: mediaItem.artUri?.toString() ?? "",
         duration: mediaItem.duration ?? Duration.zero,
         filePath: mediaItem.extras!["filePath"] as String,
-        // Todo: Recheck this, might cause bug
-        dominantColor: [],
+        dominantColor: [
+          Color(mediaItem.extras!["beginColor"] as int),
+          Color(mediaItem.extras!["endColor"] as int),
+        ],
         isFavorite: false,
       );
       songVO.isDownloadFinished = true;
@@ -327,8 +343,10 @@ List<SongVO> _mediaItemsToSongs(List<MediaItem> mediaItems) {
         thumbnail: mediaItem.artUri?.toString() ?? "",
         duration: mediaItem.duration ?? Duration.zero,
         filePath: "",
-        // Todo: Recheck this, might cause bug
-        dominantColor: [],
+        dominantColor: [
+          Color(mediaItem.extras!["beginColor"] as int),
+          Color(mediaItem.extras!["endColor"] as int),
+        ],
         isFavorite: false,
       );
     }
