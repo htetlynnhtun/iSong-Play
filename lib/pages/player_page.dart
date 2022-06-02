@@ -83,12 +83,14 @@ class PlayerPage extends StatelessWidget {
         children: [
           Selector<PlayerBloc, SongVO?>(
               selector: (_, playerBloc) => playerBloc.nowPlayingSong,
-              shouldRebuild: (_, __) => true,
+              shouldRebuild: (old, now) => old?.isFavorite == now?.isFavorite,
               builder: (_, nowPlayingSong, __) {
                 final imageUrl = nowPlayingSong?.thumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg";
                 final title = nowPlayingSong?.title ?? "Title";
                 final artist = nowPlayingSong?.artist ?? "Artist";
 
+                // Todo: Fix me, building is being called too frequently
+                print("build selector");
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,

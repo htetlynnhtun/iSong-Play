@@ -105,6 +105,7 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<LibraryBloc, List<SongVO>>(
       selector: (_, libraryBloc) => libraryBloc.songs,
+      shouldRebuild: (_, __) => true,
       builder: (_, songs, __) {
         return Row(
           children: [
