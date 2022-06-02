@@ -64,6 +64,11 @@ extension UICallbacks on LibraryBloc {
     return completer.future;
   }
 
+  void onTapFavorite(SongVO songVO) async {
+    songVO.isFavorite = !songVO.isFavorite;
+    await songVO.save();
+  }
+
   void onPlaylistNameChanged(String name) {
     playlistName = name;
   }
