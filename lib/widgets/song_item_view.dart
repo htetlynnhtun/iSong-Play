@@ -85,7 +85,7 @@ class SongItemView extends StatelessWidget {
                       }
                       break;
                     case SongItemPopupMenu.deleteFromLibrary:
-                      print("delete library");
+                      context.read<LibraryBloc>().onTapDelete(songVO);
                       break;
                     // case SongItemPopupMenu.addToFavorite:
                     //   print("add fav");

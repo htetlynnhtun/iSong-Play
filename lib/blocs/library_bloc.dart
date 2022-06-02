@@ -74,6 +74,10 @@ extension UICallbacks on LibraryBloc {
     await songVO.save();
   }
 
+  void onTapDelete(SongVO songVO) async {
+    await songVO.delete();
+  }
+
   void onPlaylistNameChanged(String name) {
     playlistName = name;
   }
