@@ -2,6 +2,7 @@
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/persistance/song_dao.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:music_app/services/audio_player_handler.dart';
@@ -11,12 +12,14 @@ import 'package:music_app/vos/song_vo.dart';
 class PlayerBloc extends ChangeNotifier {
   late AudioPlayerHandler _playerHandler;
   late YoutubeService _youtubeService;
+  final _songDao = SongDao();
 
   // ========================= States =========================
-  String? currentSongTitle;
-  String? currentSongThumbnail;
-  String? currentSongArtist;
-  String? nowPlayingSongID;
+  // String? currentSongTitle;
+  // String? currentSongThumbnail;
+  // String? currentSongArtist;
+  // String? nowPlayingSongID;
+  SongVO? nowPlayingSong;
   var queueState = <SongVO>[];
   var progressBarState = const ProgressBarState(
     buffered: Duration.zero,
@@ -199,10 +202,11 @@ extension InternalLogic on PlayerBloc {
       (mediaItem, queue) {
         if (mediaItem == null) return;
 
-        currentSongTitle = mediaItem.title;
-        currentSongThumbnail = mediaItem.artUri.toString();
-        currentSongArtist = mediaItem.artist!;
-        nowPlayingSongID = mediaItem.id;
+        // currentSongTitle = mediaItem.title;
+        // currentSongThumbnail = mediaItem.artUri.toString();
+        // currentSongArtist = mediaItem.artist!;
+        // nowPlayingSongID = mediaItem.id;
+        nowPlayingSong = _getNowPlayingSong(mediaItem);
         _logNowPlaying(mediaItem);
 
         if (queue.length < 2) {
@@ -284,6 +288,15 @@ extension InternalLogic on PlayerBloc {
       nowPlaying = mediaItem.extras!["url"];
     }
     print("wtbug: Now playing: $nowPlaying");
+  }
+
+  SongVO _getNowPlayingSong(MediaItem mediaItem) {
+    final songInHive = _songDao.getItem(mediaItem.id);
+    if (songInHive != null) {
+      return songInHive;
+    } else {
+      return _mediaItemsToSongs([mediaItem]).first;
+    }
   }
 }
 
