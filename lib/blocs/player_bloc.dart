@@ -15,10 +15,9 @@ class PlayerBloc extends ChangeNotifier {
   final _songDao = SongDao();
 
   // ========================= States =========================
-  // String? currentSongTitle;
-  // String? currentSongThumbnail;
-  // String? currentSongArtist;
-  // String? nowPlayingSongID;
+  String? currentSongTitle;
+  String? currentSongThumbnail;
+  String? currentSongArtist;
   SongVO? nowPlayingSong;
   var queueState = <SongVO>[];
   var progressBarState = const ProgressBarState(
@@ -34,6 +33,7 @@ class PlayerBloc extends ChangeNotifier {
 
   PlayerBloc() {
     _init();
+    _songDao.watchItems().listen((_) => notifyListeners());
     // Todo: get the last recent track and feed it to player
   }
 
@@ -202,10 +202,9 @@ extension InternalLogic on PlayerBloc {
       (mediaItem, queue) {
         if (mediaItem == null) return;
 
-        // currentSongTitle = mediaItem.title;
-        // currentSongThumbnail = mediaItem.artUri.toString();
-        // currentSongArtist = mediaItem.artist!;
-        // nowPlayingSongID = mediaItem.id;
+        currentSongTitle = mediaItem.title;
+        currentSongThumbnail = mediaItem.artUri.toString();
+        currentSongArtist = mediaItem.artist!;
         nowPlayingSong = _getNowPlayingSong(mediaItem);
         _logNowPlaying(mediaItem);
 

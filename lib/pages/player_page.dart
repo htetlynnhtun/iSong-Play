@@ -81,67 +81,70 @@ class PlayerPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Selector<PlayerBloc, SongVO?>(
-              selector: (_, playerBloc) => playerBloc.nowPlayingSong,
-              shouldRebuild: (old, now) => old?.isFavorite == now?.isFavorite,
-              builder: (_, nowPlayingSong, __) {
-                final imageUrl = nowPlayingSong?.thumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg";
-                final title = nowPlayingSong?.title ?? "Title";
-                final artist = nowPlayingSong?.artist ?? "Artist";
-
-                // Todo: Fix me, building is being called too frequently
-                print("build selector");
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 64,
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: CustomCachedImage(
-                        imageUrl: imageUrl,
-                        width: 360,
-                        height: 200,
-                        cornerRadius: cornerRadius,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 48,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: TitleArtistAndDownloadButtonView(
-                        title: title,
-                        artist: artist,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: SongSeekBarAndDurationView(),
-                    ),
-                    const SizedBox(
-                      height: 60,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 14),
-                      child: PlayerIconsCollectionView(),
-                    ),
-                    const SizedBox(
-                      height: 42,
-                    ),
-                    if (nowPlayingSong != null && nowPlayingSong.isDownloadFinished)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        child: FavoriteAndTimerView(songVO: nowPlayingSong),
-                      )
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 64,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Selector<PlayerBloc, String>(
+                  selector: (_, playerBloc) => playerBloc.currentSongThumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg",
+                  builder: (_, imageUrl, __) {
+                    return CustomCachedImage(
+                      imageUrl: imageUrl,
+                      width: 360,
+                      height: 200,
+                      cornerRadius: cornerRadius,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 48,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Selector<PlayerBloc, List<String?>>(
+                  selector: (_, playerBloc) => [
+                    playerBloc.currentSongTitle,
+                    playerBloc.currentSongArtist,
                   ],
-                );
-              }),
+                  builder: (_, titleAndArtist, __) {
+                    final title = titleAndArtist[0] ?? "Title";
+                    final artist = titleAndArtist[1] ?? "Artist";
+                    return TitleArtistAndDownloadButtonView(
+                      title: title,
+                      artist: artist,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: SongSeekBarAndDurationView(),
+              ),
+              const SizedBox(
+                height: 60,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: PlayerIconsCollectionView(),
+              ),
+              const SizedBox(
+                height: 42,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14),
+                child: FavoriteAndTimerView(),
+              ),
+            ],
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: InkWell(
@@ -162,9 +165,7 @@ class PlayerPage extends StatelessWidget {
 }
 
 class FavoriteAndTimerView extends StatelessWidget {
-  final SongVO songVO;
   const FavoriteAndTimerView({
-    required this.songVO,
     Key? key,
   }) : super(key: key);
 
@@ -172,13 +173,21 @@ class FavoriteAndTimerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        AssetImageButton(
-          onTap: () => context.read<LibraryBloc>().onTapFavorite(songVO),
-          width: 36,
-          height: 36,
-          imageUrl: songVO.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
-          color: null,
-        ),
+        Selector<PlayerBloc, SongVO?>(
+            selector: (_, playerBloc) => playerBloc.nowPlayingSong,
+            shouldRebuild: (_, __) => true,
+            builder: (_, nowPlayingSong, __) {
+              if (nowPlayingSong?.isDownloadFinished ?? false) {
+                return AssetImageButton(
+                  onTap: () => context.read<LibraryBloc>().onTapFavorite(nowPlayingSong!),
+                  width: 36,
+                  height: 36,
+                  imageUrl: nowPlayingSong!.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
+                  color: null,
+                );
+              }
+              return Container();
+            }),
         const Spacer(),
         AssetImageButton(
           onTap: () {},
