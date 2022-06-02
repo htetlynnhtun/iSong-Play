@@ -94,7 +94,7 @@ class SongItemView extends StatelessWidget {
                       context.read<LibraryBloc>().onTapDeleteFromFavorite(songVO);
                       break;
                     case SongItemPopupMenu.addToQueue:
-                      print("add queue");
+                      context.read<PlayerBloc>().onTapAddToQueue(songVO);
                       break;
                     case SongItemPopupMenu.addToPlaylist:
                       showModalBottomSheet(

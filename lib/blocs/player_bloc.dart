@@ -142,17 +142,42 @@ extension UIEvent on PlayerBloc {
   // Todo: Refactor for offline songs
   void onTapAddToQueue(SongVO songVO) async {
     print("wtbug: onTapAddToQueue");
-    final link = await _youtubeService.getLink(songVO.id);
-    final mediaItem = MediaItem(
-      id: songVO.id,
-      title: songVO.title,
-      duration: songVO.duration,
-      extras: {
-        "isOffline": false,
-        "url": link.toString(),
-      },
-    );
+    MediaItem mediaItem;
+
+    if (songVO.isDownloadFinished) {
+      mediaItem = MediaItem(
+        id: songVO.id,
+        title: songVO.title,
+        artist: songVO.artist,
+        duration: songVO.duration,
+        artUri: Uri.parse(songVO.thumbnail),
+        extras: {
+          "isOffline": true,
+          "filePath": songVO.filePath,
+          // if color is null, provide default color
+          "beginColor": songVO.dominantColor[0]?.value ?? 0,
+          "endColor": songVO.dominantColor[1]?.value ?? 0
+        },
+      );
+    } else {
+      final link = await _youtubeService.getLink(songVO.id);
+      mediaItem = MediaItem(
+        id: songVO.id,
+        title: songVO.title,
+        artist: songVO.artist,
+        duration: songVO.duration,
+        artUri: Uri.parse(songVO.thumbnail),
+        extras: {
+          "isOffline": false,
+          "url": link.toString(),
+          // if color is null, provide default color
+          "beginColor": songVO.dominantColor[0]?.value ?? 0,
+          "endColor": songVO.dominantColor[1]?.value ?? 0
+        },
+      );
+    }
     await _playerHandler.addQueueItem(mediaItem);
+    play();
   }
 }
 
