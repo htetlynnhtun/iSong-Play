@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/recent_search_dao.dart';
+import 'package:music_app/persistance/song_dao.dart';
 import 'package:music_app/services/youtube_service.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
@@ -7,6 +8,7 @@ import 'package:music_app/vos/song_vo.dart';
 class SearchBloc extends ChangeNotifier {
   final _youtubeService = YoutubeService();
   final _recentSearchDao = RecentSearchDao();
+  final _songDao = SongDao();
 
   SearchBloc() {
     _recentSearchDao.watchItems().listen((data) {
@@ -52,7 +54,7 @@ class SearchBloc extends ChangeNotifier {
       currentContentView = SearchContent.result;
       showSearchingLoadingIndicator = true;
       notifyListeners();
-      searchResults = await _youtubeService.getSongs(searchQuery);
+      await _startSearching(searchQuery);
       showSearchingLoadingIndicator = false;
       notifyListeners();
     }
@@ -65,7 +67,7 @@ class SearchBloc extends ChangeNotifier {
     currentContentView = SearchContent.result;
     showSearchingLoadingIndicator = true;
     notifyListeners();
-    searchResults = await _youtubeService.getSongs(query);
+    await _startSearching(query);
     showSearchingLoadingIndicator = false;
     notifyListeners();
   }
@@ -105,6 +107,16 @@ extension InternalLogic on SearchBloc {
       savedItem.createdAt = DateTime.now();
       await savedItem.save();
     }
+  }
+
+  Future<void> _startSearching(String query) async {
+    searchResults = await _youtubeService.getSongs(query);
+    searchResults.asMap().forEach((index, resultSong) {
+      final songInHive = _songDao.getItem(resultSong.id);
+      if (songInHive != null) {
+        searchResults[index] = songInHive;
+      }
+    });
   }
 }
 
