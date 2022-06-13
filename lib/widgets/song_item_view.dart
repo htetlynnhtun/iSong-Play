@@ -161,7 +161,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
             Selector<LibraryBloc, String?>(
               selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == songVO.id, orElse: () => null),
               builder: (_, id, __) {
-                print("builder download status");
+                // print("builder download status");
                 if (id != null) {
                   return const CupertinoActivityIndicator(radius: 6);
                 }

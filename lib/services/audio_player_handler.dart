@@ -8,6 +8,7 @@ abstract class AudioPlayerHandler implements AudioHandler {
   Future<void> moveQueueItem(int currentIndex, int newIndex);
   ValueStream<double> get volume;
   Future<void> setVolume(double volume);
+  // Future<void> setQueue(int initialIndex, List<MediaItem> queue);
   // ValueStream<double> get speed;
 }
 
@@ -198,6 +199,12 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implement
     // await _playlist.clear();
     // await _playlist.addAll(_itemsToSources(queue));
   }
+
+  // @override
+  // Future<void> setQueue(int initialIndex, List<MediaItem> queue) async {
+  //   _playlist = ConcatenatingAudioSource(children: _itemsToSources(queue));
+  //   await _player.setAudioSource(_playlist, preload: true, initialIndex: initialIndex);
+  // }
 
   @override
   Future<void> updateMediaItem(MediaItem mediaItem) async {

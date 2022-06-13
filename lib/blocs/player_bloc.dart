@@ -1,7 +1,5 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
-import 'dart:ffi';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/song_dao.dart';
@@ -59,15 +57,30 @@ class PlayerBloc extends ChangeNotifier {
 
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
+  static var songsList = <SongVO>[];
+
   void onTapSong(int index, List<SongVO> songs) async {
+    pause();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
     notifyListeners();
     print("wtbug: onTapSong");
 
-    List<MediaItem> mediaItems = await _songsToMediaItems(songs);
+    // check if songs is the same with current queue
+    // var theSame = songs.every((song) => queueState.any((e) => e.id == song.id));
+    // if (songs.length != queueState.length || !theSame) {
+    //   print("new queue");
+    //   List<MediaItem> mediaItems = await _songsToMediaItems(songs);
+    //   await _playerHandler.updateQueue(mediaItems);
+    // }
+    if (!(songsList.isNotEmpty && (songsList.first == songs.first))) {
+      print("first time click");
+      songsList = [];
+      songsList.addAll(songs);
+      final mediaItems = await _songsToMediaItems(songs);
+      await _playerHandler.updateQueue(mediaItems);
+    }
 
-    await _playerHandler.updateQueue(mediaItems);
     await _playerHandler.skipToQueueItem(index);
     await _playerHandler.play();
   }
@@ -237,7 +250,7 @@ extension InternalLogic on PlayerBloc {
           Color(mediaItem.extras!["beginColor"] as int),
           Color(mediaItem.extras!["endColor"] as int),
         ];
-        print("dominantColor: $dominantColor");
+        // print("dominantColor: $dominantColor");
         nowPlayingSong = _getNowPlayingSong(mediaItem);
         // _logNowPlaying(mediaItem);
 
