@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:music_app/blocs/player_bloc.dart';
+import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/song_item_view.dart';
 
@@ -8,13 +11,27 @@ class OfflineSearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.separated(
-          itemBuilder: (context, index) => SongItemView(SongVO.dummySong()),
-          separatorBuilder: (context, index) => const SizedBox(
-                height: 12,
+    return Selector<SearchBloc, List<SongVO>>(
+      selector: (_, searchBloc) => searchBloc.offlineSearchResults,
+      builder: (_, songs, __) {
+        return Expanded(
+          child: ListView.separated(
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
+              child: SongItemView(
+                songs[index],
+                menus: const [
+                  SongItemPopupMenu.addToQueue,
+                  SongItemPopupMenu.addToPlaylist,
+                ],
+                isSearch: true,
               ),
-          itemCount: 10),
+            ),
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemCount: songs.length,
+          ),
+        );
+      },
     );
   }
 }

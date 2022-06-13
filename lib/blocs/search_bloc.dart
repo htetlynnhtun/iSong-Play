@@ -28,6 +28,7 @@ class SearchBloc extends ChangeNotifier {
   var showClearButton = false;
   var tappedQuery = "";
   var showSearchingLoadingIndicator = false;
+  var offlineSearchResults = <SongVO>[];
 
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
@@ -38,9 +39,15 @@ class SearchBloc extends ChangeNotifier {
   void onSearchQueryChange(String query) async {
     searchQuery = query;
     if (searchQuery.isEmpty) {
+      // For offline search
+      offlineSearchResults = [];
+      // For online search
       currentContentView = SearchContent.recent;
       showClearButton = false;
     } else {
+      // for offline search
+      offlineSearchResults = _songDao.getBox().values.where((song) => song.title.toLowerCase().contains(query.toLowerCase())).toList();
+      // For online search
       currentContentView = SearchContent.suggestion;
       showClearButton = true;
       suggestions = await _youtubeService.getSuggestion(query);
