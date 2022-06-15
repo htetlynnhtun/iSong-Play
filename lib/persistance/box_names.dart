@@ -10,3 +10,9 @@ const durationTypeId = 3;
 
 const playlistBox = "playlist";
 const playlistTypeId = 4;
+
+const trendingSongsBox = "trendingSongs";
+
+const musicSectionBox = "musicSection";
+const musicSectionTypeId = 5;
+const musicListTypeId = 6;

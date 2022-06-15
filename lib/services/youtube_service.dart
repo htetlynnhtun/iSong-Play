@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:music_app/vos/music_list_vo.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import 'package:music_app/vos/song_vo.dart';
@@ -53,9 +54,162 @@ class YoutubeService {
     // });
   }
 
+  Future<List<SongVO>> getSongsByID(List<String> ids) async {
+    final videos = await Future.wait(ids.map((id) => _yt.videos.get(id)));
+    final songs = await Future.wait(videos.where((video) => !video.isLive).map((video) => video.toSongVO()));
+
+    return songs;
+  }
+
   Future<Uri> getLink(String id) async {
     final manifest = await _yt.videos.streams.getManifest(id);
     final url = manifest.audioOnly.firstWhere((audio) => audio.tag == 140).url;
     return url;
+  }
+
+  Future<MusicListVO> getMusicList(String playlistID) async {
+    final videos = await _yt.playlists.getVideos(playlistID).take(10).toList();
+    final metadata = await _yt.playlists.get(playlistID);
+    // await for (var video in _yt.playlists.getVideos(playlistID)) {
+    //   videos.add(video);
+    // }
+    final songs = await Future.wait(videos.where((video) => !video.isLive).map((video) => video.toSongVO()));
+  
+    return MusicListVO(
+      title: metadata.title,
+      playlistId: playlistID,
+      thumbnail: metadata.thumbnails.standardResUrl,
+      songCount: songs.length,
+    );
+  }
+
+  Future<Map<String, List>> getTrendingData() async {
+    final Uri link = Uri.https(
+      "www.youtube.com",
+      "/music",
+    );
+    try {
+      final response = await _dio.getUri(link);
+      if (response.statusCode != 200) {
+        return {};
+      }
+      final String searchResults = RegExp(r'(\"contents\":{.*?}),\"metadata\"', dotAll: true).firstMatch(response.data)![1]!;
+      final Map data = json.decode('{$searchResults}') as Map;
+
+      final List result =
+          data['contents']['twoColumnBrowseResultsRenderer']['tabs'][0]['tabRenderer']['content']['sectionListRenderer']['contents'] as List;
+
+      final List headResult = data['header']['carouselHeaderRenderer']['contents'][0]['carouselItemRenderer']['carouselItems'] as List;
+
+      final List shelfRenderer = result.map((element) {
+        return element['itemSectionRenderer']['contents'][0]['shelfRenderer'];
+      }).toList();
+
+      final List finalResult = shelfRenderer.map((element) {
+        if (element['title']['runs'][0]['text'].trim() != 'Highlights from Global Citizen Live') {
+          return {
+            'title': element['title']['runs'][0]['text'],
+            'playlists': element['title']['runs'][0]['text'].trim() == 'Charts'
+                ? formatChartItems(
+                    element['content']['horizontalListRenderer']['items'] as List,
+                  )
+                : element['title']['runs'][0]['text'].toString().contains('Music Videos')
+                    ? formatVideoItems(
+                        element['content']['horizontalListRenderer']['items'] as List,
+                      )
+                    : formatItems(
+                        element['content']['horizontalListRenderer']['items'] as List,
+                      ),
+          };
+        } else {
+          return null;
+        }
+      }).toList();
+
+      final finalHeadResult = formatHeadItems(headResult);
+      finalResult.removeWhere((element) => element == null);
+
+      return {'body': finalResult, 'head': finalHeadResult};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  List formatVideoItems(List itemsList) {
+    try {
+      final List result = itemsList.map((e) {
+        return {
+          'title': e['gridVideoRenderer']['title']['simpleText'],
+          'type': 'video',
+          'description': e['gridVideoRenderer']['shortBylineText']['runs'][0]['text'],
+          'count': e['gridVideoRenderer']['shortViewCountText']['simpleText'],
+          'videoId': e['gridVideoRenderer']['videoId'],
+          'firstItemId': e['gridVideoRenderer']['videoId'],
+          'image': e['gridVideoRenderer']['thumbnail']['thumbnails'].last['url'],
+          'imageMin': e['gridVideoRenderer']['thumbnail']['thumbnails'][0]['url'],
+          'imageMedium': e['gridVideoRenderer']['thumbnail']['thumbnails'][1]['url'],
+          'imageStandard': e['gridVideoRenderer']['thumbnail']['thumbnails'][2]['url'],
+          'imageMax': e['gridVideoRenderer']['thumbnail']['thumbnails'].last['url'],
+        };
+      }).toList();
+
+      return result;
+    } catch (e) {
+      return List.empty();
+    }
+  }
+
+  List formatChartItems(List itemsList) {
+    try {
+      final List result = itemsList.map((e) {
+        return {
+          'title': e['gridPlaylistRenderer']['title']['runs'][0]['text'],
+          'type': 'chart',
+          'description': e['gridPlaylistRenderer']['shortBylineText']['runs'][0]['text'],
+          'count': e['gridPlaylistRenderer']['videoCountText']['runs'][0]['text'],
+          'playlistId': e['gridPlaylistRenderer']['navigationEndpoint']['watchEndpoint']['playlistId'],
+          'firstItemId': e['gridPlaylistRenderer']['navigationEndpoint']['watchEndpoint']['videoId'],
+          'image': e['gridPlaylistRenderer']['thumbnail']['thumbnails'][0]['url'],
+          'imageMedium': e['gridPlaylistRenderer']['thumbnail']['thumbnails'][0]['url'],
+          'imageStandard': e['gridPlaylistRenderer']['thumbnail']['thumbnails'][0]['url'],
+          'imageMax': e['gridPlaylistRenderer']['thumbnail']['thumbnails'][0]['url'],
+        };
+      }).toList();
+
+      return result;
+    } catch (e) {
+      return List.empty();
+    }
+  }
+
+  List formatItems(List itemsList) {
+    try {
+      final List result = itemsList.map((e) {
+        return {
+          'title': e['compactStationRenderer']['title']['simpleText'],
+          'type': 'playlist',
+          'description': e['compactStationRenderer']['description']['simpleText'],
+          'count': e['compactStationRenderer']['videoCountText']['runs'][0]['text'],
+          'playlistId': e['compactStationRenderer']['navigationEndpoint']['watchEndpoint']['playlistId'],
+          'firstItemId': e['compactStationRenderer']['navigationEndpoint']['watchEndpoint']['videoId'],
+          'image': e['compactStationRenderer']['thumbnail']['thumbnails'][0]['url'],
+          'imageMedium': e['compactStationRenderer']['thumbnail']['thumbnails'][0]['url'],
+          'imageStandard': e['compactStationRenderer']['thumbnail']['thumbnails'][1]['url'],
+          'imageMax': e['compactStationRenderer']['thumbnail']['thumbnails'][2]['url'],
+        };
+      }).toList();
+
+      return result;
+    } catch (e) {
+      return List.empty();
+    }
+  }
+
+  List<String> formatHeadItems(List itemsList) {
+    try {
+      return itemsList.map((e) => e['defaultPromoPanelRenderer']['navigationEndpoint']['watchEndpoint']['videoId'] as String).toList();
+    } catch (e) {
+      return List.empty();
+    }
   }
 }
