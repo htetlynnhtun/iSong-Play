@@ -299,17 +299,21 @@ class PlayerIconsCollectionView extends StatelessWidget {
             selector: (_, playerBloc) => playerBloc.repeatState,
             builder: (_, repeatState, __) {
               String imageUrl;
+              Color? color;
               switch (repeatState) {
                 case RepeatState.off:
                   // Todo: Swap with repeat off image
-                  imageUrl = "assets/images/ic_add.png";
+                  imageUrl = "assets/images/ic_repeat.png";
+                  color = Colors.white;
                   break;
                 case RepeatState.one:
                   // Todo: Swap with repeat one image
-                  imageUrl = "assets/images/ic_back.png";
+                  imageUrl = "assets/images/ic_repeat_one.png";
+                  color = primaryColor;
                   break;
                 case RepeatState.playlist:
-                  imageUrl = "assets/images/ic_loop.png";
+                  imageUrl = "assets/images/ic_repeat.png";
+                  color = primaryColor;
                   break;
               }
               return AssetImageButton(
@@ -317,7 +321,8 @@ class PlayerIconsCollectionView extends StatelessWidget {
                 width: 32,
                 height: 32,
                 imageUrl: imageUrl,
-                color: (true) ? primaryColor : Colors.white,
+                color: color,
+               // color: (true) ? primaryColor : Colors.white,
               );
             }),
       ],
@@ -425,10 +430,10 @@ class DownloadProcessView extends StatelessWidget {
         }
 
         if (nowPlayingSong.isDownloadFinished) {
-          return const Icon(
-            Icons.download_done,
-            color: primaryColor,
-            size: 36,
+          return  AssetImageButton(
+            width: 36,
+            height: 36,
+            imageUrl: 'assets/images/ic_downloaded.png', onTap: (){}, color: primaryColor,
           );
         }
 
