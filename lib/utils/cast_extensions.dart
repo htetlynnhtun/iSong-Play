@@ -39,3 +39,23 @@ extension Casting on SearchVideo {
     );
   }
 }
+
+extension Cast on Video {
+  Future<SongVO> toSongVO() async {
+    final imageUrl = thumbnails.highResUrl.toString();
+    // final imageUrl = "https://i.ytimg.com/vi/${id.toString()}/hqdefault.jpg";
+
+    // print("wtbug: video thumbnail: $imageUrl");
+    return SongVO(
+      createdAt: DateTime.now(),
+      id: id.toString(),
+      title: title,
+      artist: author,
+      thumbnail: imageUrl,
+      duration: duration!,
+      filePath: "",
+      dominantColor: await DominantColor.getDominantColor(imageUrl),
+      isFavorite: false,
+    );
+  }
+}

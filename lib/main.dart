@@ -4,6 +4,8 @@ import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/persistance/color_adapter.dart';
 import 'package:music_app/persistance/duration_adapter.dart';
+import 'package:music_app/vos/music_list_vo.dart';
+import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
@@ -22,10 +24,14 @@ void main() async {
   Hive.registerAdapter(ColorAdapter());
   Hive.registerAdapter(DurationAdapter());
   Hive.registerAdapter(PlaylistVoAdapter());
+  Hive.registerAdapter(MusicListVOAdapter());
+  Hive.registerAdapter(MusicSectionVOAdapter());
 
+  await Hive.openBox<SongVO>(trendingSongsBox);
   await Hive.openBox<RecentSearchVO>(recentSearchBox);
   await Hive.openBox<SongVO>(songBox);
   await Hive.openBox<PlaylistVo>(playlistBox);
+  await Hive.openBox<MusicSectionVO>(musicSectionBox);
 
   runApp(const MyApp());
 }

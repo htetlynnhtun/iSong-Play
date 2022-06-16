@@ -4,16 +4,18 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/resources/constants.dart';
+import 'package:music_app/vos/music_list_vo.dart';
+import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/title_text.dart';
 import 'package:provider/provider.dart';
 import '../resources/dimens.dart';
 import 'custom_cached_image.dart';
 
-class TitleAndPlayListCollectionView extends StatelessWidget {
-  final String title;
-  const TitleAndPlayListCollectionView({
-    required this.title,
+class MusicSectionView extends StatelessWidget {
+  final MusicSectionVO musicSectionVO;
+  const MusicSectionView({
+    required this.musicSectionVO,
     Key? key,
   }) : super(key: key);
 
@@ -23,32 +25,34 @@ class TitleAndPlayListCollectionView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-         TitleText(title: title),
+        TitleText(title: musicSectionVO.title),
         const SizedBox(
           height: 8,
         ),
         SizedBox(
           height: 180,
           child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) => PlaylistAndPlayerView(
-                    imageUrl: bannerImage[index],
-                  ),
-              separatorBuilder: (context, index) => const SizedBox(
-                    width: 16,
-                  ),
-              itemCount: bannerImage.length),
-        )
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => PlaylistAndPlayerView(
+              musicListVO: musicSectionVO.musicLists[index],
+            ),
+            separatorBuilder: (context, index) => const SizedBox(
+              width: 16,
+            ),
+            itemCount: musicSectionVO.musicLists.length,
+          ),
+        ),
+        const SizedBox(height: 20),
       ],
     );
   }
 }
 
 class PlaylistAndPlayerView extends StatelessWidget {
-  final String imageUrl;
+  final MusicListVO musicListVO;
   const PlaylistAndPlayerView({
-    required this.imageUrl,
+    required this.musicListVO,
     Key? key,
   }) : super(key: key);
 
@@ -58,7 +62,7 @@ class PlaylistAndPlayerView extends StatelessWidget {
       children: [
         Positioned.fill(
           child: CustomCachedImage(
-            imageUrl: imageUrl,
+            imageUrl: musicListVO.thumbnail,
             width: 175,
             height: 175,
             cornerRadius: cornerRadius,
@@ -68,9 +72,7 @@ class PlaylistAndPlayerView extends StatelessWidget {
           padding: EdgeInsets.only(top: 8, left: 8),
           child: BackgroundBlurAndTracksView(),
         ),
-        const Align(
-            alignment: Alignment.bottomCenter,
-            child: GradientBackgroundAndPlayerView()),
+        const Align(alignment: Alignment.bottomCenter, child: GradientBackgroundAndPlayerView()),
         const Align(
           alignment: Alignment.bottomCenter,
           child: SongTitleAndPlayerIconView(),
@@ -130,7 +132,7 @@ class SongTitleAndPlayerIconView extends StatelessWidget {
           ),
           AssetImageButton(
             onTap: () {},
-            imageUrl: (true)?'assets/images/ic_play_circle.png':'assets/images/ic_pause_circle.png',
+            imageUrl: (true) ? 'assets/images/ic_play_circle.png' : 'assets/images/ic_pause_circle.png',
             color: null,
             height: 48,
             width: 48,

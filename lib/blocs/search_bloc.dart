@@ -72,6 +72,7 @@ class SearchBloc extends ChangeNotifier {
     await _cacheRecentSearch(query);
     searchResults = [];
     currentContentView = SearchContent.result;
+    showClearButton = true;
     showSearchingLoadingIndicator = true;
     notifyListeners();
     await _startSearching(query);
@@ -90,6 +91,7 @@ class SearchBloc extends ChangeNotifier {
   void clearQuery() {
     searchQuery = "";
     showClearButton = false;
+    offlineSearchResults = [];
     currentContentView = SearchContent.recent;
     notifyListeners();
   }
