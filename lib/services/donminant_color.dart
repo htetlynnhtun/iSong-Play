@@ -9,7 +9,7 @@ class DominantColor {
       maximumColorCount: 20,
     );
     Color? beginColor = paletteGenerator.darkMutedColor?.color;
-    Color? endColor = paletteGenerator.mutedColor?.color;
+    Color? endColor = paletteGenerator.dominantColor?.color;
     return [beginColor, endColor];
   }
 }

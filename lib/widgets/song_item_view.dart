@@ -176,7 +176,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
               },
             ),
             const SizedBox(
-              width: 2,
+              width: 3,
             ),
             Expanded(
               child: Text(

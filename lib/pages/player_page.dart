@@ -22,10 +22,38 @@ class PlayerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Selector<PlayerBloc, SongVO?>(
+      selector: (context, playerBloc) => playerBloc.nowPlayingSong,
+      builder: (context, nowPlayingSong, _) => Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+                colors: [
+                  nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
+                      const Color(0xffd283ff),
+                  nowPlayingSong?.dominantColor.last?.withOpacity(0.5) ??
+                      const Color(0xffdeb2f5),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: const [0, 1],
+                tileMode: TileMode.decal),
+          ),
+          child: const PlayerDetailView()),
+    );
+  }
+}
+
+class PlayerDetailView extends StatelessWidget {
+  const PlayerDetailView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black12,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: Colors.black12,
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         elevation: 0,
         centerTitle: true,
@@ -92,7 +120,10 @@ class PlayerPage extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Selector<PlayerBloc, String>(
-                  selector: (_, playerBloc) => playerBloc.currentSongThumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg",
+                  // Todo: handle fist time app lunch image
+                  selector: (_, playerBloc) =>
+                      playerBloc.currentSongThumbnail ??
+                      "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg",
                   builder: (_, imageUrl, __) {
                     return CustomCachedImage(
                       imageUrl: imageUrl,
@@ -150,7 +181,10 @@ class PlayerPage extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: InkWell(
                 onTap: () {
-                  showModalBottomSheet(backgroundColor: Colors.black, context: context, builder: (context) => const UpNextView());
+                  showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      builder: (context) => const UpNextView());
                 },
                 child: const Padding(
                   padding: EdgeInsets.only(bottom: 46),
@@ -180,10 +214,14 @@ class FavoriteAndTimerView extends StatelessWidget {
             builder: (_, nowPlayingSong, __) {
               if (nowPlayingSong?.isDownloadFinished ?? false) {
                 return AssetImageButton(
-                  onTap: () => context.read<LibraryBloc>().onTapFavorite(nowPlayingSong!),
+                  onTap: () => context
+                      .read<LibraryBloc>()
+                      .onTapFavorite(nowPlayingSong!),
                   width: 36,
                   height: 36,
-                  imageUrl: nowPlayingSong!.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
+                  imageUrl: nowPlayingSong!.isFavorite
+                      ? 'assets/images/ic_favorite_done.png'
+                      : 'assets/images/ic_favorite.png',
                   color: null,
                 );
               }
@@ -194,7 +232,9 @@ class FavoriteAndTimerView extends StatelessWidget {
           onTap: () {},
           width: 36,
           height: 36,
-          imageUrl: (true) ? 'assets/images/ic_timer_done.png' : 'assets/images/ic_timer.png',
+          imageUrl: (true)
+              ? 'assets/images/ic_timer_done.png'
+              : 'assets/images/ic_timer.png',
           color: null,
         ),
       ],
@@ -322,7 +362,7 @@ class PlayerIconsCollectionView extends StatelessWidget {
                 height: 32,
                 imageUrl: imageUrl,
                 color: color,
-               // color: (true) ? primaryColor : Colors.white,
+                // color: (true) ? primaryColor : Colors.white,
               );
             }),
       ],
@@ -430,19 +470,24 @@ class DownloadProcessView extends StatelessWidget {
         }
 
         if (nowPlayingSong.isDownloadFinished) {
-          return  AssetImageButton(
+          return AssetImageButton(
             width: 36,
             height: 36,
-            imageUrl: 'assets/images/ic_downloaded.png', onTap: (){}, color: primaryColor,
+            imageUrl: 'assets/images/ic_downloaded.png',
+            onTap: () {},
+            color: null,
           );
         }
 
         return Selector<LibraryBloc, String?>(
-          selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == nowPlayingSong.id, orElse: () => null),
+          selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs
+              .firstWhere((element) => element == nowPlayingSong.id,
+                  orElse: () => null),
           builder: (_, id, __) {
             if (id == null) {
               return AssetImageButton(
-                onTap: () => context.read<LibraryBloc>().onTapDownload(nowPlayingSong),
+                onTap: () =>
+                    context.read<LibraryBloc>().onTapDownload(nowPlayingSong),
                 width: 36,
                 height: 36,
                 imageUrl: 'assets/images/ic_download.png',
