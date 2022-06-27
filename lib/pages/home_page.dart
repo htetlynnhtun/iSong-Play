@@ -247,7 +247,10 @@ class RecentTracksView extends StatelessWidget {
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
-            itemBuilder: (_, index) => TractsAndTitleView(recentTracks[index]),
+            itemBuilder: (_, index) => GestureDetector(
+              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks),
+              child: TractsAndTitleView(recentTracks[index]),
+            ),
             separatorBuilder: (_, __) => const SizedBox(width: 20),
             itemCount: recentTracks.length,
           ),
