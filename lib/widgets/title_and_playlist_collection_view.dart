@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/blocs/home_bloc.dart';
+import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/constants.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
@@ -34,9 +35,18 @@ class MusicSectionView extends StatelessWidget {
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => PlaylistAndPlayerView(
-              musicListVO: musicSectionVO.musicLists[index],
-            ),
+            itemBuilder: (context, index) {
+              final musicList = musicSectionVO.musicLists[index];
+              return GestureDetector(
+                onTap: () {
+                  context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
+                  // Todo: Route to MusicList page.
+                },
+                child: PlaylistAndPlayerView(
+                  musicListVO: musicList,
+                ),
+              );
+            },
             separatorBuilder: (context, index) => const SizedBox(
               width: 16,
             ),

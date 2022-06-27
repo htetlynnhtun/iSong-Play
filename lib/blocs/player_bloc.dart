@@ -92,6 +92,11 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.play();
   }
 
+  void onTapMusicList(String id) async {
+    final songs = await _youtubeService.getSongsOfMusicList(id);
+    onTapSong(0, songs);
+  }
+
   void onTapShufflePlay(List<SongVO> songs) async {
     List<MediaItem> mediaItems = await _songsToMediaItems(songs);
     isShuffleModeEnabled = true;
