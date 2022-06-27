@@ -45,7 +45,16 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 19,
             ),
-            const RecentTracksView(),
+            Selector<HomeBloc, List<SongVO>>(
+              selector: (_, homeBloc) => homeBloc.recentTracks,
+              builder: (_, recentTracks, __) {
+                if (recentTracks.isEmpty) {
+                  return Container();
+                } else {
+                  return RecentTracksView(recentTracks);
+                }
+              },
+            ),
             const SizedBox(
               height: 19,
             ),
@@ -220,9 +229,8 @@ class BannerTitleAndArtistView extends StatelessWidget {
 }
 
 class RecentTracksView extends StatelessWidget {
-  const RecentTracksView({
-    Key? key,
-  }) : super(key: key);
+  final List<SongVO> recentTracks;
+  const RecentTracksView(this.recentTracks, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -237,13 +245,12 @@ class RecentTracksView extends StatelessWidget {
         SizedBox(
           height: 135,
           child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (index, context) => const TractsAndTitleView(),
-              separatorBuilder: (index, context) => const SizedBox(
-                    width: 20,
-                  ),
-              itemCount: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (_, index) => TractsAndTitleView(recentTracks[index]),
+            separatorBuilder: (_, __) => const SizedBox(width: 20),
+            itemCount: recentTracks.length,
+          ),
         ),
       ],
     );
@@ -251,9 +258,8 @@ class RecentTracksView extends StatelessWidget {
 }
 
 class TractsAndTitleView extends StatelessWidget {
-  const TractsAndTitleView({
-    Key? key,
-  }) : super(key: key);
+  final SongVO track;
+  const TractsAndTitleView(this.track, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -261,8 +267,8 @@ class TractsAndTitleView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const CustomCachedImage(
-          imageUrl: 'https://img.youtube.com/vi/tGvhJCkboms/maxresdefault.jpg',
+        CustomCachedImage(
+          imageUrl: track.thumbnail,
           width: 90,
           height: 90,
           cornerRadius: cornerRadius,
@@ -272,10 +278,10 @@ class TractsAndTitleView extends StatelessWidget {
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 90),
-          child: const Text(
-            'သီချင်းခေါင်းစဉ်',
+          child: Text(
+            track.title,
             maxLines: 1,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
               overflow: TextOverflow.ellipsis,

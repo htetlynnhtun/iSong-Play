@@ -16,3 +16,5 @@ const trendingSongsBox = "trendingSongs";
 const musicSectionBox = "musicSection";
 const musicSectionTypeId = 5;
 const musicListTypeId = 6;
+
+const recentTracksBox = "recentTracks";

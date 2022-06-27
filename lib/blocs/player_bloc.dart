@@ -2,6 +2,7 @@
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/persistance/recent_tracks_dao.dart';
 import 'package:music_app/persistance/song_dao.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -13,6 +14,7 @@ class PlayerBloc extends ChangeNotifier {
   late AudioPlayerHandler _playerHandler;
   late YoutubeService _youtubeService;
   final _songDao = SongDao();
+  final _recentTracksDao = RecentTracksDao();
 
   // ========================= States =========================
   String? currentSongTitle;
@@ -31,6 +33,7 @@ class PlayerBloc extends ChangeNotifier {
   var isFirstSong = true;
   var isLastSong = true;
   var isShuffleModeEnabled = false;
+  final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
 
   PlayerBloc() {
     _init();
@@ -46,6 +49,10 @@ class PlayerBloc extends ChangeNotifier {
     _listenToMediaItemAndQueue();
     _listenToProgress();
     _listenToPlaybackState();
+
+    _internalNowPlayingSubject.distinct((p, n) => p.id == n.id).listen((song) {
+      _recentTracksDao.addToRecentTracks(song);
+    });
   }
 
   @override
@@ -253,6 +260,8 @@ extension InternalLogic on PlayerBloc {
         // print("dominantColor: $dominantColor");
         nowPlayingSong = _getNowPlayingSong(mediaItem);
         // _logNowPlaying(mediaItem);
+        _internalNowPlayingSubject.add(nowPlayingSong!);
+        // _recentTracksDao.addToRecentTracks(nowPlayingSong!);
 
         if (queue.length < 2) {
           isFirstSong = true;

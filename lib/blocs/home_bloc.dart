@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/music_section_dao.dart';
+import 'package:music_app/persistance/recent_tracks_dao.dart';
 import 'package:music_app/persistance/trending_songs_dao.dart';
 import 'package:music_app/resources/constants.dart';
 import 'package:music_app/services/donminant_color.dart';
@@ -12,12 +13,17 @@ class HomeBloc extends ChangeNotifier {
   final _ytService = YoutubeService();
   final _trendingSongsDao = TrendingSongsDao();
   final _musicSectionDao = MusicSectionDao();
+  final _recentTracksDao = RecentTracksDao();
   // ========================= States =========================
   int pageIndex = 0;
   Color? beginColor, endColor;
 
   /// For carousel section
   var trendingSongs = <SongVO>[];
+
+  /// For Recent Tracks section
+  var recentTracks = <SongVO>[];
+
   var musicSections = <MusicSectionVO>[];
 
   HomeBloc() {
@@ -28,6 +34,11 @@ class HomeBloc extends ChangeNotifier {
 
     _musicSectionDao.watchItems().listen((data) {
       musicSections = data;
+      notifyListeners();
+    });
+
+    _recentTracksDao.watchItems().listen((data) {
+      recentTracks = data.reversed.toList();
       notifyListeners();
     });
 

@@ -32,6 +32,7 @@ void main() async {
   await Hive.openBox<SongVO>(songBox);
   await Hive.openBox<PlaylistVo>(playlistBox);
   await Hive.openBox<MusicSectionVO>(musicSectionBox);
+  await Hive.openBox<SongVO>(recentTracksBox);
 
   runApp(const MyApp());
 }
