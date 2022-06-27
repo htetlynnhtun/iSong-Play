@@ -31,6 +31,10 @@ class RecentTracksDao {
     _box.put(_timeStamp.toString(), songVO);
   }
 
+  SongVO getLastRecentTrack() {
+    return _box.values.last;
+  }
+
   int get _timeStamp {
     return DateTime.now().millisecondsSinceEpoch;
   }
@@ -38,5 +42,4 @@ class RecentTracksDao {
   Box<SongVO> get _box {
     return Hive.box(recentTracksBox);
   }
-
 }

@@ -38,7 +38,7 @@ class PlayerBloc extends ChangeNotifier {
   PlayerBloc() {
     _init();
     _songDao.watchItems().listen((_) => notifyListeners());
-    // Todo: get the last recent track and feed it to player
+    _loadRecentTrack();
   }
 
   void _init() async {
@@ -53,6 +53,14 @@ class PlayerBloc extends ChangeNotifier {
     _internalNowPlayingSubject.distinct((p, n) => p.id == n.id).listen((song) {
       _recentTracksDao.addToRecentTracks(song);
     });
+  }
+
+  void _loadRecentTrack() async {
+    final lastRecentTrack = _recentTracksDao.getLastRecentTrack();
+    nowPlayingSong = lastRecentTrack;
+    notifyListeners();
+    final mediaItem = (await _songsToMediaItems([lastRecentTrack])).first;
+    _playerHandler.addQueueItem(mediaItem);
   }
 
   @override
