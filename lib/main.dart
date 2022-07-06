@@ -8,6 +8,7 @@ import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
+import 'package:music_app/vos/recent_track_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -26,13 +27,15 @@ void main() async {
   Hive.registerAdapter(PlaylistVoAdapter());
   Hive.registerAdapter(MusicListVOAdapter());
   Hive.registerAdapter(MusicSectionVOAdapter());
+  Hive.registerAdapter(RecentTrackVOAdapter());
 
   await Hive.openBox<SongVO>(trendingSongsBox);
   await Hive.openBox<RecentSearchVO>(recentSearchBox);
   await Hive.openBox<SongVO>(songBox);
+  await Hive.openBox<SongVO>(onlineSongBox);
   await Hive.openBox<PlaylistVo>(playlistBox);
   await Hive.openBox<MusicSectionVO>(musicSectionBox);
-  await Hive.openBox<SongVO>(recentTracksBox);
+  await Hive.openBox<RecentTrackVO>(recentTracksBox);
 
   runApp(const MyApp());
 }

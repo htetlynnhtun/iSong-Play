@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/recent_tracks_dao.dart';
 import 'package:music_app/persistance/song_dao.dart';
+import 'package:music_app/services/recent_track_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:music_app/services/audio_player_handler.dart';
@@ -13,8 +14,8 @@ import 'package:music_app/vos/song_vo.dart';
 class PlayerBloc extends ChangeNotifier {
   late AudioPlayerHandler _playerHandler;
   late YoutubeService _youtubeService;
+  late RecentTrackService _recentTrackService;
   final _songDao = SongDao();
-  final _recentTracksDao = RecentTracksDao();
 
   // ========================= States =========================
   String? currentSongTitle;
@@ -43,6 +44,7 @@ class PlayerBloc extends ChangeNotifier {
 
   void _init() async {
     _youtubeService = YoutubeService();
+    _recentTrackService = RecentTrackServiceImpl();
     _playerHandler = await AudioService.init(builder: () => AudioPlayerHandlerImpl());
 
     _listenToQueue();
@@ -51,16 +53,18 @@ class PlayerBloc extends ChangeNotifier {
     _listenToPlaybackState();
 
     _internalNowPlayingSubject.distinct((p, n) => p.id == n.id).listen((song) {
-      _recentTracksDao.addToRecentTracks(song);
+      _recentTrackService.addToRecentTracks(song);
     });
   }
 
   void _loadRecentTrack() async {
-    final lastRecentTrack = _recentTracksDao.getLastRecentTrack();
+    final lastRecentTrack = _recentTrackService.getLastRecentTrack();
     nowPlayingSong = lastRecentTrack;
     notifyListeners();
-    final mediaItem = (await _songsToMediaItems([lastRecentTrack])).first;
-    _playerHandler.addQueueItem(mediaItem);
+    if (lastRecentTrack != null) {
+      final mediaItem = (await _songsToMediaItems([lastRecentTrack])).first;
+      _playerHandler.addQueueItem(mediaItem);
+    }
   }
 
   @override

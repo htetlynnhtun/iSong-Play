@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:music_app/vos/recent_track_vo.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:music_app/persistance/box_names.dart';
 import 'package:music_app/vos/song_vo.dart';
@@ -12,34 +13,45 @@ class RecentTracksDao {
 
   RecentTracksDao._internal();
 
-  Stream<List<SongVO>> watchItems() {
-    return _box.watch().map((_) {
-      if (_box.values.length > 20) {
-        _box.deleteAt(0);
-      }
-      return _box.values.toList();
-    }).startWith(_box.values.toList());
+  Stream<List<RecentTrackVO>> watchItems() {
+    return _box.watch().map((_) => getAll()).startWith(getAll());
   }
 
-  void addToRecentTracks(SongVO songVO) async {
+  void addToRecentTracks(RecentTrackVO recentTrack) async {
     try {
-      final songInHive = _box.values.firstWhere((song) => song.id == songVO.id);
-      await _box.delete(songInHive.key);
+      final trackInHive = _box.values.firstWhere((track) => track.songID == recentTrack.songID);
+      await _box.delete(trackInHive.key);
       // ignore: empty_catches
     } catch (error) {}
 
-    _box.put(_timeStamp.toString(), songVO);
+    _box.put(_timeStamp.toString(), recentTrack);
   }
 
-  SongVO getLastRecentTrack() {
+  RecentTrackVO getLastRecentTrack() {
     return _box.values.last;
+  }
+
+  RecentTrackVO? getItem(String key) {
+    return _box.get(key);
+  }
+
+  void saveItem(RecentTrackVO vo) {
+    _box.put(vo.songID, vo);
+  }
+
+  List<RecentTrackVO> getAll() {
+    return _box.values.toList();
+  }
+
+  void deleteAt(int index) {
+    _box.deleteAt(index);
   }
 
   int get _timeStamp {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  Box<SongVO> get _box {
+  Box<RecentTrackVO> get _box {
     return Hive.box(recentTracksBox);
   }
 }

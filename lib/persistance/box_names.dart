@@ -2,6 +2,7 @@ const recentSearchBox = "recentSearch";
 const recentSearchTypeId = 0;
 
 const songBox = "song";
+const onlineSongBox = "onlineSong";
 const songTypeId = 1;
 
 const colorTypeId = 2;
@@ -18,3 +19,4 @@ const musicSectionTypeId = 5;
 const musicListTypeId = 6;
 
 const recentTracksBox = "recentTracks";
+const recentTrackTypeId = 7;

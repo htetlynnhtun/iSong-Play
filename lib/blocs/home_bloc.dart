@@ -4,6 +4,7 @@ import 'package:music_app/persistance/recent_tracks_dao.dart';
 import 'package:music_app/persistance/trending_songs_dao.dart';
 import 'package:music_app/resources/constants.dart';
 import 'package:music_app/services/donminant_color.dart';
+import 'package:music_app/services/recent_track_service.dart';
 import 'package:music_app/services/youtube_service.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
@@ -13,7 +14,8 @@ class HomeBloc extends ChangeNotifier {
   final _ytService = YoutubeService();
   final _trendingSongsDao = TrendingSongsDao();
   final _musicSectionDao = MusicSectionDao();
-  final _recentTracksDao = RecentTracksDao();
+  // final _recentTracksDao = RecentTracksDao();
+  final _recentTrackService = RecentTrackServiceImpl();
   // ========================= States =========================
   int pageIndex = 0;
   Color? beginColor, endColor;
@@ -37,7 +39,7 @@ class HomeBloc extends ChangeNotifier {
       notifyListeners();
     });
 
-    _recentTracksDao.watchItems().listen((data) {
+    _recentTrackService.getRecentTracks().listen((data) {
       recentTracks = data.reversed.toList();
       notifyListeners();
     });
