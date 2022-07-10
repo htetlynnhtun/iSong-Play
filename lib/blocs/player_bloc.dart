@@ -34,6 +34,10 @@ class PlayerBloc extends ChangeNotifier {
   var isFirstSong = true;
   var isLastSong = true;
   var isShuffleModeEnabled = false;
+
+  /// If song is longer than 10 minutes.
+  var isLongDuration = false;
+
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
 
   PlayerBloc() {
@@ -216,6 +220,22 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.addQueueItem(mediaItem);
     play();
   }
+
+  void onTapSkipForLongDurationSong() {
+    isLongDuration = false;
+    notifyListeners();
+    skipToNext();
+    play();
+  }
+
+  void onTapAddToLibraryForLongDurationSong(Function(SongVO) cb) {
+    isLongDuration = false;
+    notifyListeners();
+
+    cb(nowPlayingSong!);
+    skipToNext();
+    play();
+  }
 }
 
 // ========================= Internal Logic extensions =========================
@@ -277,7 +297,15 @@ extension InternalLogic on PlayerBloc {
         // print("dominantColor: $dominantColor");
         nowPlayingSong = _getNowPlayingSong(mediaItem);
         // _logNowPlaying(mediaItem);
-        _internalNowPlayingSubject.add(nowPlayingSong!);
+        final duration = nowPlayingSong!.duration;
+        print("Now playing - ${nowPlayingSong!.title} // duration - $duration");
+        if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
+          pause();
+          isLongDuration = true;
+        } else {
+          _internalNowPlayingSubject.add(nowPlayingSong!);
+        }
+
         // _recentTracksDao.addToRecentTracks(nowPlayingSong!);
 
         if (queue.length < 2) {

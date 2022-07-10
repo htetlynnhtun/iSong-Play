@@ -53,7 +53,7 @@ dependencies:
   fluttertoast: ^8.0.9
   audio_video_progress_bar: ^0.10.0
   audio_session: ^0.1.7
-  just_audio: ^0.9.24
+  just_audio: ^0.9.27
   audio_service: ^0.18.4
 
 dev_dependencies:
