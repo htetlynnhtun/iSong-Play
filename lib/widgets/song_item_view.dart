@@ -17,12 +17,14 @@ class SongItemView extends StatelessWidget {
   final SongVO songVO;
   final bool isSearch;
   final bool isUpNext;
+  final bool isLoading;
   final List<SongItemPopupMenu> menus;
   const SongItemView(
     this.songVO, {
     this.menus = const [],
     this.isSearch = false,
     this.isUpNext = false,
+    this.isLoading = false,
     Key? key,
   }) : super(key: key);
 
@@ -38,10 +40,12 @@ class SongItemView extends StatelessWidget {
                 width: 8,
               ),
               Expanded(
-                  child: TitleArtistAndDownloadStatusView(
-                songVO: songVO,
-                isUpNext: isUpNext,
-              )),
+                child: TitleArtistAndDownloadStatusView(
+                  isLoading: isLoading,
+                  songVO: songVO,
+                  isUpNext: isUpNext,
+                ),
+              ),
               if (nowPlayingSong?.id == songVO.id)
                 Row(
                   mainAxisSize: MainAxisSize.min,
@@ -129,10 +133,12 @@ class SongItemView extends StatelessWidget {
 class TitleArtistAndDownloadStatusView extends StatelessWidget {
   final SongVO songVO;
   final bool isUpNext;
+  final bool isLoading;
   const TitleArtistAndDownloadStatusView({
     Key? key,
     this.isUpNext = false,
     required this.songVO,
+    required this.isLoading,
   }) : super(key: key);
 
   @override
@@ -142,7 +148,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          songVO.title,
+          isLoading ? "Loading This Song" : songVO.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: true,

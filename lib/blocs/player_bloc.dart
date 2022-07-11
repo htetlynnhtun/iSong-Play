@@ -37,6 +37,9 @@ class PlayerBloc extends ChangeNotifier {
   /// If song is longer than 10 minutes.
   var isLongDuration = false;
 
+  var isLoadingSong = false;
+  var tappedSongID = "";
+
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
 
   PlayerBloc() {
@@ -85,6 +88,7 @@ extension UIEvent on PlayerBloc {
     pause();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
+
     notifyListeners();
     print("wtbug: onTapSong");
 
@@ -99,12 +103,18 @@ extension UIEvent on PlayerBloc {
       print("first time click");
       songsList = [];
       songsList.addAll(songs);
+      isLoadingSong = true;
+      tappedSongID = songs[index].id;
+      notifyListeners();
       final mediaItems = await _songsToMediaItems(songs);
       // await _playerHandler.updateQueue(mediaItems);
       await _playerHandler.setQueue(index, mediaItems);
+      isLoadingSong = false;
+      notifyListeners();
+    } else {
+      await _playerHandler.skipToQueueItem(index);
     }
 
-    await _playerHandler.skipToQueueItem(index);
     await _playerHandler.play();
   }
 

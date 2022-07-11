@@ -62,14 +62,24 @@ class SearchResultsView extends StatelessWidget {
                   return ListView.separated(
                     itemBuilder: (context, index) => GestureDetector(
                       onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
-                      child: SongItemView(
-                        searchResults[index],
-                        menus: const [
-                          SongItemPopupMenu.addToQueue,
-                          SongItemPopupMenu.addToLibrary,
-                          SongItemPopupMenu.addToPlaylist,
-                        ],
-                        isSearch: true,
+                      child: Selector<PlayerBloc, bool>(
+                        selector: (_, playerBloc) => playerBloc.isLoadingSong,
+                        builder: (context, isLoadingSong, __) {
+                          final songVO = searchResults[index];
+                          final tappedSongID = context.read<PlayerBloc>().tappedSongID;
+                          final isLoading = (songVO.id == tappedSongID) && isLoadingSong;
+                          
+                          return SongItemView(
+                            songVO,
+                            menus: const [
+                              SongItemPopupMenu.addToQueue,
+                              SongItemPopupMenu.addToLibrary,
+                              SongItemPopupMenu.addToPlaylist,
+                            ],
+                            isSearch: true,
+                            isLoading: isLoading,
+                          );
+                        }
                       ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(
