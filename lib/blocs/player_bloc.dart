@@ -2,7 +2,6 @@
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:music_app/persistance/recent_tracks_dao.dart';
 import 'package:music_app/persistance/song_dao.dart';
 import 'package:music_app/services/recent_track_service.dart';
 import 'package:rxdart/rxdart.dart';
@@ -101,7 +100,8 @@ extension UIEvent on PlayerBloc {
       songsList = [];
       songsList.addAll(songs);
       final mediaItems = await _songsToMediaItems(songs);
-      await _playerHandler.updateQueue(mediaItems);
+      // await _playerHandler.updateQueue(mediaItems);
+      await _playerHandler.setQueue(index, mediaItems);
     }
 
     await _playerHandler.skipToQueueItem(index);
@@ -180,7 +180,6 @@ extension UIEvent on PlayerBloc {
     notifyListeners();
   }
 
-  // Todo: Refactor for offline songs
   void onTapAddToQueue(SongVO songVO) async {
     print("wtbug: onTapAddToQueue");
     MediaItem mediaItem;
@@ -294,9 +293,7 @@ extension InternalLogic on PlayerBloc {
           Color(mediaItem.extras!["beginColor"] as int),
           Color(mediaItem.extras!["endColor"] as int),
         ];
-        // print("dominantColor: $dominantColor");
         nowPlayingSong = _getNowPlayingSong(mediaItem);
-        // _logNowPlaying(mediaItem);
         final duration = nowPlayingSong!.duration;
         print("Now playing - ${nowPlayingSong!.title} // duration - $duration");
         if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
@@ -305,8 +302,6 @@ extension InternalLogic on PlayerBloc {
         } else {
           _internalNowPlayingSubject.add(nowPlayingSong!);
         }
-
-        // _recentTracksDao.addToRecentTracks(nowPlayingSong!);
 
         if (queue.length < 2) {
           isFirstSong = true;
@@ -337,9 +332,7 @@ extension InternalLogic on PlayerBloc {
       if (song.isDownloadFinished) {
         urls.add(song.filePath);
       } else {
-        // final stopwatch = Stopwatch()..start();
         final url = await _youtubeService.getLink(song.id);
-        // print("Parsing a song took ${stopwatch.elapsed}");
         urls.add(url.toString());
       }
     }

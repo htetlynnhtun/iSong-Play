@@ -8,7 +8,7 @@ abstract class AudioPlayerHandler implements AudioHandler {
   Future<void> moveQueueItem(int currentIndex, int newIndex);
   ValueStream<double> get volume;
   Future<void> setVolume(double volume);
-  // Future<void> setQueue(int initialIndex, List<MediaItem> queue);
+  Future<void> setQueue(int initialIndex, List<MediaItem> queue);
   // ValueStream<double> get speed;
 }
 
@@ -175,10 +175,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implement
   @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
     await _playlist.add(_itemToSource(mediaItem));
-
-    // final lastAdded = _player.sequence!.last;
-    // final lastItem = _mediaItemExpando[lastAdded]!;
-    // print(lastItem.title);
   }
 
   @override
@@ -196,15 +192,13 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implement
   Future<void> updateQueue(List<MediaItem> queue) async {
     _playlist = ConcatenatingAudioSource(children: _itemsToSources(queue));
     await _player.setAudioSource(_playlist, preload: false);
-    // await _playlist.clear();
-    // await _playlist.addAll(_itemsToSources(queue));
   }
 
-  // @override
-  // Future<void> setQueue(int initialIndex, List<MediaItem> queue) async {
-  //   _playlist = ConcatenatingAudioSource(children: _itemsToSources(queue));
-  //   await _player.setAudioSource(_playlist, preload: true, initialIndex: initialIndex);
-  // }
+  @override
+  Future<void> setQueue(int initialIndex, List<MediaItem> queue) async {
+    _playlist = ConcatenatingAudioSource(children: _itemsToSources(queue));
+    await _player.setAudioSource(_playlist, preload: true, initialIndex: initialIndex);
+  }
 
   @override
   Future<void> updateMediaItem(MediaItem mediaItem) async {
@@ -258,7 +252,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implement
   void _broadcastState(PlaybackEvent event) {
     final playing = _player.playing;
     final queueIndex = getQueueIndex(event.currentIndex, _player.shuffleModeEnabled, _player.shuffleIndices);
-    // print("wtbug: queueIndex: $queueIndex");
     playbackState.add(playbackState.value.copyWith(
       controls: [
         MediaControl.skipToPrevious,
