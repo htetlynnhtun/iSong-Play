@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
               selector: (_, homeBloc) => homeBloc.recentTracks,
               builder: (_, recentTracks, __) {
                 if (recentTracks.isEmpty) {
-                  return Container();
+                  return const SizedBox();
                 } else {
                   return RecentTracksView(recentTracks);
                 }
@@ -58,15 +58,22 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 19,
             ),
-            MusicSectionView(
-              musicSectionVO: MusicSectionVO("Editor Choice", []),
+            Visibility(
+              // ToDo : handle later with location
+              visible: false,
+              child: MusicSectionView(
+                musicSectionVO: MusicSectionVO("Editor Choice", []),
+              ),
             ),
             Selector<HomeBloc, List<MusicSectionVO>>(
               selector: (_, homeBloc) => homeBloc.musicSections,
               builder: (_, sections, __) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sections.map((section) => MusicSectionView(musicSectionVO: section)).toList(),
+                  children: sections
+                      .map((section) =>
+                          MusicSectionView(musicSectionVO: section))
+                      .toList(),
                 );
               },
             ),
@@ -89,32 +96,36 @@ class BannerView extends StatelessWidget {
       builder: (_, pageIndex, __) => SizedBox(
         height: 200,
         width: double.infinity,
-        // padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Selector<HomeBloc, List<SongVO>>(
             selector: (_, homeBloc) => homeBloc.trendingSongs,
             builder: (_, songs, __) {
               return Stack(
                 children: [
                   if (songs.isNotEmpty)
-                    CarouselSlider.builder(
-                      itemCount: songs.length,
-                      itemBuilder: (_, itemIndex, __) => GestureDetector(
-                        onTap: () {
-                          // if offline, show alert
-
-                          context.read<PlayerBloc>().onTapSong(itemIndex, songs);
-                        },
-                        child: BannerImageAndSongNameView(
-                          songVO: songs[itemIndex],
+                    Positioned.fill(
+                      child: CarouselSlider.builder(
+                        itemCount: songs.length,
+                        itemBuilder: (_, itemIndex, __) => GestureDetector(
+                          onTap: () {
+                            // if offline, show alert
+                            context
+                                .read<PlayerBloc>()
+                                .onTapSong(itemIndex, songs);
+                          },
+                          child: BannerImageAndSongNameView(
+                            songVO: songs[itemIndex],
+                          ),
                         ),
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            viewportFraction: 1,
+                            onPageChanged: (index, reason) {
+                              context
+                                  .read<HomeBloc>()
+                                  .onBannerPageChanged(index);
+                            }),
                       ),
-                      options: CarouselOptions(
-                          autoPlay: true,
-                          enlargeCenterPage: true,
-                          viewportFraction: 1,
-                          onPageChanged: (index, reason) {
-                            context.read<HomeBloc>().onBannerPageChanged(index);
-                          }),
                     ),
                   if (songs.isNotEmpty)
                     Align(
@@ -125,7 +136,8 @@ class BannerView extends StatelessWidget {
                           dotsCount: songs.length,
                           position: pageIndex.toDouble(),
                           decorator: DotsDecorator(
-                            color: Colors.white.withOpacity(0.38), // Inactive color
+                            color: Colors.white
+                                .withOpacity(0.38), // Inactive color
                             activeColor: primaryColor,
                             size: const Size(8, 8),
                             activeSize: const Size(8, 8),
@@ -163,6 +175,7 @@ class BannerImageAndSongNameView extends StatelessWidget {
         ),
         Positioned.fill(
           child: Container(
+            margin: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(cornerRadius),
@@ -248,7 +261,8 @@ class RecentTracksView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) => GestureDetector(
-              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks),
+              onTap: () =>
+                  context.read<PlayerBloc>().onTapSong(index, recentTracks),
               child: TractsAndTitleView(recentTracks[index]),
             ),
             separatorBuilder: (_, __) => const SizedBox(width: 20),
