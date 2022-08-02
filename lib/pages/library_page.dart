@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/pages/playlist_detail_page.dart';
 import 'package:music_app/pages/songs_detail_page.dart';
-import 'package:music_app/resources/colors.dart';
-import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/library_header_view.dart';
 import 'package:provider/provider.dart';
 
-import '../views/playlist_bottom_sheet.dart';
 import '../widgets/add_rename_playlist_dialog.dart';
 import '../widgets/playlist_item_vew.dart';
 import '../widgets/title_and_icon_view.dart';
@@ -21,14 +19,16 @@ class LibraryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 8,
+      child: Column(
+        children: [
+          SizedBox(
+            height: 12.h,
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              right: 16.w,
             ),
-            TitleAndSettingIconButtonView(
+            child: TitleAndSettingIconButtonView(
               title: 'Library',
               onTap: () {
                 // showModalBottomSheet(
@@ -41,14 +41,22 @@ class LibraryPage extends StatelessWidget {
               },
               imageUrl: 'assets/images/ic_setting.png',
             ),
-            const SizedBox(
-              height: 30,
+          ),
+           SizedBox(
+            height: 28.h,
+          ),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 16.w),
+            child: const YourSongAndFavouriteHeaderView(),
+          ),
+           SizedBox(
+            height: 26.h,
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              right: 16.w,
             ),
-            const YourSongAndFavouriteHeaderView(),
-            const SizedBox(
-              height: 28,
-            ),
-            TitleAndSettingIconButtonView(
+            child: TitleAndSettingIconButtonView(
               title: 'Playlist',
               onTap: () {
                 showDialog(
@@ -62,35 +70,36 @@ class LibraryPage extends StatelessWidget {
               },
               imageUrl: 'assets/images/ic_add.png',
             ),
-            const SizedBox(
-              height: 24,
+          ),
+           SizedBox(
+            height: 22.h,
+          ),
+          Expanded(
+            child: Selector<LibraryBloc, List<PlaylistVo>>(
+              selector: (_, libraryBloc) => libraryBloc.playlists,
+              shouldRebuild: (_, __) => true,
+              builder: (_, playlists, __) {
+                return ListView.separated(
+                    padding:  EdgeInsets.symmetric(horizontal: 16.w),
+                    itemBuilder: (context, index) {
+                      final playlistVo = playlists[index];
+                      return PlaylistItemView(
+                        playlistVO: playlistVo,
+                        onTap: () {
+                          context.read<LibraryBloc>().onViewPlaylistDetail(playlistVo);
+                          navigateToNextPageWithNavBar(
+                            context,
+                            const PlaylistDetailPage(),
+                          );
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    itemCount: playlists.length);
+              },
             ),
-            Expanded(
-              child: Selector<LibraryBloc, List<PlaylistVo>>(
-                selector: (_, libraryBloc) => libraryBloc.playlists,
-                shouldRebuild: (_, __) => true,
-                builder: (_, playlists, __) {
-                  return ListView.separated(
-                      itemBuilder: (context, index) {
-                        final playlistVo = playlists[index];
-                        return PlaylistItemView(
-                          playlistVO: playlistVo,
-                          onTap: () {
-                            context.read<LibraryBloc>().onViewPlaylistDetail(playlistVo);
-                            navigateToNextPageWithNavBar(
-                              context,
-                              const PlaylistDetailPage(),
-                            );
-                          },
-                        );
-                      },
-                      separatorBuilder: (context, index) => const SizedBox(height: 12),
-                      itemCount: playlists.length);
-                },
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
@@ -123,8 +132,8 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(
-              width: 16,
+             SizedBox(
+              width: 16.w,
             ),
             LibraryHeaderView(
               title: 'Favorite',

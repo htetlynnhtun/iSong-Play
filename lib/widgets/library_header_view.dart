@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/colors.dart';
 import '../resources/dimens.dart';
@@ -18,7 +19,7 @@ class LibraryHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width / 2 - 24;
+    final size = MediaQuery.of(context).size.width / 2 - 24.w;
     return GestureDetector(
       onTap: () {
         onTap();
@@ -94,14 +95,14 @@ class TittleAndTracksView extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style:  TextStyle(
                 fontWeight: FontWeight.w500,
-                fontSize: 16,
+                fontSize: 14.sp,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(
-              height: 8,
+             SizedBox(
+              height: 4.h,
             ),
             Text(
               '$songs Tracks',

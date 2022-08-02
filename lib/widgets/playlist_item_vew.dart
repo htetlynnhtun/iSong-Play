@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/vos/playlist_vo.dart';
@@ -29,12 +30,12 @@ class PlaylistItemView extends StatelessWidget {
         children: [
           CustomCachedImage(
             imageUrl: imageUrl,
-            cornerRadius: 10,
-            width: 99,
-            height: 56,
+            cornerRadius: 10.h,
+            width: 99.w,
+            height: 56.h,
           ),
-          const SizedBox(
-            width: 16,
+           SizedBox(
+            width: 12.w,
           ),
           Expanded(
             child: PlaylistTitleAndTracksView(
@@ -110,21 +111,28 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
           title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 18,
+          style:  TextStyle(
+            fontSize: 16.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(
-          height: 6,
+         SizedBox(
+          height: 4.h,
         ),
         Text(
-          '$songCount Tracks ',
-          style: const TextStyle(
-            fontSize: 14,
+          '$songCount ${_calculateTracks(songCount)} ',
+          style:  TextStyle(
+            fontSize: 13.sp,
           ),
         ),
       ],
     );
   }
+}
+
+String _calculateTracks(int songCount){
+  if(songCount!=0){
+    return 'Tracks';
+  }
+  return 'Track';
 }

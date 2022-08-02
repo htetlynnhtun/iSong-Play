@@ -229,7 +229,7 @@ class BannerTitleAndArtistView extends StatelessWidget {
             child: Text(
               songVO.title,
               style: TextStyle(
-                fontSize: 14.h,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
               ),
@@ -241,7 +241,7 @@ class BannerTitleAndArtistView extends StatelessWidget {
           Text(
             songVO.artist,
             style: TextStyle(
-              fontSize: 10.h,
+              fontSize: 12.sp,
               color: Colors.white,
             ),
           ),
@@ -309,7 +309,7 @@ class TracksAndTitleView extends StatelessWidget {
             track.title,
             maxLines: 1,
             style: TextStyle(
-              fontSize: 13.h,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               overflow: TextOverflow.ellipsis,
             ),

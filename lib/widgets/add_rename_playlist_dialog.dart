@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/utils/callback_typedefs.dart';
@@ -27,28 +29,28 @@ class AddRenamePlaylistDialog extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Dialog(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
+      shape:  RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14.h))),
       child: Container(
         width: width * 0.8,
         height: height * 0.25,
-        decoration: const BoxDecoration(
+        decoration:  BoxDecoration(
           shape: BoxShape.rectangle,
           color: dialogBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderRadius: BorderRadius.all(Radius.circular(14.h)),
         ),
         child: Column(
           children: [
             SizedBox(height: width * 0.07),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
+              style:  TextStyle(
+                fontSize: 16.sp,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
               ),
             ),
-            const SizedBox(
-              height: 30,
+             SizedBox(
+              height: 28.h,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -57,11 +59,11 @@ class AddRenamePlaylistDialog extends StatelessWidget {
             const Spacer(),
             Container(
               height: width * 0.14,
-              decoration: const BoxDecoration(
+              decoration:  BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(14),
-                    bottomLeft: Radius.circular(14),
+                    bottomRight: Radius.circular(14.h),
+                    bottomLeft: Radius.circular(14.h),
                   )),
               child: Row(
                 children: [
@@ -72,10 +74,10 @@ class AddRenamePlaylistDialog extends StatelessWidget {
                         context.read<LibraryBloc>().onTapCancelAddRenamePlaylist();
                         Navigator.pop(context);
                       },
-                      child: const Text(
+                      child:  Text(
                         'Cancel',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16.sp,
                           color: primaryColor,
                         ),
                       ),
@@ -106,8 +108,8 @@ class AddRenamePlaylistDialog extends StatelessWidget {
                       },
                       child: Text(
                         onTapTitle,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style:  TextStyle(
+                          fontSize: 16.sp,
                           color: primaryColor,
                         ),
                       ),
@@ -137,26 +139,29 @@ class EditTextField extends StatelessWidget {
       onChanged: (value) {
         context.read<LibraryBloc>().onPlaylistNameChanged(value);
       },
-      style: const TextStyle(
-        fontSize: 17,
+      style:  TextStyle(
+        fontSize: 15.sp,
         fontWeight: FontWeight.normal,
       ),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(RegExp('[a-z A-Z 0-9]'))
+      ],
       textAlignVertical: TextAlignVertical.center,
       autofocus: true,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(8), // Added this
+        contentPadding:  EdgeInsets.all(8.h), // Added this
         isCollapsed: true,
         filled: true,
         fillColor: Colors.white,
         hintText: 'Type your Playlist Name',
-        hintStyle: const TextStyle(
+        hintStyle:  TextStyle(
           color: searchIconColor,
-          fontSize: 14,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w500,
         ),
 
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.h),
           borderSide: const BorderSide(
             width: 0,
             style: BorderStyle.none,
