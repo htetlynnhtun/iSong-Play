@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/widgets/add_rename_playlist_dialog.dart';
@@ -120,7 +121,7 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
           height: 4.h,
         ),
         Text(
-          '$songCount ${_calculateTracks(songCount)} ',
+          '$songCount Track${calculateCountS(songCount)} ',
           style:  TextStyle(
             fontSize: 13.sp,
           ),
@@ -130,9 +131,4 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
   }
 }
 
-String _calculateTracks(int songCount){
-  if(songCount!=0){
-    return 'Tracks';
-  }
-  return 'Track';
-}
+

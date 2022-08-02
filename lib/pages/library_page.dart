@@ -72,7 +72,7 @@ class LibraryPage extends StatelessWidget {
             ),
           ),
            SizedBox(
-            height: 22.h,
+            height: 18.h,
           ),
           Expanded(
             child: Selector<LibraryBloc, List<PlaylistVo>>(
@@ -80,7 +80,7 @@ class LibraryPage extends StatelessWidget {
               shouldRebuild: (_, __) => true,
               builder: (_, playlists, __) {
                 return ListView.separated(
-                    padding:  EdgeInsets.symmetric(horizontal: 16.w),
+                    padding:  EdgeInsets.only(left: 16.w),
                     itemBuilder: (context, index) {
                       final playlistVo = playlists[index];
                       return PlaylistItemView(

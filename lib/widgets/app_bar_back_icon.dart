@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/colors.dart';
 import 'asset_image_button.dart';
@@ -13,8 +14,8 @@ class AppBarBackIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return  AssetImageButton(
       imageUrl: 'assets/images/ic_back.png',
-      width: 20,
-      height: 20,
+      width:16.h,
+      height: 16.h,
       color: color,
       onTap: () {
         Navigator.pop(context);

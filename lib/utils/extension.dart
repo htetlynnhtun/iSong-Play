@@ -6,6 +6,13 @@ extension NavigationUtil on Widget {
   void navigateToNextPageWithNavBar(BuildContext context, Widget page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
   }
+  String calculateCountS(int count){
+    if(count!=0){
+      return 's';
+    }
+    return '';
+
+  }
 }
 
 extension ToastMessage on Widget {

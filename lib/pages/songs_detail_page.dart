@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/colors.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/app_bar_back_icon.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +25,7 @@ class SongsDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -31,14 +34,15 @@ class SongsDetailPage extends StatelessWidget {
         title: AppBarTitle(title: title),
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(
+            icon:  Icon(
               Icons.sort,
+              size: 24.h,
               color: primaryColor,
             ),
-            elevation: 2,
-            shape: const RoundedRectangleBorder(
+            elevation: 4,
+            shape:  RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(8),
+                Radius.circular(8.h),
               ),
             ),
             onSelected: (value) {
@@ -68,7 +72,7 @@ class SongsDetailPage extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding:  EdgeInsets.symmetric(horizontal: 16.w),
         child: Selector<LibraryBloc, List<SongVO>>(
           selector: (_, libraryBloc) {
             if (isFavorite) {
@@ -99,12 +103,12 @@ class SongsDetailPage extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 16,
+                 SizedBox(
+                  height: 10.h,
                 ),
-                SongCountPlayShuffleView(songs: filteredSongs),
-                const SizedBox(
-                  height: 22,
+                SongCountAndPlayShuffleView(songs: filteredSongs),
+                 SizedBox(
+                  height: 16.h,
                 ),
                 Expanded(
                   child: ListView.separated(
@@ -115,7 +119,7 @@ class SongsDetailPage extends StatelessWidget {
                         menus: menus,
                       ),
                     ),
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) =>  SizedBox(height: 10.h),
                     itemCount: filteredSongs.length,
                   ),
                 ),
@@ -128,9 +132,9 @@ class SongsDetailPage extends StatelessWidget {
   }
 }
 
-class SongCountPlayShuffleView extends StatelessWidget {
+class SongCountAndPlayShuffleView extends StatelessWidget {
   final List<SongVO> songs;
-  const SongCountPlayShuffleView({
+  const SongCountAndPlayShuffleView({
     required this.songs,
     Key? key,
   }) : super(key: key);
@@ -140,7 +144,7 @@ class SongCountPlayShuffleView extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '${songs.length} Songs',
+          '${songs.length} Song${calculateCountS(songs.length)}',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -150,8 +154,8 @@ class SongCountPlayShuffleView extends StatelessWidget {
         const Spacer(),
         AssetImageButton(
           onTap: () => context.read<PlayerBloc>().onTapSong(0, songs),
-          width: 20,
-          height: 20,
+          width: 16.h,
+          height: 16.h,
           imageUrl: 'assets/images/ic_play.png',
           color: primaryColor,
         ),
@@ -160,8 +164,8 @@ class SongCountPlayShuffleView extends StatelessWidget {
         ),
         AssetImageButton(
           onTap: () => context.read<PlayerBloc>().onTapShufflePlay(songs),
-          width: 20,
-          height: 20,
+          width: 16.h,
+          height: 16.h,
           imageUrl: 'assets/images/ic_shuffle.png',
           color: primaryColor,
         ),

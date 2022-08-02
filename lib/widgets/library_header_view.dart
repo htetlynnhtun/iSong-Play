@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/utils/extension.dart';
 
 import '../resources/colors.dart';
 import '../resources/dimens.dart';
@@ -47,8 +48,8 @@ class LibraryHeaderView extends StatelessWidget {
                     child: Center(
                       child: Image.asset(
                         imageUrl,
-                        width: size*0.25,
-                        height:  size*0.25,
+                        width: size * 0.25,
+                        height: size * 0.25,
                         color: Colors.white,
                       ),
                     ),
@@ -83,7 +84,7 @@ class TittleAndTracksView extends StatelessWidget {
     return Container(
       width: size,
       height: size * 0.3,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
           color: Colors.black38,
           borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(cornerRadius),
@@ -95,17 +96,17 @@ class TittleAndTracksView extends StatelessWidget {
           children: [
             Text(
               title,
-              style:  TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14.sp,
                 color: Colors.white,
               ),
             ),
-             SizedBox(
+            SizedBox(
               height: 4.h,
             ),
             Text(
-              '$songs Tracks',
+              '$songs Track${calculateCountS(songs)}',
               style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white,

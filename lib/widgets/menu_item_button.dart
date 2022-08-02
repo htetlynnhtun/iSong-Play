@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class MenuItemButton extends StatelessWidget {
   final String title;
   final IconData icon;
 
-  const MenuItemButton({
-    required this.title,
-    required this.icon,
-    Key? key}) : super(key: key);
+  const MenuItemButton({required this.title, required this.icon, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children:  [
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Text(title),
-        const SizedBox(
-          width: 6,
-        ),
+        const Spacer(),
         Icon(icon),
       ],
     );

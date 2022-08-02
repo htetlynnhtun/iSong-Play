@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
-import 'package:music_app/utils/callback_typedefs.dart';
 import 'package:music_app/views/playlist_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
@@ -35,9 +34,15 @@ class SongItemView extends StatelessWidget {
         builder: (_, nowPlayingSong, __) {
           return Row(
             children: [
-              CustomCachedImage(width: 56, height: 56, imageUrl: songVO.thumbnail, isSearch: isSearch, cornerRadius: 10),
-              const SizedBox(
-                width: 8,
+              CustomCachedImage(
+                width: 52.h,
+                height: 52.h,
+                imageUrl: songVO.thumbnail,
+                isSearch: isSearch,
+                cornerRadius: 8.h,
+              ),
+              SizedBox(
+                width: 6.h,
               ),
               Expanded(
                 child: TitleArtistAndDownloadStatusView(
@@ -60,8 +65,8 @@ class SongItemView extends StatelessWidget {
                     ),
                   ],
                 ),
-              const SizedBox(
-                width: 14,
+              SizedBox(
+                width: 12.w,
               ),
               PopupMenuButton<SongItemPopupMenu>(
                 icon: const Icon(
@@ -69,15 +74,17 @@ class SongItemView extends StatelessWidget {
                   color: primaryColor,
                 ),
                 elevation: 2,
-                shape: const RoundedRectangleBorder(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
-                    Radius.circular(8),
+                    Radius.circular(6.h),
                   ),
                 ),
                 onSelected: (value) async {
                   switch (value) {
                     case SongItemPopupMenu.addToLibrary:
-                      final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                      final result = await context
+                          .read<LibraryBloc>()
+                          .onTapAddToLibrary(songVO);
                       switch (result) {
                         case AddToLibraryResult.success:
                           showToast("Successfully added to library");
@@ -94,7 +101,9 @@ class SongItemView extends StatelessWidget {
                     //   print("add fav");
                     //   break;
                     case SongItemPopupMenu.deleteFromFavorite:
-                      context.read<LibraryBloc>().onTapDeleteFromFavorite(songVO);
+                      context
+                          .read<LibraryBloc>()
+                          .onTapDeleteFromFavorite(songVO);
                       break;
                     case SongItemPopupMenu.addToQueue:
                       context.read<PlayerBloc>().onTapAddToQueue(songVO);
@@ -109,13 +118,16 @@ class SongItemView extends StatelessWidget {
                       );
                       break;
                     case SongItemPopupMenu.deleteFromPlaylist:
-                      final playlistVO = context.read<LibraryBloc>().currentPlaylistDetail!;
+                      final playlistVO =
+                          context.read<LibraryBloc>().currentPlaylistDetail!;
                       print("delete song from playlist ${playlistVO.name}");
                       break;
                   }
                 },
                 itemBuilder: (context) => menus
                     .map((menu) => PopupMenuItem(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 12.h),
                           value: menu,
                           child: MenuItemButton(
                             title: menu.title,
@@ -153,23 +165,28 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           softWrap: true,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16.sp,
             color: (isUpNext) ? Colors.white : null,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(
-          height: 6,
+        SizedBox(
+          height: 4.h,
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Selector<LibraryBloc, String?>(
-              selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == songVO.id, orElse: () => null),
+              selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs
+                  .firstWhere((element) => element == songVO.id,
+                      orElse: () => null),
               builder: (_, id, __) {
                 // print("builder download status");
                 if (id != null) {
-                  return const CupertinoActivityIndicator(radius: 6);
+                  return const CupertinoActivityIndicator(
+                    radius: 6,
+                    color: primaryColor,
+                  );
                 }
                 if (songVO.isDownloadFinished) {
                   return Image.asset(
@@ -178,11 +195,11 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
                     scale: 4,
                   );
                 }
-                return Container();
+                return const SizedBox();
               },
             ),
-            const SizedBox(
-              width: 3,
+            SizedBox(
+              width: 3.w,
             ),
             Expanded(
               child: Text(
@@ -191,7 +208,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 12.sp,
                   color: (isUpNext) ? Colors.white : null,
                 ),
               ),

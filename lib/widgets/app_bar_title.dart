@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/colors.dart';
 
@@ -12,9 +13,9 @@ class AppBarTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: const TextStyle(
+      style:  TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 18,
+        fontSize: 16.sp,
         color: primaryColor,
       ),
     );
