@@ -100,7 +100,7 @@ class BannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<HomeBloc, int>(
       selector: (context, bloc) => bloc.pageIndex,
-      builder: (_, pageIndex, __) => Container(
+      builder: (_, pageIndex, __) => SizedBox(
         height: 180.h,
         width: double.infinity,
         child: Selector<HomeBloc, List<SongVO>>(
@@ -224,12 +224,15 @@ class BannerTitleAndArtistView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            songVO.title,
-            style: TextStyle(
-              fontSize: 14.h,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
+          SizedBox(
+            width: MediaQuery.of(context).size.width*0.9,
+            child: Text(
+              songVO.title,
+              style: TextStyle(
+                fontSize: 14.h,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
             ),
           ),
           SizedBox(
