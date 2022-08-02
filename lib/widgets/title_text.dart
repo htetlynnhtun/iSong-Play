@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../resources/colors.dart';
 
@@ -9,12 +10,12 @@ class TitleText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
+      padding:  EdgeInsets.only(left: 16.w),
       child: Text(title,
-        style: const TextStyle(
+        style:  TextStyle(
           fontWeight: FontWeight.bold,
           color: primaryColor,
-          fontSize: 18,
+          fontSize: 17.h,
         ),
       ),
     );

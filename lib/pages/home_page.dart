@@ -10,8 +10,6 @@ import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/title_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-
-import '../resources/constants.dart';
 import '../resources/dimens.dart';
 import '../widgets/custom_cached_image.dart';
 import '../widgets/title_and_icon_view.dart';
@@ -27,23 +25,25 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 8,
+            SizedBox(
+              height: 12.h,
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: EdgeInsets.only(
+                right: 16.w,
+              ),
               child: TitleAndSettingIconButtonView(
                 title: 'Home',
                 onTap: () {},
                 imageUrl: 'assets/images/ic_setting.png',
               ),
             ),
-            const SizedBox(
-              height: 16,
+            SizedBox(
+              height: 12.h,
             ),
             const BannerView(),
-            const SizedBox(
-              height: 19,
+            SizedBox(
+              height: 8.h,
             ),
             Selector<HomeBloc, List<SongVO>>(
               selector: (_, homeBloc) => homeBloc.recentTracks,
@@ -55,8 +55,12 @@ class HomePage extends StatelessWidget {
                 }
               },
             ),
-            const SizedBox(
-              height: 19,
+            Visibility(
+              // ToDo : handle later with location
+              visible: false,
+              child: SizedBox(
+                height: 8.h,
+              ),
             ),
             Visibility(
               // ToDo : handle later with location
@@ -64,6 +68,9 @@ class HomePage extends StatelessWidget {
               child: MusicSectionView(
                 musicSectionVO: MusicSectionVO("Editor Choice", []),
               ),
+            ),
+            SizedBox(
+              height: 8.h,
             ),
             Selector<HomeBloc, List<MusicSectionVO>>(
               selector: (_, homeBloc) => homeBloc.musicSections,
@@ -93,8 +100,8 @@ class BannerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<HomeBloc, int>(
       selector: (context, bloc) => bloc.pageIndex,
-      builder: (_, pageIndex, __) => SizedBox(
-        height: 200,
+      builder: (_, pageIndex, __) => Container(
+        height: 180.h,
         width: double.infinity,
         child: Selector<HomeBloc, List<SongVO>>(
             selector: (_, homeBloc) => homeBloc.trendingSongs,
@@ -117,7 +124,7 @@ class BannerView extends StatelessWidget {
                           ),
                         ),
                         options: CarouselOptions(
-                            autoPlay: true,
+                            autoPlay: false,
                             enlargeCenterPage: true,
                             viewportFraction: 1,
                             onPageChanged: (index, reason) {
@@ -131,7 +138,7 @@ class BannerView extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16, right: 14),
+                        padding: EdgeInsets.only(bottom: 20.h, right: 20.w),
                         child: DotsIndicator(
                           dotsCount: songs.length,
                           position: pageIndex.toDouble(),
@@ -139,8 +146,8 @@ class BannerView extends StatelessWidget {
                             color: Colors.white
                                 .withOpacity(0.38), // Inactive color
                             activeColor: primaryColor,
-                            size: const Size(8, 8),
-                            activeSize: const Size(8, 8),
+                            size: Size(6.h, 6.h),
+                            activeSize: Size(6.h, 6.h),
                           ),
                         ),
                       ),
@@ -166,7 +173,7 @@ class BannerImageAndSongNameView extends StatelessWidget {
       children: [
         Positioned.fill(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             child: CustomCachedImage(
               imageUrl: songVO.thumbnail,
               cornerRadius: cornerRadius,
@@ -175,9 +182,9 @@ class BannerImageAndSongNameView extends StatelessWidget {
         ),
         Positioned.fill(
           child: Container(
-            margin: const EdgeInsets.all(8.0),
+            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(cornerRadius),
                 bottomRight: Radius.circular(cornerRadius),
               ),
@@ -212,26 +219,26 @@ class BannerTitleAndArtistView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, bottom: 16),
+      padding: EdgeInsets.only(left: 24.w, bottom: 22.h),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             songVO.title,
-            style: const TextStyle(
-              fontSize: 18,
+            style: TextStyle(
+              fontSize: 14.h,
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
           ),
-          const SizedBox(
-            height: 4,
+          SizedBox(
+            height: 4.h,
           ),
           Text(
             songVO.artist,
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(
+              fontSize: 10.h,
               color: Colors.white,
             ),
           ),
@@ -252,20 +259,20 @@ class RecentTracksView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const TitleText(title: 'Recent Tracks'),
-        const SizedBox(
-          height: 8,
+        SizedBox(
+          height: 8.h,
         ),
         SizedBox(
-          height: 135,
+          height: 115.h,
           child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) => GestureDetector(
               onTap: () =>
                   context.read<PlayerBloc>().onTapSong(index, recentTracks),
-              child: TractsAndTitleView(recentTracks[index]),
+              child: TracksAndTitleView(recentTracks[index]),
             ),
-            separatorBuilder: (_, __) => const SizedBox(width: 20),
+            separatorBuilder: (_, __) => SizedBox(width: 14.w),
             itemCount: recentTracks.length,
           ),
         ),
@@ -274,9 +281,9 @@ class RecentTracksView extends StatelessWidget {
   }
 }
 
-class TractsAndTitleView extends StatelessWidget {
+class TracksAndTitleView extends StatelessWidget {
   final SongVO track;
-  const TractsAndTitleView(this.track, {Key? key}) : super(key: key);
+  const TracksAndTitleView(this.track, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -286,20 +293,20 @@ class TractsAndTitleView extends StatelessWidget {
       children: [
         CustomCachedImage(
           imageUrl: track.thumbnail,
-          width: 90,
-          height: 90,
-          cornerRadius: cornerRadius,
+          width: 80.h,
+          height: 80.h,
+          cornerRadius: recentTracksCornerRadius,
         ),
-        const SizedBox(
-          height: 8,
+        SizedBox(
+          height: 6.h,
         ),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 90),
           child: Text(
             track.title,
             maxLines: 1,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 13.h,
               fontWeight: FontWeight.w500,
               overflow: TextOverflow.ellipsis,
             ),

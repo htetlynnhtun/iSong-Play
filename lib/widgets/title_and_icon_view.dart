@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/title_text.dart';
 
@@ -22,8 +23,8 @@ class TitleAndSettingIconButtonView extends StatelessWidget {
         TitleText(title: title),
         const Spacer(),
         AssetImageButton(
-          height: 20,
-          width: 20,
+          height: 18.h,
+          width: 18.h,
           imageUrl: imageUrl,
           color: primaryColor,
           onTap: () {

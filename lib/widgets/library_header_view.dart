@@ -82,7 +82,7 @@ class TittleAndTracksView extends StatelessWidget {
     return Container(
       width: size,
       height: size * 0.3,
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
           color: Colors.black38,
           borderRadius: BorderRadius.only(
             bottomRight: Radius.circular(cornerRadius),
