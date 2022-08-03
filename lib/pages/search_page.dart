@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -13,20 +14,20 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 8,
-            ),
-            SearchAndCancelView(),
-            const SizedBox(
-              height: 8,
-            ),
-            const OnlineAndOfflineSlidingView(),
-          ],
-        ),
+      child: Column(
+        children: [
+           SizedBox(
+            height: 8.h,
+          ),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 16.w),
+            child: SearchAndCancelView(),
+          ),
+           SizedBox(
+            height: 6.h,
+          ),
+          const OnlineAndOfflineSlidingView(),
+        ],
       ),
     );
   }
@@ -44,9 +45,10 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
       builder: (context, slidingValue, _) => Expanded(
         child: Column(
           children: [
-            SizedBox(
+            Container(
+              padding:  EdgeInsets.symmetric(horizontal: 16.w),
               width: double.infinity,
-              height: 36,
+              height: 34.h,
               child: CupertinoSlidingSegmentedControl<int>(
                 backgroundColor: searchBackgroundColor,
                 thumbColor: CupertinoColors.white,
@@ -54,26 +56,26 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 onValueChanged: (value) {
                   context.read<SearchBloc>().onSlidingValueChange(value!);
                 },
-                children: const {
+                children:  {
                   0: Text(
                     'Online',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13.sp,
                       color: primaryColor,
                     ),
                   ),
                   1: Text(
                     'Offline',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13.sp,
                       color: primaryColor,
                     ),
                   ),
                 },
               ),
             ),
-            const SizedBox(
-              height: 20,
+             SizedBox(
+              height: 14.h,
             ),
             searchViewList[slidingValue],
           ],
@@ -96,7 +98,7 @@ class SearchAndCancelView extends StatelessWidget {
       children: [
         Expanded(
           child: SizedBox(
-            height: 36,
+            height: 32.h,
             child: Selector<SearchBloc, String>(
                 selector: (_, searchBloc) => searchBloc.tappedQuery,
                 builder: (_, tappedQuery, __) {
@@ -109,8 +111,8 @@ class SearchAndCancelView extends StatelessWidget {
                     onChanged: (value) {
                       context.read<SearchBloc>().onSearchQueryChange(value);
                     },
-                    style: const TextStyle(
-                      fontSize: 17,
+                    style:  TextStyle(
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.normal,
                     ),
                     textAlignVertical: TextAlignVertical.center,
@@ -119,9 +121,9 @@ class SearchAndCancelView extends StatelessWidget {
                       isCollapsed: true,
                       filled: true,
                       fillColor: searchBackgroundColor,
-                      prefixIcon: const Icon(
+                      prefixIcon:  Icon(
                         Icons.search,
-                        size: 32,
+                        size: 30.h,
                         color: searchIconColor,
                       ),
                       suffixIcon: Selector<SearchBloc, bool>(
@@ -137,20 +139,20 @@ class SearchAndCancelView extends StatelessWidget {
                             searchController.clear();
                             context.read<SearchBloc>().clearQuery();
                           },
-                          width: 20,
-                          height: 20,
+                          width: 16.h,
+                          height: 16.h,
                           imageUrl: 'assets/images/ic_clear.png',
                           color: null,
                         ),
                       ),
                       hintText: 'Artist, Song and more',
-                      hintStyle: const TextStyle(
+                      hintStyle:  TextStyle(
                         color: searchIconColor,
-                        fontSize: 14,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6.h),
                         borderSide: const BorderSide(
                           width: 0,
                           style: BorderStyle.none,
@@ -161,8 +163,8 @@ class SearchAndCancelView extends StatelessWidget {
                 }),
           ),
         ),
-        const SizedBox(
-          width: 14,
+         SizedBox(
+          width: 6.w,
         ),
         TextButton(
             onPressed: () {
@@ -170,10 +172,10 @@ class SearchAndCancelView extends StatelessWidget {
               FocusManager.instance.primaryFocus?.unfocus();
               context.read<SearchBloc>().clearQuery();
             },
-            child: const Text(
+            child:  Text(
               'Cancel',
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 16.sp,
                 color: primaryColor,
               ),
             )),

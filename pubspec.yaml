@@ -55,6 +55,7 @@ dependencies:
   audio_session: ^0.1.7
   just_audio: ^0.9.27
   audio_service: ^0.18.4
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:

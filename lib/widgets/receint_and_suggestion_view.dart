@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -18,20 +19,20 @@ class RecentAndSuggestionView extends StatelessWidget {
         Image.asset(
           'assets/images/ic_search.png',
           color: Colors.black,
-          height: 16,
-          width: 16,
+          height: 12.h,
+          width: 12.h,
         ),
-        const SizedBox(
-          width: 8,
+         SizedBox(
+          width: 7.w,
         ),
         Expanded(
           child: Text(
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style:  TextStyle(
               fontWeight: FontWeight.w500,
-              fontSize: 17,
+              fontSize: 16.sp,
             ),
           ),
         ),
@@ -40,8 +41,8 @@ class RecentAndSuggestionView extends StatelessWidget {
             onTap: () {
               context.read<SearchBloc>().onTapDeleteRecent(title);
             },
-            width: 20,
-            height: 20,
+            width: 16.h,
+            height: 16.h,
             imageUrl: 'assets/images/ic_clear.png',
             color: null,
           ),

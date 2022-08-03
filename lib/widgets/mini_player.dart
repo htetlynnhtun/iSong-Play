@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
@@ -15,16 +16,42 @@ class MiniPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Selector<PlayerBloc, SongVO?>(
+      selector: (context, playerBloc) => playerBloc.nowPlayingSong,
+      builder: (context, nowPlayingSong, _) => Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ??
+                    searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
+                    searchIconColor,
+              ],
+            ),
+          ),
+          child: const MiniPlayerView()),
+    );
+  }
+}
+
+class MiniPlayerView extends StatelessWidget {
+  const MiniPlayerView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: 60,
+      height: 52.h,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       width: double.infinity,
-      color: searchIconColor,
+      color: Colors.transparent,
       child: Selector<PlayerBloc, SongVO?>(
           selector: (_, playerBloc) => playerBloc.nowPlayingSong,
           shouldRebuild: (_, __) => true,
           builder: (_, nowPlayingSong, __) {
-            final imageUrl = nowPlayingSong?.thumbnail ?? "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg";
+            final imageUrl =
+                nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
             final title = nowPlayingSong?.title ?? "Title";
             final artist = nowPlayingSong?.artist ?? "Artist";
 
@@ -33,12 +60,12 @@ class MiniPlayer extends StatelessWidget {
               children: [
                 CustomCachedImage(
                   imageUrl: imageUrl,
-                  cornerRadius: 5,
-                  width: 46,
-                  height: 46,
+                  cornerRadius: 5.h,
+                  width: 44.h,
+                  height: 44.h,
                 ),
-                const SizedBox(
-                  width: 16,
+                SizedBox(
+                  width: 14.w,
                 ),
                 Expanded(
                   child: TitleAndArtistView(
@@ -61,7 +88,7 @@ class MiniPlayer extends StatelessWidget {
                           return const CupertinoActivityIndicator(
                             radius: 10,
                             animating: true,
-                            color: primaryColor,
+                            color: homePlaylistPlayerCircleColor,
                           );
                         case ButtonState.playing:
                           return PlayPauseButton(
@@ -76,11 +103,11 @@ class MiniPlayer extends StatelessWidget {
                       }
                     },
                   ),
-                  backgroundColor: const Color.fromRGBO(77, 88, 104, 1.0),
-                  progressColor: Colors.white,
+                  backgroundColor: homePlaylistPlayerCircleColor,
+                  progressColor: primaryColor,
                 ),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: 18.w,
                 ),
                 Selector<PlayerBloc, bool>(
                     selector: (_, playerBloc) => playerBloc.isLastSong,
@@ -91,10 +118,10 @@ class MiniPlayer extends StatelessWidget {
                             context.read<PlayerBloc>().skipToNext();
                           }
                         },
-                        width: 28,
-                        height: 28,
+                        width: 24.h,
+                        height: 24.h,
                         imageUrl: 'assets/images/ic_next.png',
-                        color: Colors.white,
+                        color: homePlaylistPlayerCircleColor,
                       );
                     }),
               ],
@@ -119,8 +146,8 @@ class PlayPauseButton extends StatelessWidget {
       onTap: onTap,
       child: Icon(
         icon,
-        size: 20.0,
-        color: Colors.white,
+        size: 18.h,
+        color: homePlaylistPlayerCircleColor,
       ),
     );
   }
@@ -143,9 +170,9 @@ class TitleAndArtistView extends StatelessWidget {
       children: [
         MarqueeText(
           title: title,
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             fontWeight: FontWeight.w500,
-            fontSize: 14,
+            fontSize: 13.sp,
             color: Colors.white,
           ),
         ),
@@ -157,8 +184,8 @@ class TitleAndArtistView extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: true,
-          style: const TextStyle(
-            fontSize: 10,
+          style: TextStyle(
+            fontSize: 9.sp,
             color: Colors.white,
           ),
         ),

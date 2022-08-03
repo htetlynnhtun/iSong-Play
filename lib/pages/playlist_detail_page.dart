@@ -91,7 +91,7 @@ class PlaylistDetailPage extends StatelessWidget {
                     height: 12.h,
                   ),
                   Padding(
-                    padding:  EdgeInsets.only(right: 18.w),
+                    padding:  EdgeInsets.only(right: 16.w),
                     child: PlaylistHeaderView(playlistVo: playlistVo),
                   ),
                   SizedBox(
@@ -206,6 +206,7 @@ class PlayAndShuffleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
           onTap: () =>
@@ -214,7 +215,6 @@ class PlayAndShuffleView extends StatelessWidget {
             imageUrl: 'assets/images/ic_play.png',
           ),
         ),
-        const Spacer(),
         GestureDetector(
           onTap: () =>
               context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),

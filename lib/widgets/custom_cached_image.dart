@@ -33,7 +33,7 @@ class CustomCachedImage extends StatelessWidget {
           ? LogoImageView(width: width, height: height)
           : const Center(child: CircularProgressIndicator.adaptive()),
       errorWidget: (context, url, error) =>
-          const Center(child: Icon(Icons.error)),
+          Center(child: LogoImageView(width: width, height: height)),
     );
   }
 }

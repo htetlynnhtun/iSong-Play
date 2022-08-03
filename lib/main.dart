@@ -16,6 +16,7 @@ import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/pages/index_page.dart';
 import 'package:music_app/persistance/box_names.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -64,6 +65,8 @@ class MyApp extends StatelessWidget {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             hoverColor: Colors.transparent,
+              textTheme:
+              GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
           ),
           title: 'Music App',
           home: child,

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
@@ -29,8 +30,6 @@ class OnlineSearchView extends StatelessWidget {
               return const SearchResultsView();
           }
         });
-    //return const SearchSuggestionsView();
-    //return const SearchResultsView();
   }
 }
 
@@ -60,30 +59,34 @@ class SearchResultsView extends StatelessWidget {
                 selector: (_, searchBloc) => searchBloc.searchResults,
                 builder: (_, searchResults, __) {
                   return ListView.separated(
+                    padding:  EdgeInsets.only(left: 16.w),
                     itemBuilder: (context, index) => GestureDetector(
-                      onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
+                      onTap: () => context
+                          .read<PlayerBloc>()
+                          .onTapSong(index, searchResults),
                       child: Selector<PlayerBloc, bool>(
-                        selector: (_, playerBloc) => playerBloc.isLoadingSong,
-                        builder: (context, isLoadingSong, __) {
-                          final songVO = searchResults[index];
-                          final tappedSongID = context.read<PlayerBloc>().tappedSongID;
-                          final isLoading = (songVO.id == tappedSongID) && isLoadingSong;
-                          
-                          return SongItemView(
-                            songVO,
-                            menus: const [
-                              SongItemPopupMenu.addToQueue,
-                              SongItemPopupMenu.addToLibrary,
-                              SongItemPopupMenu.addToPlaylist,
-                            ],
-                            isSearch: true,
-                            isLoading: isLoading,
-                          );
-                        }
-                      ),
+                          selector: (_, playerBloc) => playerBloc.isLoadingSong,
+                          builder: (context, isLoadingSong, __) {
+                            final songVO = searchResults[index];
+                            final tappedSongID =
+                                context.read<PlayerBloc>().tappedSongID;
+                            final isLoading =
+                                (songVO.id == tappedSongID) && isLoadingSong;
+
+                            return SongItemView(
+                              songVO,
+                              menus: const [
+                                SongItemPopupMenu.addToQueue,
+                                SongItemPopupMenu.addToLibrary,
+                                SongItemPopupMenu.addToPlaylist,
+                              ],
+                              isSearch: true,
+                              isLoading: isLoading,
+                            );
+                          }),
                     ),
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 12,
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 10.h,
                     ),
                     itemCount: searchResults.length,
                   );
@@ -105,12 +108,15 @@ class SearchSuggestionsView extends StatelessWidget {
           selector: (_, searchBloc) => searchBloc.suggestions,
           builder: (_, suggestions, __) {
             return ListView.separated(
+              padding:  EdgeInsets.symmetric(horizontal: 16.w),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () async {
                   FocusManager.instance.primaryFocus?.unfocus();
                   // Todo: Add loading indicator
                   // show loading
-                  await context.read<SearchBloc>().onTapRecentOrSuggestion(suggestions[index]);
+                  await context
+                      .read<SearchBloc>()
+                      .onTapRecentOrSuggestion(suggestions[index]);
                   // stop loading
                 },
                 child: RecentAndSuggestionView(
@@ -118,8 +124,8 @@ class SearchSuggestionsView extends StatelessWidget {
                   isRecent: false,
                 ),
               ),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 12,
+              separatorBuilder: (context, index) => SizedBox(
+                height: 10.h,
               ),
               itemCount: suggestions.length,
             );
@@ -136,65 +142,71 @@ class RecentSearchesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Recent searches ',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
-              TextButton(
-                onPressed: context.read<SearchBloc>().onTapClearAllRecent,
-                style: TextButton.styleFrom(
-                  minimumSize: Size.zero,
-                  padding: EdgeInsets.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: const Text(
-                  'Clear All',
+      child: Padding(
+        padding:  EdgeInsets.symmetric(horizontal: 16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Recent searches ',
                   style: TextStyle(
-                    fontSize: 14,
-                    color: primaryColor,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Expanded(
-            child: Selector<SearchBloc, List<RecentSearchVO>>(
-              selector: (_, searchBloc) => searchBloc.recentSearches.reversed.toList(),
-              builder: (_, recentSearches, __) {
-                return ListView.separated(
-                  itemBuilder: (context, index) {
-                    final title = recentSearches[index].query;
-                    return GestureDetector(
-                      onTap: () async {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        await context.read<SearchBloc>().onTapRecentOrSuggestion(title);
-                      },
-                      child: RecentAndSuggestionView(title: title),
-                    );
-                  },
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 12,
+                const Spacer(),
+                TextButton(
+                  onPressed: context.read<SearchBloc>().onTapClearAllRecent,
+                  style: TextButton.styleFrom(
+                    minimumSize: Size.zero,
+                    padding: EdgeInsets.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  itemCount: recentSearches.length,
-                );
-              },
+                  child: Text(
+                    'Clear All',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: primaryColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                )
+              ],
             ),
-          ),
-        ],
+            SizedBox(
+              height: 10.h,
+            ),
+            Expanded(
+              child: Selector<SearchBloc, List<RecentSearchVO>>(
+                selector: (_, searchBloc) =>
+                    searchBloc.recentSearches.reversed.toList(),
+                builder: (_, recentSearches, __) {
+                  return ListView.separated(
+                    itemBuilder: (context, index) {
+                      final title = recentSearches[index].query;
+                      return GestureDetector(
+                        onTap: () async {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          await context
+                              .read<SearchBloc>()
+                              .onTapRecentOrSuggestion(title);
+                        },
+                        child: RecentAndSuggestionView(title: title),
+                      );
+                    },
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 10.h,
+                    ),
+                    itemCount: recentSearches.length,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

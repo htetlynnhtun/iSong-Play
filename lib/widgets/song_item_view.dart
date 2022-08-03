@@ -55,8 +55,8 @@ class SongItemView extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const SizedBox(
-                      width: 8,
+                     SizedBox(
+                      width: 6.w,
                     ),
                     Lottie.asset(
                       'assets/animation.json',
@@ -66,7 +66,7 @@ class SongItemView extends StatelessWidget {
                   ],
                 ),
               SizedBox(
-                width: 18.w,
+                width: 16.w,
               ),
               PopupMenuButton<SongItemPopupMenu>(
                 icon: const Icon(

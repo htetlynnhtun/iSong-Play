@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/vos/song_vo.dart';
@@ -16,6 +17,7 @@ class OfflineSearchView extends StatelessWidget {
       builder: (_, songs, __) {
         return Expanded(
           child: ListView.separated(
+            padding:  EdgeInsets.only(left: 16.w),
             itemBuilder: (context, index) => GestureDetector(
               onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
               child: SongItemView(
