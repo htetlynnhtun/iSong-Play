@@ -66,7 +66,7 @@ class SongItemView extends StatelessWidget {
                   ],
                 ),
               SizedBox(
-                width: 12.w,
+                width: 18.w,
               ),
               PopupMenuButton<SongItemPopupMenu>(
                 icon: const Icon(

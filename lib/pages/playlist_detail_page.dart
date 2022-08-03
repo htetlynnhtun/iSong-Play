@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/add_rename_playlist_dialog.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
-import 'package:music_app/utils/extension.dart';
-
 import '../resources/colors.dart';
-import '../resources/constants.dart';
 import '../widgets/app_bar_back_icon.dart';
 import '../widgets/app_bar_title.dart';
 import '../widgets/menu_item_button.dart';
@@ -26,6 +25,7 @@ class PlaylistDetailPage extends StatelessWidget {
         shouldRebuild: (_, __) => true,
         builder: (_, playlistVo, __) {
           return Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Colors.white,
@@ -39,9 +39,9 @@ class PlaylistDetailPage extends StatelessWidget {
                     color: primaryColor,
                   ),
                   elevation: 2,
-                  shape: const RoundedRectangleBorder(
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(8),
+                      Radius.circular(6.h),
                     ),
                   ),
                   onSelected: (value) async {
@@ -50,13 +50,17 @@ class PlaylistDetailPage extends StatelessWidget {
                         context: context,
                         builder: (context) => AddRenamePlaylistDialog(
                           initialText: playlistVo.name,
-                          onRename: (oldName) => context.read<LibraryBloc>().onTapRenamePlaylist(oldName),
+                          onRename: (oldName) => context
+                              .read<LibraryBloc>()
+                              .onTapRenamePlaylist(oldName),
                           title: "Playlist Name",
                           onTapTitle: "Rename",
                         ),
                       );
                     } else if (value == "delete") {
-                      await context.read<LibraryBloc>().onTapDeletePlaylist(playlistVo);
+                      await context
+                          .read<LibraryBloc>()
+                          .onTapDeletePlaylist(playlistVo);
                       Navigator.pop(context);
                     }
                   },
@@ -80,15 +84,18 @@ class PlaylistDetailPage extends StatelessWidget {
               ],
             ),
             body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.only(left: 16.w),
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 16,
+                  SizedBox(
+                    height: 12.h,
                   ),
-                  PlaylistHeaderView(playlistVo: playlistVo),
-                  const SizedBox(
-                    height: 32,
+                  Padding(
+                    padding:  EdgeInsets.only(right: 18.w),
+                    child: PlaylistHeaderView(playlistVo: playlistVo),
+                  ),
+                  SizedBox(
+                    height: 30.h,
                   ),
                   SongsCollectionView(songs: playlistVo.songList),
                 ],
@@ -108,10 +115,11 @@ class PlaylistHeaderView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.width * 0.45;
-    final imageUrl = playlistVo.thumbnail ?? 'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
+    final width = MediaQuery.of(context).size.width * 0.45;
+    final imageUrl = playlistVo.thumbnail ??
+        'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
     return SizedBox(
-      height: 100,
+      height: 90.h,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -120,11 +128,11 @@ class PlaylistHeaderView extends StatelessWidget {
             child: CustomCachedImage(
               imageUrl: imageUrl,
               cornerRadius: cornerRadius,
-              width: _width,
+              width: width,
             ),
           ),
-          const SizedBox(
-            width: 16,
+          SizedBox(
+            width: 14.w,
           ),
           Flexible(
             flex: 1,
@@ -135,18 +143,18 @@ class PlaylistHeaderView extends StatelessWidget {
                   playlistVo.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 16.sp,
                   ),
                 ),
-                const SizedBox(
-                  height: 14,
+                SizedBox(
+                  height: 12.h,
                 ),
                 Text(
-                  "${playlistVo.songList.length} Tracks",
-                  style: const TextStyle(
-                    fontSize: 16,
+                  "${playlistVo.songList.length} Track${calculateCountS(playlistVo.songList.length)}",
+                  style: TextStyle(
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -200,19 +208,17 @@ class PlayAndShuffleView extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
+          onTap: () =>
+              context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
           child: const PlaylistButton(
-            isSelected: true,
-            title: 'Play All',
             imageUrl: 'assets/images/ic_play.png',
           ),
         ),
         const Spacer(),
         GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
+          onTap: () =>
+              context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
           child: const PlaylistButton(
-            isSelected: true,
-            title: 'Play All',
             imageUrl: 'assets/images/ic_shuffle.png',
           ),
         )
@@ -222,11 +228,9 @@ class PlayAndShuffleView extends StatelessWidget {
 }
 
 class PlaylistButton extends StatelessWidget {
-  final String title, imageUrl;
-  final bool isSelected;
+  final String imageUrl;
+
   const PlaylistButton({
-    this.isSelected = false,
-    required this.title,
     required this.imageUrl,
     Key? key,
   }) : super(key: key);
@@ -234,33 +238,17 @@ class PlaylistButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 80,
-      height: 28,
+      width: 75.w,
+      height: 28.h,
       decoration: BoxDecoration(
-        color: (isSelected) ? primaryColor : playlistButtonUnselectedColor,
-        borderRadius: BorderRadius.circular(7),
+        color: primaryColor,
+        borderRadius: BorderRadius.circular(7.h),
       ),
       child: Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              imageUrl,
-              width: 14,
-              height: 14,
-            ),
-            const SizedBox(
-              width: 4,
-            ),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              ),
-            )
-          ],
+        child: Image.asset(
+          imageUrl,
+          width: 18.w,
+          height: 18.h,
         ),
       ),
     );

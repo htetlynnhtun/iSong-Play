@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -124,7 +123,7 @@ class BannerView extends StatelessWidget {
                           ),
                         ),
                         options: CarouselOptions(
-                            autoPlay: false,
+                            autoPlay: true,
                             enlargeCenterPage: true,
                             viewportFraction: 1,
                             onPageChanged: (index, reason) {

@@ -72,7 +72,7 @@ class SongsDetailPage extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 16.w),
+        padding:  EdgeInsets.only(left: 16.w),
         child: Selector<LibraryBloc, List<SongVO>>(
           selector: (_, libraryBloc) {
             if (isFavorite) {
@@ -106,7 +106,10 @@ class SongsDetailPage extends StatelessWidget {
                  SizedBox(
                   height: 10.h,
                 ),
-                SongCountAndPlayShuffleView(songs: filteredSongs),
+                Padding(
+                  padding:  EdgeInsets.only(right: 16.w),
+                  child: SongCountAndPlayShuffleView(songs: filteredSongs),
+                ),
                  SizedBox(
                   height: 16.h,
                 ),
