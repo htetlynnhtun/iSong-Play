@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -6,7 +7,6 @@ import '../vos/song_vo.dart';
 import '../widgets/song_item_view.dart';
 import '../widgets/up_next_button.dart';
 import 'dart:ui' as ui;
-
 
 class UpNextView extends StatelessWidget {
   const UpNextView({Key? key}) : super(key: key);
@@ -22,8 +22,8 @@ class UpNextView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(
-              height: 8,
+            SizedBox(
+              height: 6.h,
             ),
             InkWell(
               onTap: () {
@@ -33,8 +33,8 @@ class UpNextView extends StatelessWidget {
                 iconUrl: 'assets/images/ic_up_next_close.png',
               ),
             ),
-            const SizedBox(
-              height: 16,
+            SizedBox(
+              height: 14.h,
             ),
             Expanded(
               child: Selector<PlayerBloc, List<SongVO>>(
@@ -48,10 +48,12 @@ class UpNextView extends StatelessWidget {
                         child: SongItemView(
                           queueState[index],
                           isUpNext: true,
+                          havePlaceHolderImage: true,
                         ),
                       );
                     },
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) =>
+                         SizedBox(height: 10.h),
                     itemCount: queueState.length,
                   );
                 },

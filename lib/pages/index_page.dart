@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/library_page.dart';
@@ -34,7 +35,8 @@ class _IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final isFirstRouteInCurrentTab = !await _navigatorKeys[currentIndex].currentState!.maybePop();
+        final isFirstRouteInCurrentTab =
+            !await _navigatorKeys[currentIndex].currentState!.maybePop();
 
         return isFirstRouteInCurrentTab;
       },
@@ -48,21 +50,29 @@ class _IndexPageState extends State<IndexPage> {
                   showCupertinoDialog(
                     context: context,
                     builder: (_) => CupertinoAlertDialog(
-                      content: const Text("Songs longer than 10 minutes need to be added to Library first."),
+                      content: const Text(
+                          "Songs longer than 10 minutes need to be added to Library first."),
                       actions: [
                         CupertinoDialogAction(
                           isDefaultAction: true,
                           child: TextButton(
                             child: const Text("Add To Library"),
                             onPressed: () async {
-                              context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
-                                final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                              context
+                                  .read<PlayerBloc>()
+                                  .onTapAddToLibraryForLongDurationSong(
+                                      (songVO) async {
+                                final result = await context
+                                    .read<LibraryBloc>()
+                                    .onTapAddToLibrary(songVO);
                                 switch (result) {
                                   case AddToLibraryResult.success:
-                                    widget.showToast("Successfully added to library");
+                                    widget.showToast(
+                                        "Successfully added to library");
                                     break;
                                   case AddToLibraryResult.alreadyInLibrary:
-                                    widget.showToast("Song is already in library");
+                                    widget.showToast(
+                                        "Song is already in library");
                                     break;
                                 }
                               });
@@ -76,7 +86,9 @@ class _IndexPageState extends State<IndexPage> {
                             child: const Text("Skip"),
                             onPressed: () {
                               print("Skip long duration song");
-                              context.read<PlayerBloc>().onTapSkipForLongDurationSong();
+                              context
+                                  .read<PlayerBloc>()
+                                  .onTapSkipForLongDurationSong();
                               Navigator.pop(context);
                             },
                           ),
@@ -103,41 +115,46 @@ class _IndexPageState extends State<IndexPage> {
           children: [
             GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => const PlayerPage()));
-                  Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
+                  Navigator.push(
+                      context, SlideRightRoute(page: const PlayerPage()));
                 },
                 child: const MiniPlayer()),
-            BottomNavigationBar(
-              selectedItemColor: primaryColor,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/ic_library.png'),
+            SizedBox(
+              height: 70.h,
+              child: BottomNavigationBar(
+                iconSize: 18.h,
+                selectedFontSize: 12.sp,
+                unselectedFontSize: 10.sp,
+                selectedItemColor: primaryColor,
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: ImageIcon(
+                      AssetImage('assets/images/ic_library.png'),
+                    ),
+                    label: 'Library',
                   ),
-                  label: 'Library',
-                ),
-                BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/ic_home.png'),
+                  BottomNavigationBarItem(
+                    icon: ImageIcon(
+                      AssetImage('assets/images/ic_home.png'),
+                    ),
+                    label: 'Home',
                   ),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: ImageIcon(
-                    AssetImage('assets/images/ic_search.png'),
+                  BottomNavigationBarItem(
+                    icon: ImageIcon(
+                      AssetImage('assets/images/ic_search.png'),
+                    ),
+                    label: 'Search',
                   ),
-                  label: 'Search',
-                ),
-              ],
-              currentIndex: currentIndex,
-              onTap: (index) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
+                ],
+                currentIndex: currentIndex,
+                onTap: (index) {
+                  setState(
+                    () {
+                      currentIndex = index;
+                    },
+                  );
+                },
+              ),
             )
           ],
         ),

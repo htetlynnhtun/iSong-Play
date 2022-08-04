@@ -70,6 +70,7 @@ class PlayListImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomCachedImage(
+      havePlaceHolderImage:true,
       imageUrl: musicListVO.thumbnail,
       width: 145.h,
       height: 145.h,

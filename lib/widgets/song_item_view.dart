@@ -14,14 +14,14 @@ import 'menu_item_button.dart';
 
 class SongItemView extends StatelessWidget {
   final SongVO songVO;
-  final bool isSearch;
+  final bool havePlaceHolderImage;
   final bool isUpNext;
   final bool isLoading;
   final List<SongItemPopupMenu> menus;
   const SongItemView(
     this.songVO, {
     this.menus = const [],
-    this.isSearch = false,
+    this.havePlaceHolderImage = false,
     this.isUpNext = false,
     this.isLoading = false,
     Key? key,
@@ -38,7 +38,7 @@ class SongItemView extends StatelessWidget {
                 width: 52.h,
                 height: 52.h,
                 imageUrl: songVO.thumbnail,
-                isSearch: isSearch,
+                havePlaceHolderImage: havePlaceHolderImage,
                 cornerRadius: 8.h,
               ),
               SizedBox(

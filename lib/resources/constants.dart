@@ -15,3 +15,6 @@ List<Widget> searchViewList = [
   const OnlineSearchView(),
   const OfflineSearchView(),
 ];
+
+///fo stop timer
+const durationList =[5,10,15,30,45,1];

@@ -59,7 +59,7 @@ class SearchResultsView extends StatelessWidget {
                 selector: (_, searchBloc) => searchBloc.searchResults,
                 builder: (_, searchResults, __) {
                   return ListView.separated(
-                    padding:  EdgeInsets.only(left: 16.w),
+                    padding: EdgeInsets.only(left: 16.w),
                     itemBuilder: (context, index) => GestureDetector(
                       onTap: () => context
                           .read<PlayerBloc>()
@@ -80,7 +80,7 @@ class SearchResultsView extends StatelessWidget {
                                 SongItemPopupMenu.addToLibrary,
                                 SongItemPopupMenu.addToPlaylist,
                               ],
-                              isSearch: true,
+                              havePlaceHolderImage: true,
                               isLoading: isLoading,
                             );
                           }),
@@ -108,7 +108,7 @@ class SearchSuggestionsView extends StatelessWidget {
           selector: (_, searchBloc) => searchBloc.suggestions,
           builder: (_, suggestions, __) {
             return ListView.separated(
-              padding:  EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () async {
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -143,7 +143,7 @@ class RecentSearchesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -164,6 +164,7 @@ class RecentSearchesView extends StatelessWidget {
                     minimumSize: Size.zero,
                     padding: EdgeInsets.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    splashFactory: NoSplash.splashFactory,
                   ),
                   child: Text(
                     'Clear All',

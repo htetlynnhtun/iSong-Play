@@ -1,6 +1,7 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/dimens.dart';
@@ -11,6 +12,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
+import '../views/playback_timer_dialog.dart';
+import '../views/sleep_timer_dialog.dart';
 import '../views/up_next_view.dart';
 import '../widgets/app_bar_back_icon.dart';
 import '../widgets/marquee_text.dart';
@@ -29,9 +32,9 @@ class PlayerPage extends StatelessWidget {
             gradient: LinearGradient(
                 colors: [
                   nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
-                      const Color(0xffd283ff),
+                      defaultPlayerColor.withOpacity(0.5),
                   nowPlayingSong?.dominantColor.last?.withOpacity(0.5) ??
-                      const Color(0xffdeb2f5),
+                      defaultPlayerColor.withOpacity(0.9),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -60,11 +63,11 @@ class PlayerDetailView extends StatelessWidget {
         leading: const AppBarBackIcon(
           color: Colors.white,
         ),
-        title: const Text(
+        title: Text(
           'Now Playing',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
           ),
         ),
         actions: [
@@ -74,9 +77,9 @@ class PlayerDetailView extends StatelessWidget {
               color: Colors.white,
             ),
             elevation: 2,
-            shape: const RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(8),
+                Radius.circular(8.h),
               ),
             ),
             onSelected: (value) {
@@ -114,31 +117,29 @@ class PlayerDetailView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 64,
+              SizedBox(
+                height: 54.h,
               ),
               Align(
                 alignment: Alignment.center,
-                child: Selector<PlayerBloc, String>(
+                child: Selector<PlayerBloc, String?>(
                   // Todo: handle fist time app lunch image
-                  selector: (_, playerBloc) =>
-                      playerBloc.currentSongThumbnail ??
-                      "https://img.youtube.com/vi/O2CIAKVTOrc/maxresdefault.jpg",
+                  selector: (_, playerBloc) => playerBloc.currentSongThumbnail,
                   builder: (_, imageUrl, __) {
                     return CustomCachedImage(
-                      imageUrl: imageUrl,
-                      width: 360,
-                      height: 200,
+                      imageUrl: imageUrl.toString(),
+                      width: 340.w,
+                      height: 170.h,
                       cornerRadius: cornerRadius,
                     );
                   },
                 ),
               ),
-              const SizedBox(
-                height: 48,
+              SizedBox(
+                height: 42.h,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
                 child: Selector<PlayerBloc, List<String?>>(
                   selector: (_, playerBloc) => [
                     playerBloc.currentSongTitle,
@@ -154,26 +155,26 @@ class PlayerDetailView extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(
-                height: 50,
+              SizedBox(
+                height: 42.h,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: SongSeekBarAndDurationView(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: const SongSeekBarAndDurationView(),
               ),
               const SizedBox(
                 height: 60,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: PlayerIconsCollectionView(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: const PlayerIconsCollectionView(),
               ),
               const SizedBox(
                 height: 42,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14),
-                child: FavoriteAndTimerView(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: const FavoriteAndTimerView(),
               ),
             ],
           ),
@@ -217,25 +218,32 @@ class FavoriteAndTimerView extends StatelessWidget {
                   onTap: () => context
                       .read<LibraryBloc>()
                       .onTapFavorite(nowPlayingSong!),
-                  width: 36,
-                  height: 36,
+                  width: 32.h,
+                  height: 32.h,
                   imageUrl: nowPlayingSong!.isFavorite
                       ? 'assets/images/ic_favorite_done.png'
                       : 'assets/images/ic_favorite.png',
-                  color: null,
+                  color: nowPlayingSong.isFavorite
+                      ? null
+                      : Colors.white.withOpacity(0.9),
                 );
               }
               return Container();
             }),
         const Spacer(),
         AssetImageButton(
-          onTap: () {},
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) =>
+                    false ? SleepTimerDialog() : const PlaybackTimerDialog());
+          },
           width: 36,
           height: 36,
-          imageUrl: (true)
+          imageUrl: (false)
               ? 'assets/images/ic_timer_done.png'
               : 'assets/images/ic_timer.png',
-          color: null,
+          color: false ? null : Colors.white.withOpacity(0.9),
         ),
       ],
     );
@@ -256,8 +264,8 @@ class PlayerIconsCollectionView extends StatelessWidget {
           builder: (_, isShuffleModeEnabled, __) {
             return AssetImageButton(
               onTap: context.read<PlayerBloc>().shuffle,
-              width: 32,
-              height: 32,
+              width: 26.h,
+              height: 26.h,
               imageUrl: 'assets/images/ic_shuffle.png',
               color: isShuffleModeEnabled ? primaryColor : Colors.white,
             );
@@ -275,14 +283,14 @@ class PlayerIconsCollectionView extends StatelessWidget {
                         context.read<PlayerBloc>().skipToPrevious();
                       }
                     },
-                    width: 42,
-                    height: 42,
+                    width: 38.h,
+                    height: 38.h,
                     imageUrl: 'assets/images/ic_previous.png',
                     color: Colors.white,
                   );
                 }),
-            const SizedBox(
-              width: 42,
+            SizedBox(
+              width: 30.w,
             ),
             Selector<PlayerBloc, ButtonState>(
               selector: (_, playerBloc) => playerBloc.buttonState,
@@ -306,15 +314,15 @@ class PlayerIconsCollectionView extends StatelessWidget {
                 }
                 return AssetImageButton(
                   onTap: onTap,
-                  width: 80,
-                  height: 80,
+                  width: 64.h,
+                  height: 64.h,
                   imageUrl: imageUrl,
                   color: Colors.white,
                 );
               },
             ),
-            const SizedBox(
-              width: 42,
+            SizedBox(
+              width: 30.w,
             ),
             Selector<PlayerBloc, bool>(
               selector: (_, playerBloc) => playerBloc.isLastSong,
@@ -325,8 +333,8 @@ class PlayerIconsCollectionView extends StatelessWidget {
                       context.read<PlayerBloc>().skipToNext();
                     }
                   },
-                  width: 42,
-                  height: 42,
+                  width: 38.h,
+                  height: 38.h,
                   imageUrl: 'assets/images/ic_next.png',
                   color: Colors.white,
                 );
@@ -358,8 +366,8 @@ class PlayerIconsCollectionView extends StatelessWidget {
               }
               return AssetImageButton(
                 onTap: context.read<PlayerBloc>().repeat,
-                width: 32,
-                height: 32,
+                width: 26.h,
+                height: 26.h,
                 imageUrl: imageUrl,
                 color: color,
                 // color: (true) ? primaryColor : Colors.white,
@@ -392,9 +400,9 @@ class SongSeekBarAndDurationView extends StatelessWidget {
             barHeight: 5.0,
             thumbRadius: 6.0,
             onSeek: context.read<PlayerBloc>().onSeek,
-            timeLabelTextStyle: const TextStyle(
+            timeLabelTextStyle: TextStyle(
               color: seekBarBackgroundColor,
-              fontSize: 12,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w400,
             ),
           );
@@ -423,30 +431,30 @@ class TitleArtistAndDownloadButtonView extends StatelessWidget {
             children: [
               MarqueeText(
                 title: title,
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 18,
+                  fontSize: 17.sp,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(
-                height: 6,
+              SizedBox(
+                height: 4.h,
               ),
               Text(
                 artist,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 13.sp,
                   color: Colors.white,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(
-          width: 42,
+        SizedBox(
+          width: 40.w,
         ),
         const DownloadProcessView()
       ],
@@ -466,16 +474,16 @@ class DownloadProcessView extends StatelessWidget {
       shouldRebuild: (_, __) => true,
       builder: (_, nowPlayingSong, __) {
         if (nowPlayingSong == null) {
-          return Container();
+          return const SizedBox();
         }
 
         if (nowPlayingSong.isDownloadFinished) {
           return AssetImageButton(
-            width: 36,
-            height: 36,
+            width: 30.h,
+            height: 30.h,
             imageUrl: 'assets/images/ic_downloaded.png',
             onTap: () {},
-            color: null,
+            color: Colors.white.withOpacity(0.9),
           );
         }
 
@@ -488,10 +496,10 @@ class DownloadProcessView extends StatelessWidget {
               return AssetImageButton(
                 onTap: () =>
                     context.read<LibraryBloc>().onTapDownload(nowPlayingSong),
-                width: 36,
-                height: 36,
+                width: 30.h,
+                height: 30.h,
                 imageUrl: 'assets/images/ic_download.png',
-                color: searchIconColor,
+                color: Colors.white.withOpacity(0.9),
               );
             } else {
               if (nowPlayingSong.percent == 0) {
@@ -503,9 +511,9 @@ class DownloadProcessView extends StatelessWidget {
                   percent: nowPlayingSong.percent,
                   center: Text(
                     '${(nowPlayingSong.percent * 100).toStringAsFixed(0)} %',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: primaryColor,
-                      fontSize: 10,
+                      fontSize: 10.sp,
                     ),
                   ),
                   backgroundColor: searchIconColor,

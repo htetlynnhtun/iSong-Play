@@ -26,7 +26,7 @@ class OfflineSearchView extends StatelessWidget {
                   SongItemPopupMenu.addToQueue,
                   SongItemPopupMenu.addToPlaylist,
                 ],
-                isSearch: true,
+                havePlaceHolderImage: true,
               ),
             ),
             separatorBuilder: (_, __) => const SizedBox(height: 12),

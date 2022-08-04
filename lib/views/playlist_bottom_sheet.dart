@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
@@ -33,13 +34,13 @@ class PlaylistBottomSheet extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 24,
+                   SizedBox(
+                    height: 22.h,
                   ),
                   const AddToPlaylistView(),
                   if (playlists.isEmpty)
-                    const SizedBox(
-                      height: 45,
+                     SizedBox(
+                      height: 43.h,
                     ),
                   PlayListsView(
                     songVO: songVO,
@@ -65,8 +66,8 @@ class PlayListsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      const SizedBox(
-        height: 30,
+       SizedBox(
+        height: 22.h,
       ),
       ListView.separated(
         shrinkWrap: true,
@@ -107,12 +108,12 @@ class PlayListItemView extends StatelessWidget {
       children: [
         CustomCachedImage(
           imageUrl: imageUrl,
-          cornerRadius: 10,
-          height: 56,
-          width: 56,
+          cornerRadius: 8.h,
+          height: 52.h,
+          width: 52.h,
         ),
-        const SizedBox(
-          width: 8,
+         SizedBox(
+          width: 6.h,
         ),
         Expanded(
           child: Column(
@@ -123,19 +124,19 @@ class PlayListItemView extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
-                style: const TextStyle(
+                style:  TextStyle(
                   fontWeight: FontWeight.w400,
-                  fontSize: 18,
+                  fontSize: 17.sp,
                   color: primaryColor,
                 ),
               ),
-              const SizedBox(
-                height: 6,
+               SizedBox(
+                height: 4.h,
               ),
               Text(
-                '${playlistVo.songList.length} Tracks',
-                style: const TextStyle(
-                  fontSize: 14,
+                '${playlistVo.songList.length} Track${calculateCountS(playlistVo.songList.length)}',
+                style:  TextStyle(
+                  fontSize: 13.sp,
                   color: primaryColor,
                 ),
               ),

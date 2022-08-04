@@ -13,3 +13,5 @@ const libraryHeadCircleColor = Color.fromRGBO(101, 9, 163, 1.0);
 const playlistButtonUnselectedColor = Color(0xffF4F4F5);
 
 const seekBarBackgroundColor = Color.fromRGBO(170, 170, 170, 1.0);
+
+const defaultPlayerColor = Color(0xff222222);

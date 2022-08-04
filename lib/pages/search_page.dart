@@ -172,13 +172,17 @@ class SearchAndCancelView extends StatelessWidget {
               FocusManager.instance.primaryFocus?.unfocus();
               context.read<SearchBloc>().clearQuery();
             },
+        style: TextButton.styleFrom(
+          splashFactory: NoSplash.splashFactory,
+        ),
             child:  Text(
               'Cancel',
               style: TextStyle(
                 fontSize: 16.sp,
                 color: primaryColor,
               ),
-            )),
+            ),
+        ),
       ],
     );
   }
