@@ -85,7 +85,7 @@ extension UIEvent on PlayerBloc {
   static var songsList = <SongVO>[];
 
   void onTapSong(int index, List<SongVO> songs) async {
-    pause();
+    _playerHandler.stop();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
 
