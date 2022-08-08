@@ -23,6 +23,7 @@ class PlayerBloc extends ChangeNotifier {
   SongVO? nowPlayingSong;
   List<Color?> dominantColor = [];
   var queueState = <SongVO>[];
+  var nowPlayingIndex = 0;
   var progressBarState = const ProgressBarState(
     buffered: Duration.zero,
     current: Duration.zero,
@@ -35,12 +36,15 @@ class PlayerBloc extends ChangeNotifier {
   var isShuffleModeEnabled = false;
 
   /// If song is longer than 10 minutes.
-  var isLongDuration = false;
+  bool? isLongDuration;
 
   var isLoadingSong = false;
   var tappedSongID = "";
 
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
+  final _isLongDurationSubject = BehaviorSubject<bool?>();
+
+  static var songsList = <SongVO>[];
 
   PlayerBloc() {
     _init();
@@ -58,8 +62,15 @@ class PlayerBloc extends ChangeNotifier {
     _listenToProgress();
     _listenToPlaybackState();
 
+    _listenToMediaItemForDetectingLongDurationSong();
+
     _internalNowPlayingSubject.distinct((p, n) => p.id == n.id).listen((song) {
       _recentTrackService.addToRecentTracks(song);
+    });
+
+    _isLongDurationSubject.distinct().listen((isLong) {
+      isLongDuration = isLong;
+      notifyListeners();
     });
   }
 
@@ -82,8 +93,6 @@ class PlayerBloc extends ChangeNotifier {
 
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
-  static var songsList = <SongVO>[];
-
   void onTapSong(int index, List<SongVO> songs) async {
     _playerHandler.stop();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
@@ -99,10 +108,12 @@ extension UIEvent on PlayerBloc {
     //   List<MediaItem> mediaItems = await _songsToMediaItems(songs);
     //   await _playerHandler.updateQueue(mediaItems);
     // }
-    if (!(songsList.isNotEmpty && (songsList.first == songs.first))) {
+    if (PlayerBloc.songsList.isNotEmpty && (PlayerBloc.songsList.first == songs.first)) {
+      await _playerHandler.skipToQueueItem(index);
+    } else {
       print("first time click");
-      songsList = [];
-      songsList.addAll(songs);
+      PlayerBloc.songsList = [];
+      PlayerBloc.songsList.addAll(songs);
       isLoadingSong = true;
       tappedSongID = songs[index].id;
       notifyListeners();
@@ -111,8 +122,6 @@ extension UIEvent on PlayerBloc {
       await _playerHandler.setQueue(index, mediaItems);
       isLoadingSong = false;
       notifyListeners();
-    } else {
-      await _playerHandler.skipToQueueItem(index);
     }
 
     await _playerHandler.play();
@@ -231,19 +240,39 @@ extension UIEvent on PlayerBloc {
   }
 
   void onTapSkipForLongDurationSong() {
-    isLongDuration = false;
-    notifyListeners();
-    skipToNext();
-    play();
+    _isLongDurationSubject.add(false);
+    if (nowPlayingIndex == PlayerBloc.songsList.length - 1) {
+      /*
+       1) keep looping 
+       2) stop player
+      */
+      // onTapSong(0, songsList);
+      _playerHandler.stop();
+    } else {
+      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList);
+    }
   }
 
   void onTapAddToLibraryForLongDurationSong(Function(SongVO) cb) {
-    isLongDuration = false;
-    notifyListeners();
+    _isLongDurationSubject.add(false);
 
     cb(nowPlayingSong!);
-    skipToNext();
-    play();
+
+    if (nowPlayingIndex == PlayerBloc.songsList.length - 1) {
+      /*
+       1) keep looping 
+       2) stop player
+      */
+      // onTapSong(0, songsList);
+      _playerHandler.stop();
+    } else {
+      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList);
+    }
+  }
+
+  void onDialogDismissed() {
+    // isLongDuration = null;
+    _isLongDurationSubject.add(null);
   }
 }
 
@@ -303,15 +332,6 @@ extension InternalLogic on PlayerBloc {
           Color(mediaItem.extras!["beginColor"] as int),
           Color(mediaItem.extras!["endColor"] as int),
         ];
-        nowPlayingSong = _getNowPlayingSong(mediaItem);
-        final duration = nowPlayingSong!.duration;
-        print("Now playing - ${nowPlayingSong!.title} // duration - $duration");
-        if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
-          pause();
-          isLongDuration = true;
-        } else {
-          _internalNowPlayingSubject.add(nowPlayingSong!);
-        }
 
         if (queue.length < 2) {
           isFirstSong = true;
@@ -324,6 +344,28 @@ extension InternalLogic on PlayerBloc {
         notifyListeners();
       },
     ).listen((_) => _);
+  }
+
+  void _listenToMediaItemForDetectingLongDurationSong() {
+    _playerHandler.mediaItem.distinct((old, now) => old?.id == now?.id).listen((mediaItem) {
+      if (mediaItem == null) return;
+      
+      var isInNewSongsList = PlayerBloc.songsList.any((song) => song.id == mediaItem.id);
+      if (!isInNewSongsList) return;
+
+      nowPlayingSong = _getNowPlayingSong(mediaItem);
+      nowPlayingIndex = queueState.indexWhere((element) => element.id == nowPlayingSong!.id);
+
+      final duration = nowPlayingSong!.duration;
+
+      if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
+        _playerHandler.pause();
+
+        _isLongDurationSubject.add(true);
+      } else {
+        _internalNowPlayingSubject.add(nowPlayingSong!);
+      }
+    });
   }
 
   void _listenToQueue() {
