@@ -31,10 +31,8 @@ class PlayerPage extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: [
-                  nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
-                      defaultPlayerColor.withOpacity(0.5),
-                  nowPlayingSong?.dominantColor.last?.withOpacity(0.5) ??
-                      defaultPlayerColor.withOpacity(0.9),
+                  nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ?? defaultPlayerColor.withOpacity(0.5),
+                  nowPlayingSong?.dominantColor.last?.withOpacity(0.5) ?? defaultPlayerColor.withOpacity(0.9),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -123,7 +121,6 @@ class PlayerDetailView extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Selector<PlayerBloc, String?>(
-                  // Todo: handle fist time app lunch image
                   selector: (_, playerBloc) => playerBloc.currentSongThumbnail,
                   builder: (_, imageUrl, __) {
                     return CustomCachedImage(
@@ -182,10 +179,7 @@ class PlayerDetailView extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: InkWell(
                 onTap: () {
-                  showModalBottomSheet(
-                      backgroundColor: Colors.transparent,
-                      context: context,
-                      builder: (context) => const UpNextView());
+                  showModalBottomSheet(backgroundColor: Colors.transparent, context: context, builder: (context) => const UpNextView());
                 },
                 child: const Padding(
                   padding: EdgeInsets.only(bottom: 46),
@@ -215,17 +209,11 @@ class FavoriteAndTimerView extends StatelessWidget {
             builder: (_, nowPlayingSong, __) {
               if (nowPlayingSong?.isDownloadFinished ?? false) {
                 return AssetImageButton(
-                  onTap: () => context
-                      .read<LibraryBloc>()
-                      .onTapFavorite(nowPlayingSong!),
+                  onTap: () => context.read<LibraryBloc>().onTapFavorite(nowPlayingSong!),
                   width: 32.h,
                   height: 32.h,
-                  imageUrl: nowPlayingSong!.isFavorite
-                      ? 'assets/images/ic_favorite_done.png'
-                      : 'assets/images/ic_favorite.png',
-                  color: nowPlayingSong.isFavorite
-                      ? null
-                      : Colors.white.withOpacity(0.9),
+                  imageUrl: nowPlayingSong!.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
+                  color: nowPlayingSong.isFavorite ? null : Colors.white.withOpacity(0.9),
                 );
               }
               return Container();
@@ -233,16 +221,11 @@ class FavoriteAndTimerView extends StatelessWidget {
         const Spacer(),
         AssetImageButton(
           onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) =>
-                    false ? SleepTimerDialog() : const PlaybackTimerDialog());
+            showDialog(context: context, builder: (context) => false ? SleepTimerDialog() : const PlaybackTimerDialog());
           },
           width: 36,
           height: 36,
-          imageUrl: (false)
-              ? 'assets/images/ic_timer_done.png'
-              : 'assets/images/ic_timer.png',
+          imageUrl: (false) ? 'assets/images/ic_timer_done.png' : 'assets/images/ic_timer.png',
           color: false ? null : Colors.white.withOpacity(0.9),
         ),
       ],
@@ -297,6 +280,18 @@ class PlayerIconsCollectionView extends StatelessWidget {
               builder: (_, buttonState, __) {
                 VoidCallback onTap;
                 String imageUrl;
+
+                if (buttonState == ButtonState.loading) {
+                  return SizedBox(
+                    width: 64.h,
+                    height: 64.h,
+                    child: CupertinoActivityIndicator(
+                      color: primaryColor,
+                      radius: 16.h,
+                    ),
+                  );
+                }
+
                 switch (buttonState) {
                   case ButtonState.loading:
                     onTap = () {};
@@ -488,14 +483,11 @@ class DownloadProcessView extends StatelessWidget {
         }
 
         return Selector<LibraryBloc, String?>(
-          selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs
-              .firstWhere((element) => element == nowPlayingSong.id,
-                  orElse: () => null),
+          selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == nowPlayingSong.id, orElse: () => null),
           builder: (_, id, __) {
             if (id == null) {
               return AssetImageButton(
-                onTap: () =>
-                    context.read<LibraryBloc>().onTapDownload(nowPlayingSong),
+                onTap: () => context.read<LibraryBloc>().onTapDownload(nowPlayingSong),
                 width: 30.h,
                 height: 30.h,
                 imageUrl: 'assets/images/ic_download.png',
