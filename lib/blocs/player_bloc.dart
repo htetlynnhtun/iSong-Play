@@ -24,6 +24,7 @@ class PlayerBloc extends ChangeNotifier {
   List<Color?> dominantColor = [];
   var queueState = <SongVO>[];
   var nowPlayingIndex = 0;
+  var currentSongID = "";
   var progressBarState = const ProgressBarState(
     buffered: Duration.zero,
     current: Duration.zero,
@@ -39,7 +40,6 @@ class PlayerBloc extends ChangeNotifier {
   bool? isLongDuration;
 
   var isLoadingSong = false;
-  var tappedSongID = "";
 
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
   final _isLongDurationSubject = BehaviorSubject<bool?>();
@@ -99,7 +99,6 @@ extension UIEvent on PlayerBloc {
     isShuffleModeEnabled = false;
 
     notifyListeners();
-    print("wtbug: onTapSong");
 
     // check if songs is the same with current queue
     // var theSame = songs.every((song) => queueState.any((e) => e.id == song.id));
@@ -111,11 +110,11 @@ extension UIEvent on PlayerBloc {
     if (PlayerBloc.songsList.isNotEmpty && (PlayerBloc.songsList.first == songs.first)) {
       await _playerHandler.skipToQueueItem(index);
     } else {
-      print("first time click");
       PlayerBloc.songsList = [];
       PlayerBloc.songsList.addAll(songs);
       isLoadingSong = true;
-      tappedSongID = songs[index].id;
+      currentSongID = songs[index].id;
+      buttonState = ButtonState.loading;
       notifyListeners();
       final mediaItems = await _songsToMediaItems(songs);
       // await _playerHandler.updateQueue(mediaItems);
@@ -349,13 +348,13 @@ extension InternalLogic on PlayerBloc {
   void _listenToMediaItemForDetectingLongDurationSong() {
     _playerHandler.mediaItem.distinct((old, now) => old?.id == now?.id).listen((mediaItem) {
       if (mediaItem == null) return;
-      
+
       var isInNewSongsList = PlayerBloc.songsList.any((song) => song.id == mediaItem.id);
       if (!isInNewSongsList) return;
 
       nowPlayingSong = _getNowPlayingSong(mediaItem);
+      currentSongID = nowPlayingSong!.id;
       nowPlayingIndex = queueState.indexWhere((element) => element.id == nowPlayingSong!.id);
-
       final duration = nowPlayingSong!.duration;
 
       if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
@@ -379,7 +378,6 @@ extension InternalLogic on PlayerBloc {
     final List<MediaItem> mediaItems = [];
     final List<String> urls = [];
 
-    final stopwatch = Stopwatch()..start();
     for (var song in songs) {
       if (song.isDownloadFinished) {
         urls.add(song.filePath);
@@ -426,7 +424,6 @@ extension InternalLogic on PlayerBloc {
 
       mediaItems.add(mediaItem);
     });
-    print("wtbug: parsing songs took ${stopwatch.elapsed}.");
     return mediaItems;
   }
 
