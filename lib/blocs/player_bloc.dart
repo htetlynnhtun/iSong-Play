@@ -30,6 +30,7 @@ class PlayerBloc extends ChangeNotifier {
     current: Duration.zero,
     total: Duration.zero,
   );
+  var circularProgressPercentage = 0.0;
   var buttonState = ButtonState.paused;
   var repeatState = RepeatState.off;
   var isFirstSong = true;
@@ -299,6 +300,13 @@ extension InternalLogic on PlayerBloc {
       ),
     ).listen((event) {
       progressBarState = event;
+      final current = progressBarState.current.inSeconds;
+      final total = progressBarState.total.inSeconds;
+      if (total == 0) {
+        circularProgressPercentage = 0;
+      } else {
+        circularProgressPercentage = current.toDouble() / total.toDouble();
+      }
 
       notifyListeners();
     });

@@ -73,45 +73,49 @@ class MiniPlayerView extends StatelessWidget {
                 const SizedBox(
                   width: 16,
                 ),
-                CircularPercentIndicator(
-                  radius: 18.0,
-                  lineWidth: 4.0,
-                  percent: 0.0,
-                  center: Selector<PlayerBloc, ButtonState>(
-                    selector: (_, playerBloc) => playerBloc.buttonState,
-                    builder: (_, buttonState, __) {
-                      final currentSongID = context.read<PlayerBloc>().currentSongID;
-                      switch (buttonState) {
-                        case ButtonState.loading:
-                          if (currentSongID == nowPlayingSong?.id) {
-                            return const CupertinoActivityIndicator(
-                              radius: 10,
-                              animating: true,
-                              color: homePlaylistPlayerCircleColor,
-                            );
-                          } else {
-                            return PlayPauseButton(
-                              icon: Icons.play_arrow,
-                              onTap: context.read<PlayerBloc>().play,
-                            );
-                          }
+                Selector<PlayerBloc, double>(
+                    selector: (_, playerBloc) => playerBloc.circularProgressPercentage,
+                    builder: (_, percent, __) {
+                      return CircularPercentIndicator(
+                        radius: 18.0,
+                        lineWidth: 4.0,
+                        percent: percent,
+                        center: Selector<PlayerBloc, ButtonState>(
+                          selector: (_, playerBloc) => playerBloc.buttonState,
+                          builder: (_, buttonState, __) {
+                            final currentSongID = context.read<PlayerBloc>().currentSongID;
+                            switch (buttonState) {
+                              case ButtonState.loading:
+                                if (currentSongID == nowPlayingSong?.id) {
+                                  return const CupertinoActivityIndicator(
+                                    radius: 10,
+                                    animating: true,
+                                    color: homePlaylistPlayerCircleColor,
+                                  );
+                                } else {
+                                  return PlayPauseButton(
+                                    icon: Icons.play_arrow,
+                                    onTap: context.read<PlayerBloc>().play,
+                                  );
+                                }
 
-                        case ButtonState.playing:
-                          return PlayPauseButton(
-                            icon: Icons.pause,
-                            onTap: context.read<PlayerBloc>().pause,
-                          );
-                        case ButtonState.paused:
-                          return PlayPauseButton(
-                            icon: Icons.play_arrow,
-                            onTap: context.read<PlayerBloc>().play,
-                          );
-                      }
-                    },
-                  ),
-                  backgroundColor: homePlaylistPlayerCircleColor,
-                  progressColor: primaryColor,
-                ),
+                              case ButtonState.playing:
+                                return PlayPauseButton(
+                                  icon: Icons.pause,
+                                  onTap: context.read<PlayerBloc>().pause,
+                                );
+                              case ButtonState.paused:
+                                return PlayPauseButton(
+                                  icon: Icons.play_arrow,
+                                  onTap: context.read<PlayerBloc>().play,
+                                );
+                            }
+                          },
+                        ),
+                        backgroundColor: homePlaylistPlayerCircleColor,
+                        progressColor: primaryColor,
+                      );
+                    }),
                 SizedBox(
                   width: 18.w,
                 ),
