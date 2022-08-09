@@ -22,10 +22,8 @@ class MiniPlayer extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ??
-                    searchIconColor,
-                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
-                    searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ?? searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ?? searchIconColor,
               ],
             ),
           ),
@@ -50,8 +48,7 @@ class MiniPlayerView extends StatelessWidget {
           selector: (_, playerBloc) => playerBloc.nowPlayingSong,
           shouldRebuild: (_, __) => true,
           builder: (_, nowPlayingSong, __) {
-            final imageUrl =
-                nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
+            final imageUrl = nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
             final title = nowPlayingSong?.title ?? "Title";
             final artist = nowPlayingSong?.artist ?? "Artist";
 
@@ -85,11 +82,19 @@ class MiniPlayerView extends StatelessWidget {
                     builder: (_, buttonState, __) {
                       switch (buttonState) {
                         case ButtonState.loading:
-                          return const CupertinoActivityIndicator(
-                            radius: 10,
-                            animating: true,
-                            color: homePlaylistPlayerCircleColor,
-                          );
+                          if (context.read<PlayerBloc>().currentSongID == nowPlayingSong?.id) {
+                            return const CupertinoActivityIndicator(
+                              radius: 10,
+                              animating: true,
+                              color: homePlaylistPlayerCircleColor,
+                            );
+                          } else {
+                            return PlayPauseButton(
+                              icon: Icons.play_arrow,
+                              onTap: context.read<PlayerBloc>().play,
+                            );
+                          }
+
                         case ButtonState.playing:
                           return PlayPauseButton(
                             icon: Icons.pause,
