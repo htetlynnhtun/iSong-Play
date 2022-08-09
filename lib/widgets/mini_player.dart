@@ -80,9 +80,10 @@ class MiniPlayerView extends StatelessWidget {
                   center: Selector<PlayerBloc, ButtonState>(
                     selector: (_, playerBloc) => playerBloc.buttonState,
                     builder: (_, buttonState, __) {
+                      final currentSongID = context.read<PlayerBloc>().currentSongID;
                       switch (buttonState) {
                         case ButtonState.loading:
-                          if (context.read<PlayerBloc>().currentSongID == nowPlayingSong?.id) {
+                          if (currentSongID == nowPlayingSong?.id) {
                             return const CupertinoActivityIndicator(
                               radius: 10,
                               animating: true,

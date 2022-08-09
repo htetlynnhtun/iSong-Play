@@ -79,6 +79,12 @@ class PlayerBloc extends ChangeNotifier {
     nowPlayingSong = lastRecentTrack;
     notifyListeners();
     if (lastRecentTrack != null) {
+      currentSongThumbnail = lastRecentTrack.thumbnail;
+      currentSongTitle = lastRecentTrack.title;
+      currentSongArtist = lastRecentTrack.artist;
+      currentSongID = lastRecentTrack.id;
+      notifyListeners();
+
       final mediaItem = (await _songsToMediaItems([lastRecentTrack])).first;
       _playerHandler.addQueueItem(mediaItem);
     }
