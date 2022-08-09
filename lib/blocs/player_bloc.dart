@@ -293,11 +293,22 @@ extension InternalLogic on PlayerBloc {
       _currentPositionStream,
       _bufferedPositionStream,
       _durationStream,
-      (one, two, three) => ProgressBarState(
-        current: one,
-        buffered: two,
-        total: three ?? Duration.zero,
-      ),
+      (one, two, three) {
+        var total = three ?? Duration.zero;
+        var buffered = Duration.zero;
+
+        if (two.compareTo(total) > 0) {
+          buffered = total;
+        } else {
+          buffered = two;
+        }
+
+        return ProgressBarState(
+          current: one,
+          buffered: buffered,
+          total: three ?? Duration.zero,
+        );
+      },
     ).listen((event) {
       progressBarState = event;
       final current = progressBarState.current.inSeconds;
