@@ -90,6 +90,7 @@ class SearchBloc extends ChangeNotifier {
 
   void clearQuery() {
     searchQuery = "";
+    tappedQuery = "";
     showClearButton = false;
     offlineSearchResults = [];
     currentContentView = SearchContent.recent;

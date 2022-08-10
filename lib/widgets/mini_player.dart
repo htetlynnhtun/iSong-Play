@@ -22,10 +22,8 @@ class MiniPlayer extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ??
-                    searchIconColor,
-                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
-                    searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ?? searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ?? searchIconColor,
               ],
             ),
           ),
@@ -50,8 +48,7 @@ class MiniPlayerView extends StatelessWidget {
           selector: (_, playerBloc) => playerBloc.nowPlayingSong,
           shouldRebuild: (_, __) => true,
           builder: (_, nowPlayingSong, __) {
-            final imageUrl =
-                nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
+            final imageUrl = nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
             final title = nowPlayingSong?.title ?? "Title";
             final artist = nowPlayingSong?.artist ?? "Artist";
 
@@ -73,36 +70,52 @@ class MiniPlayerView extends StatelessWidget {
                     artist: artist,
                   ),
                 ),
-                CircularPercentIndicator(
-                  radius: 16.r,
-                  lineWidth: 4.h,
-                  percent: 0.0,
-                  center: Selector<PlayerBloc, ButtonState>(
-                    selector: (_, playerBloc) => playerBloc.buttonState,
-                    builder: (_, buttonState, __) {
-                      switch (buttonState) {
-                        case ButtonState.loading:
-                          return  CupertinoActivityIndicator(
-                            radius: 8.r,
-                            animating: true,
-                            color: homePlaylistPlayerCircleColor,
-                          );
-                        case ButtonState.playing:
-                          return PlayPauseButton(
-                            icon: Icons.pause,
-                            onTap: context.read<PlayerBloc>().pause,
-                          );
-                        case ButtonState.paused:
-                          return PlayPauseButton(
-                            icon: Icons.play_arrow,
-                            onTap: context.read<PlayerBloc>().play,
-                          );
-                      }
-                    },
-                  ),
-                  backgroundColor: homePlaylistPlayerCircleColor,
-                  progressColor: primaryColor,
+                    const SizedBox(
+                  width: 16,
                 ),
+                Selector<PlayerBloc, double>(
+                    selector: (_, playerBloc) => playerBloc.circularProgressPercentage,
+                    builder: (_, percent, __) {
+                      return CircularPercentIndicator(
+                        radius: 18.0,
+                        lineWidth: 4.0,
+                        percent: percent,
+                        center: Selector<PlayerBloc, ButtonState>(
+                          selector: (_, playerBloc) => playerBloc.buttonState,
+                          builder: (_, buttonState, __) {
+                            final currentSongID = context.read<PlayerBloc>().currentSongID;
+                            switch (buttonState) {
+                              case ButtonState.loading:
+                                if (currentSongID == nowPlayingSong?.id) {
+                                  return const CupertinoActivityIndicator(
+                                    radius: 10,
+                                    animating: true,
+                                    color: homePlaylistPlayerCircleColor,
+                                  );
+                                } else {
+                                  return PlayPauseButton(
+                                    icon: Icons.play_arrow,
+                                    onTap: context.read<PlayerBloc>().play,
+                                  );
+                                }
+
+                              case ButtonState.playing:
+                                return PlayPauseButton(
+                                  icon: Icons.pause,
+                                  onTap: context.read<PlayerBloc>().pause,
+                                );
+                              case ButtonState.paused:
+                                return PlayPauseButton(
+                                  icon: Icons.play_arrow,
+                                  onTap: context.read<PlayerBloc>().play,
+                                );
+                            }
+                          },
+                        ),
+                        backgroundColor: homePlaylistPlayerCircleColor,
+                        progressColor: primaryColor,
+                      );
+                    }),
                 SizedBox(
                   width: 18.w,
                 ),

@@ -61,17 +61,13 @@ class SearchResultsView extends StatelessWidget {
                   return ListView.separated(
                     padding: EdgeInsets.only(left: 16.w),
                     itemBuilder: (context, index) => GestureDetector(
-                      onTap: () => context
-                          .read<PlayerBloc>()
-                          .onTapSong(index, searchResults),
-                      child: Selector<PlayerBloc, bool>(
-                          selector: (_, playerBloc) => playerBloc.isLoadingSong,
-                          builder: (context, isLoadingSong, __) {
+                      onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
+                      child: Selector<PlayerBloc, ButtonState>(
+                          selector: (_, playerBloc) => playerBloc.buttonState,
+                          builder: (context, buttonState, __) {
                             final songVO = searchResults[index];
-                            final tappedSongID =
-                                context.read<PlayerBloc>().tappedSongID;
-                            final isLoading =
-                                (songVO.id == tappedSongID) && isLoadingSong;
+                            final currentSongID = context.read<PlayerBloc>().currentSongID;
+                            final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
 
                             return SongItemView(
                               songVO,
@@ -114,9 +110,7 @@ class SearchSuggestionsView extends StatelessWidget {
                   FocusManager.instance.primaryFocus?.unfocus();
                   // Todo: Add loading indicator
                   // show loading
-                  await context
-                      .read<SearchBloc>()
-                      .onTapRecentOrSuggestion(suggestions[index]);
+                  await context.read<SearchBloc>().onTapRecentOrSuggestion(suggestions[index]);
                   // stop loading
                 },
                 child: RecentAndSuggestionView(
@@ -182,8 +176,7 @@ class RecentSearchesView extends StatelessWidget {
             ),
             Expanded(
               child: Selector<SearchBloc, List<RecentSearchVO>>(
-                selector: (_, searchBloc) =>
-                    searchBloc.recentSearches.reversed.toList(),
+                selector: (_, searchBloc) => searchBloc.recentSearches.reversed.toList(),
                 builder: (_, recentSearches, __) {
                   return ListView.separated(
                     itemBuilder: (context, index) {
@@ -191,9 +184,7 @@ class RecentSearchesView extends StatelessWidget {
                       return GestureDetector(
                         onTap: () async {
                           FocusManager.instance.primaryFocus?.unfocus();
-                          await context
-                              .read<SearchBloc>()
-                              .onTapRecentOrSuggestion(title);
+                          await context.read<SearchBloc>().onTapRecentOrSuggestion(title);
                         },
                         child: RecentAndSuggestionView(title: title),
                       );

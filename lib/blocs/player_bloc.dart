@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/song_dao.dart';
@@ -23,11 +25,14 @@ class PlayerBloc extends ChangeNotifier {
   SongVO? nowPlayingSong;
   List<Color?> dominantColor = [];
   var queueState = <SongVO>[];
+  var nowPlayingIndex = 0;
+  var currentSongID = "";
   var progressBarState = const ProgressBarState(
     buffered: Duration.zero,
     current: Duration.zero,
     total: Duration.zero,
   );
+  var circularProgressPercentage = 0.0;
   var buttonState = ButtonState.paused;
   var repeatState = RepeatState.off;
   var isFirstSong = true;
@@ -35,12 +40,19 @@ class PlayerBloc extends ChangeNotifier {
   var isShuffleModeEnabled = false;
 
   /// If song is longer than 10 minutes.
-  var isLongDuration = false;
+  bool? isLongDuration;
 
   var isLoadingSong = false;
-  var tappedSongID = "";
+  var timerMinute = 0;
+  var isTimerActive = false;
+  Duration? countDownDuration;
+  var readableCountDown = '00:00';
 
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
+  final _isLongDurationSubject = BehaviorSubject<bool?>();
+  Timer? perodicTimer;
+
+  static var songsList = <SongVO>[];
 
   PlayerBloc() {
     _init();
@@ -58,8 +70,15 @@ class PlayerBloc extends ChangeNotifier {
     _listenToProgress();
     _listenToPlaybackState();
 
+    _listenToMediaItemForDetectingLongDurationSong();
+
     _internalNowPlayingSubject.distinct((p, n) => p.id == n.id).listen((song) {
       _recentTrackService.addToRecentTracks(song);
+    });
+
+    _isLongDurationSubject.distinct().listen((isLong) {
+      isLongDuration = isLong;
+      notifyListeners();
     });
   }
 
@@ -68,6 +87,12 @@ class PlayerBloc extends ChangeNotifier {
     nowPlayingSong = lastRecentTrack;
     notifyListeners();
     if (lastRecentTrack != null) {
+      currentSongThumbnail = lastRecentTrack.thumbnail;
+      currentSongTitle = lastRecentTrack.title;
+      currentSongArtist = lastRecentTrack.artist;
+      currentSongID = lastRecentTrack.id;
+      notifyListeners();
+
       final mediaItem = (await _songsToMediaItems([lastRecentTrack])).first;
       _playerHandler.addQueueItem(mediaItem);
     }
@@ -82,15 +107,12 @@ class PlayerBloc extends ChangeNotifier {
 
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
-  static var songsList = <SongVO>[];
-
   void onTapSong(int index, List<SongVO> songs) async {
-    pause();
+    _playerHandler.stop();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
 
     notifyListeners();
-    print("wtbug: onTapSong");
 
     // check if songs is the same with current queue
     // var theSame = songs.every((song) => queueState.any((e) => e.id == song.id));
@@ -99,20 +121,20 @@ extension UIEvent on PlayerBloc {
     //   List<MediaItem> mediaItems = await _songsToMediaItems(songs);
     //   await _playerHandler.updateQueue(mediaItems);
     // }
-    if (!(songsList.isNotEmpty && (songsList.first == songs.first))) {
-      print("first time click");
-      songsList = [];
-      songsList.addAll(songs);
+    if (PlayerBloc.songsList.isNotEmpty && (PlayerBloc.songsList.first == songs.first)) {
+      await _playerHandler.skipToQueueItem(index);
+    } else {
+      PlayerBloc.songsList = [];
+      PlayerBloc.songsList.addAll(songs);
       isLoadingSong = true;
-      tappedSongID = songs[index].id;
+      currentSongID = songs[index].id;
+      buttonState = ButtonState.loading;
       notifyListeners();
       final mediaItems = await _songsToMediaItems(songs);
       // await _playerHandler.updateQueue(mediaItems);
       await _playerHandler.setQueue(index, mediaItems);
       isLoadingSong = false;
       notifyListeners();
-    } else {
-      await _playerHandler.skipToQueueItem(index);
     }
 
     await _playerHandler.play();
@@ -132,18 +154,6 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.updateQueue(mediaItems);
     await _playerHandler.play();
   }
-
-  // void onTapOneSong(SongVO songVO) async {
-  //   print("wtbug: onTapOneSong");
-  //   final link = await _youtubeService.getLink(songVO.id);
-  //   final mediaItem = MediaItem(
-  //     id: songVO.id,
-  //     title: songVO.title,
-  //     duration: songVO.duration,
-  //     extras: {"url": link.toString()},
-  //   );
-  //   await _playerHandler.playMediaItem(mediaItem);
-  // }
 
   void onSeek(Duration position) {
     _playerHandler.seek(position);
@@ -231,19 +241,74 @@ extension UIEvent on PlayerBloc {
   }
 
   void onTapSkipForLongDurationSong() {
-    isLongDuration = false;
-    notifyListeners();
-    skipToNext();
-    play();
+    _isLongDurationSubject.add(false);
+    if (nowPlayingIndex == PlayerBloc.songsList.length - 1) {
+      /*
+       1) keep looping 
+       2) stop player
+      */
+      // onTapSong(0, songsList);
+      _playerHandler.stop();
+    } else {
+      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList);
+    }
   }
 
   void onTapAddToLibraryForLongDurationSong(Function(SongVO) cb) {
-    isLongDuration = false;
-    notifyListeners();
+    _isLongDurationSubject.add(false);
 
     cb(nowPlayingSong!);
-    skipToNext();
-    play();
+
+    if (nowPlayingIndex == PlayerBloc.songsList.length - 1) {
+      /*
+       1) keep looping 
+       2) stop player
+      */
+      // onTapSong(0, songsList);
+      _playerHandler.stop();
+    } else {
+      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList);
+    }
+  }
+
+  void onDialogDismissed() {
+    // isLongDuration = null;
+    _isLongDurationSubject.add(null);
+  }
+
+  void onSelectTimerMinute(int minute) {
+    timerMinute = minute;
+    notifyListeners();
+  }
+
+  void onTapSetTimer() {
+    if (timerMinute != 0) {
+      isTimerActive = true;
+      notifyListeners();
+      countDownDuration = Duration(minutes: timerMinute);
+      perodicTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        final remainingSeconds = countDownDuration!.inSeconds - 1;
+        if (remainingSeconds > 0) {
+          countDownDuration = Duration(seconds: remainingSeconds);
+          final minutes = countDownDuration!.inMinutes.remainder(60).toString().padLeft(2, '0');
+          final seconds = countDownDuration!.inSeconds.remainder(60).toString().padLeft(2, '0');
+          readableCountDown = '$minutes:$seconds';
+          notifyListeners();
+        } else {
+          readableCountDown = '00:00';
+          _playerHandler.stop();
+          onTapStopTimer();
+        }
+      });
+    }
+  }
+
+  void onTapStopTimer() {
+    perodicTimer?.cancel();
+    isTimerActive = false;
+    countDownDuration = null;
+    timerMinute = 0;
+    notifyListeners();
   }
 }
 
@@ -258,13 +323,31 @@ extension InternalLogic on PlayerBloc {
       _currentPositionStream,
       _bufferedPositionStream,
       _durationStream,
-      (one, two, three) => ProgressBarState(
-        current: one,
-        buffered: two,
-        total: three ?? Duration.zero,
-      ),
+      (one, two, three) {
+        var total = three ?? Duration.zero;
+        var buffered = Duration.zero;
+
+        if (two.compareTo(total) > 0) {
+          buffered = total;
+        } else {
+          buffered = two;
+        }
+
+        return ProgressBarState(
+          current: one,
+          buffered: buffered,
+          total: three ?? Duration.zero,
+        );
+      },
     ).listen((event) {
       progressBarState = event;
+      final current = progressBarState.current.inSeconds;
+      final total = progressBarState.total.inSeconds;
+      if (total == 0) {
+        circularProgressPercentage = 0;
+      } else {
+        circularProgressPercentage = current.toDouble() / total.toDouble();
+      }
 
       notifyListeners();
     });
@@ -303,15 +386,6 @@ extension InternalLogic on PlayerBloc {
           Color(mediaItem.extras!["beginColor"] as int),
           Color(mediaItem.extras!["endColor"] as int),
         ];
-        nowPlayingSong = _getNowPlayingSong(mediaItem);
-        final duration = nowPlayingSong!.duration;
-        print("Now playing - ${nowPlayingSong!.title} // duration - $duration");
-        if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
-          pause();
-          isLongDuration = true;
-        } else {
-          _internalNowPlayingSubject.add(nowPlayingSong!);
-        }
 
         if (queue.length < 2) {
           isFirstSong = true;
@@ -326,6 +400,28 @@ extension InternalLogic on PlayerBloc {
     ).listen((_) => _);
   }
 
+  void _listenToMediaItemForDetectingLongDurationSong() {
+    _playerHandler.mediaItem.distinct((old, now) => old?.id == now?.id).listen((mediaItem) {
+      if (mediaItem == null) return;
+
+      var isInNewSongsList = PlayerBloc.songsList.any((song) => song.id == mediaItem.id);
+      if (!isInNewSongsList) return;
+
+      nowPlayingSong = _getNowPlayingSong(mediaItem);
+      currentSongID = nowPlayingSong!.id;
+      nowPlayingIndex = queueState.indexWhere((element) => element.id == nowPlayingSong!.id);
+      final duration = nowPlayingSong!.duration;
+
+      if (duration.inMinutes > 10 && !nowPlayingSong!.isDownloadFinished) {
+        _playerHandler.pause();
+
+        _isLongDurationSubject.add(true);
+      } else {
+        _internalNowPlayingSubject.add(nowPlayingSong!);
+      }
+    });
+  }
+
   void _listenToQueue() {
     _playerHandler.queue.distinct().map(_mediaItemsToSongs).listen((queue) {
       queueState = queue;
@@ -337,7 +433,6 @@ extension InternalLogic on PlayerBloc {
     final List<MediaItem> mediaItems = [];
     final List<String> urls = [];
 
-    final stopwatch = Stopwatch()..start();
     for (var song in songs) {
       if (song.isDownloadFinished) {
         urls.add(song.filePath);
@@ -384,7 +479,6 @@ extension InternalLogic on PlayerBloc {
 
       mediaItems.add(mediaItem);
     });
-    print("wtbug: parsing songs took ${stopwatch.elapsed}.");
     return mediaItems;
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -72,8 +74,8 @@ class PlayerDetailView extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
-            padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 8.h),
-            icon:  Icon(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+            icon: Icon(
               Icons.more_horiz,
               size: 24.h,
               color: Colors.white,
@@ -125,7 +127,6 @@ class PlayerDetailView extends StatelessWidget {
               Align(
                 alignment: Alignment.center,
                 child: Selector<PlayerBloc, String?>(
-                  // Todo: handle fist time app lunch image
                   selector: (_, playerBloc) => playerBloc.currentSongThumbnail,
                   builder: (_, imageUrl, __) {
                     return CustomCachedImage(
@@ -233,20 +234,26 @@ class FavoriteAndTimerView extends StatelessWidget {
               return Container();
             }),
         const Spacer(),
-        AssetImageButton(
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) =>
-                    false ? SleepTimerDialog() : const PlaybackTimerDialog());
-          },
-          width: 34.h,
-          height: 34.h,
-          imageUrl: (false)
-              ? 'assets/images/ic_timer_done.png'
-              : 'assets/images/ic_timer.png',
-          color: false ? null : Colors.white.withOpacity(0.9),
-        ),
+        Selector<PlayerBloc, bool>(
+            selector: (_, playerBloc) => playerBloc.isTimerActive,
+            builder: (_, isTimerActive, __) {
+              return AssetImageButton(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => isTimerActive
+                        ? const PlaybackTimerDialog()
+                        : const SleepTimerDialog(),
+                  );
+                },
+                width: 36,
+                height: 36,
+                imageUrl: isTimerActive
+                    ? 'assets/images/ic_timer_done.png'
+                    : 'assets/images/ic_timer.png',
+                color: isTimerActive ? null : Colors.white.withOpacity(0.9),
+              );
+            }),
       ],
     );
   }
@@ -299,6 +306,18 @@ class PlayerIconsCollectionView extends StatelessWidget {
               builder: (_, buttonState, __) {
                 VoidCallback onTap;
                 String imageUrl;
+
+                if (buttonState == ButtonState.loading) {
+                  return SizedBox(
+                    width: 64.h,
+                    height: 64.h,
+                    child: CupertinoActivityIndicator(
+                      color: primaryColor,
+                      radius: 16.h,
+                    ),
+                  );
+                }
+
                 switch (buttonState) {
                   case ButtonState.loading:
                     onTap = () {};

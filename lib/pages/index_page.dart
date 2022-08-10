@@ -35,49 +35,40 @@ class _IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final isFirstRouteInCurrentTab =
-            !await _navigatorKeys[currentIndex].currentState!.maybePop();
+        final isFirstRouteInCurrentTab = !await _navigatorKeys[currentIndex].currentState!.maybePop();
 
         return isFirstRouteInCurrentTab;
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Selector<PlayerBloc, bool>(
+        body: Selector<PlayerBloc, bool?>(
             selector: (_, playerBloc) => playerBloc.isLongDuration,
             builder: (context, isLongDuration, __) {
-              if (isLongDuration) {
+              if (isLongDuration == true) {
                 SchedulerBinding.instance.addPostFrameCallback((_) {
                   showCupertinoDialog(
                     context: context,
                     builder: (_) => CupertinoAlertDialog(
-                      content: const Text(
-                          "Songs longer than 10 minutes need to be added to Library first."),
+                      content: const Text("Songs longer than 10 minutes need to be added to Library first."),
                       actions: [
                         CupertinoDialogAction(
                           isDefaultAction: true,
                           child: TextButton(
                             child: const Text("Add To Library"),
                             onPressed: () async {
-                              context
-                                  .read<PlayerBloc>()
-                                  .onTapAddToLibraryForLongDurationSong(
-                                      (songVO) async {
-                                final result = await context
-                                    .read<LibraryBloc>()
-                                    .onTapAddToLibrary(songVO);
+                              context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
+                                final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
                                 switch (result) {
                                   case AddToLibraryResult.success:
-                                    widget.showToast(
-                                        "Successfully added to library");
+                                    widget.showToast("Successfully added to library");
                                     break;
                                   case AddToLibraryResult.alreadyInLibrary:
-                                    widget.showToast(
-                                        "Song is already in library");
+                                    widget.showToast("Song is already in library");
                                     break;
                                 }
                               });
 
-                              Navigator.pop(context);
+                              // Navigator.pop(context);
                             },
                           ),
                         ),
@@ -86,16 +77,21 @@ class _IndexPageState extends State<IndexPage> {
                             child: const Text("Skip"),
                             onPressed: () {
                               print("Skip long duration song");
-                              context
-                                  .read<PlayerBloc>()
-                                  .onTapSkipForLongDurationSong();
-                              Navigator.pop(context);
+                              context.read<PlayerBloc>().onTapSkipForLongDurationSong();
+                              // Navigator.pop(context);
                             },
                           ),
                         ),
                       ],
                     ),
                   );
+                });
+              }
+
+              if (isLongDuration == false) {
+                SchedulerBinding.instance.addPostFrameCallback((_) {
+                  Navigator.pop(context);
+                  context.read<PlayerBloc>().onDialogDismissed();
                 });
               }
 
@@ -115,8 +111,7 @@ class _IndexPageState extends State<IndexPage> {
           children: [
             GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context, SlideRightRoute(page: const PlayerPage()));
+                  Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
                 },
                 child: const MiniPlayer()),
             SizedBox(

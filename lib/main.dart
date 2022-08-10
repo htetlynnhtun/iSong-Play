@@ -65,8 +65,7 @@ class MyApp extends StatelessWidget {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             hoverColor: Colors.transparent,
-              textTheme:
-              GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
+            textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
           ),
           title: 'Music App',
           home: child,

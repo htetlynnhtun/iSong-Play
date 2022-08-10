@@ -16,14 +16,14 @@ class SearchPage extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
-           SizedBox(
+          SizedBox(
             height: 8.h,
           ),
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: SearchAndCancelView(),
           ),
-           SizedBox(
+          SizedBox(
             height: 6.h,
           ),
           const OnlineAndOfflineSlidingView(),
@@ -46,7 +46,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding:  EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               width: double.infinity,
               height: 34.h,
               child: CupertinoSlidingSegmentedControl<int>(
@@ -56,7 +56,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 onValueChanged: (value) {
                   context.read<SearchBloc>().onSlidingValueChange(value!);
                 },
-                children:  {
+                children: {
                   0: Text(
                     'Online',
                     style: TextStyle(
@@ -74,7 +74,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 },
               ),
             ),
-             SizedBox(
+            SizedBox(
               height: 14.h,
             ),
             searchViewList[slidingValue],
@@ -111,7 +111,7 @@ class SearchAndCancelView extends StatelessWidget {
                     onChanged: (value) {
                       context.read<SearchBloc>().onSearchQueryChange(value);
                     },
-                    style:  TextStyle(
+                    style: TextStyle(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.normal,
                     ),
@@ -121,7 +121,7 @@ class SearchAndCancelView extends StatelessWidget {
                       isCollapsed: true,
                       filled: true,
                       fillColor: searchBackgroundColor,
-                      prefixIcon:  Icon(
+                      prefixIcon: Icon(
                         Icons.search,
                         size: 26.h,
                         color: searchIconColor,
@@ -136,7 +136,6 @@ class SearchAndCancelView extends StatelessWidget {
                         },
                         child: AssetImageButton(
                           onTap: () {
-                            searchController.clear();
                             context.read<SearchBloc>().clearQuery();
                           },
                           width: 16.h,
@@ -146,7 +145,7 @@ class SearchAndCancelView extends StatelessWidget {
                         ),
                       ),
                       hintText: 'Artist, Song and more',
-                      hintStyle:  TextStyle(
+                      hintStyle: TextStyle(
                         color: searchIconColor,
                         fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
@@ -163,25 +162,25 @@ class SearchAndCancelView extends StatelessWidget {
                 }),
           ),
         ),
-         SizedBox(
+        SizedBox(
           width: 6.w,
         ),
         TextButton(
-            onPressed: () {
-              searchController.clear();
-              FocusManager.instance.primaryFocus?.unfocus();
-              context.read<SearchBloc>().clearQuery();
-            },
-        style: TextButton.styleFrom(
-          splashFactory: NoSplash.splashFactory,
-        ),
-            child:  Text(
-              'Cancel',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: primaryColor,
-              ),
+          onPressed: () {
+            searchController.clear();
+            FocusManager.instance.primaryFocus?.unfocus();
+            context.read<SearchBloc>().clearQuery();
+          },
+          style: TextButton.styleFrom(
+            splashFactory: NoSplash.splashFactory,
+          ),
+          child: Text(
+            'Cancel',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: primaryColor,
             ),
+          ),
         ),
       ],
     );

@@ -105,6 +105,16 @@ extension UICallbacks on LibraryBloc {
     await songVO.delete();
   }
 
+  void onTapDeleteFromPlaylist(SongVO songVO) async {
+    if (currentPlaylistDetail != null) {
+      currentPlaylistDetail!.songList.removeWhere((e) => e.id == songVO.id);
+      if (currentPlaylistDetail!.songList.isEmpty) {
+        currentPlaylistDetail!.thumbnail = null;
+      }
+      await currentPlaylistDetail!.save();
+    }
+  }
+
   void onPlaylistNameChanged(String name) {
     playlistName = name;
   }

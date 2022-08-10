@@ -55,14 +55,21 @@ class SongItemView extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                     SizedBox(
+                    SizedBox(
                       width: 6.w,
                     ),
-                    Lottie.asset(
-                      'assets/animation.json',
-                      width: 32,
-                      height: 32,
-                    ),
+                    Selector<PlayerBloc, ButtonState>(
+                        selector: (_, playerBloc) => playerBloc.buttonState,
+                        builder: (_, buttonState, __) {
+                          final isAnimate = buttonState == ButtonState.playing;
+
+                          return Lottie.asset(
+                            'assets/animation.json',
+                            width: 32,
+                            height: 32,
+                            animate: isAnimate,
+                          );
+                        }),
                   ],
                 ),
               SizedBox(
@@ -82,9 +89,7 @@ class SongItemView extends StatelessWidget {
                 onSelected: (value) async {
                   switch (value) {
                     case SongItemPopupMenu.addToLibrary:
-                      final result = await context
-                          .read<LibraryBloc>()
-                          .onTapAddToLibrary(songVO);
+                      final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
                       switch (result) {
                         case AddToLibraryResult.success:
                           showToast("Successfully added to library");
@@ -101,9 +106,7 @@ class SongItemView extends StatelessWidget {
                     //   print("add fav");
                     //   break;
                     case SongItemPopupMenu.deleteFromFavorite:
-                      context
-                          .read<LibraryBloc>()
-                          .onTapDeleteFromFavorite(songVO);
+                      context.read<LibraryBloc>().onTapDeleteFromFavorite(songVO);
                       break;
                     case SongItemPopupMenu.addToQueue:
                       context.read<PlayerBloc>().onTapAddToQueue(songVO);
@@ -118,16 +121,13 @@ class SongItemView extends StatelessWidget {
                       );
                       break;
                     case SongItemPopupMenu.deleteFromPlaylist:
-                      final playlistVO =
-                          context.read<LibraryBloc>().currentPlaylistDetail!;
-                      print("delete song from playlist ${playlistVO.name}");
+                      context.read<LibraryBloc>().onTapDeleteFromPlaylist(songVO);
                       break;
                   }
                 },
                 itemBuilder: (context) => menus
                     .map((menu) => PopupMenuItem(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.w, vertical: 12.h),
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                           value: menu,
                           child: MenuItemButton(
                             title: menu.title,
@@ -177,9 +177,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Selector<LibraryBloc, String?>(
-              selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs
-                  .firstWhere((element) => element == songVO.id,
-                      orElse: () => null),
+              selector: (_, libraryBloc) => libraryBloc.activeDownloadIDs.firstWhere((element) => element == songVO.id, orElse: () => null),
               builder: (_, id, __) {
                 // print("builder download status");
                 if (id != null) {
