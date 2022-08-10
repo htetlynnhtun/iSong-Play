@@ -62,7 +62,7 @@ class SongItemView extends StatelessWidget {
                         selector: (_, playerBloc) => playerBloc.buttonState,
                         builder: (_, buttonState, __) {
                           final isAnimate = buttonState == ButtonState.playing;
-                          
+
                           return Lottie.asset(
                             'assets/animation.json',
                             width: 32,
@@ -121,8 +121,7 @@ class SongItemView extends StatelessWidget {
                       );
                       break;
                     case SongItemPopupMenu.deleteFromPlaylist:
-                      final playlistVO = context.read<LibraryBloc>().currentPlaylistDetail!;
-                      print("delete song from playlist ${playlistVO.name}");
+                      context.read<LibraryBloc>().onTapDeleteFromPlaylist(songVO);
                       break;
                   }
                 },
