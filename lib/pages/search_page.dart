@@ -123,7 +123,7 @@ class SearchAndCancelView extends StatelessWidget {
                       fillColor: searchBackgroundColor,
                       prefixIcon:  Icon(
                         Icons.search,
-                        size: 30.h,
+                        size: 26.h,
                         color: searchIconColor,
                       ),
                       suffixIcon: Selector<SearchBloc, bool>(

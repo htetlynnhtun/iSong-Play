@@ -32,7 +32,7 @@ class AddRenamePlaylistDialog extends StatelessWidget {
       shape:  RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14.h))),
       child: Container(
         width: width * 0.8,
-        height: height * 0.25,
+        height: height * 0.3,
         decoration:  BoxDecoration(
           shape: BoxShape.rectangle,
           color: dialogBackgroundColor,

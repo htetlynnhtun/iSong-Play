@@ -45,9 +45,10 @@ class PlaylistItemView extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(
+            icon:  Icon(
               Icons.more_horiz,
               color: primaryColor,
+              size: 24.h,
             ),
             elevation: 2,
             shape: const RoundedRectangleBorder(

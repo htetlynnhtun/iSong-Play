@@ -31,14 +31,7 @@ class LibraryPage extends StatelessWidget {
             child: TitleAndSettingIconButtonView(
               title: 'Library',
               onTap: () {
-                // showModalBottomSheet(
-                //   isDismissible: true,
-                //   backgroundColor: Colors.transparent,
-                //   useRootNavigator: true,
-                //   context: context,
-                //   builder: (context) => const PlaylistBottomSheet(),
-                // );
-              },
+                },
               imageUrl: 'assets/images/ic_setting.png',
             ),
           ),

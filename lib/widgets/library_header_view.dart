@@ -107,8 +107,8 @@ class TittleAndTracksView extends StatelessWidget {
             ),
             Text(
               '$songs Track${calculateCountS(songs)}',
-              style: const TextStyle(
-                fontSize: 12,
+              style:  TextStyle(
+                fontSize: 12.sp,
                 color: Colors.white,
               ),
             ),

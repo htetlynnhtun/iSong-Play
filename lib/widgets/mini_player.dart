@@ -73,20 +73,17 @@ class MiniPlayerView extends StatelessWidget {
                     artist: artist,
                   ),
                 ),
-                const SizedBox(
-                  width: 16,
-                ),
                 CircularPercentIndicator(
-                  radius: 18.0,
-                  lineWidth: 4.0,
+                  radius: 16.r,
+                  lineWidth: 4.h,
                   percent: 0.0,
                   center: Selector<PlayerBloc, ButtonState>(
                     selector: (_, playerBloc) => playerBloc.buttonState,
                     builder: (_, buttonState, __) {
                       switch (buttonState) {
                         case ButtonState.loading:
-                          return const CupertinoActivityIndicator(
-                            radius: 10,
+                          return  CupertinoActivityIndicator(
+                            radius: 8.r,
                             animating: true,
                             color: homePlaylistPlayerCircleColor,
                           );

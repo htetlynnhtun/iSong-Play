@@ -13,9 +13,11 @@ class MenuItemButton extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title),
+        Text(title,style: TextStyle(
+          fontSize: 12.sp
+        ),),
         const Spacer(),
-        Icon(icon),
+        Icon(icon,size:   16.h,),
       ],
     );
   }

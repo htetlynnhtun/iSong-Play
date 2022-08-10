@@ -72,8 +72,10 @@ class PlayerDetailView extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
-            icon: const Icon(
+            padding: EdgeInsets.symmetric(horizontal: 8.w,vertical: 8.h),
+            icon:  Icon(
               Icons.more_horiz,
+              size: 24.h,
               color: Colors.white,
             ),
             elevation: 2,
@@ -238,8 +240,8 @@ class FavoriteAndTimerView extends StatelessWidget {
                 builder: (context) =>
                     false ? SleepTimerDialog() : const PlaybackTimerDialog());
           },
-          width: 36,
-          height: 36,
+          width: 34.h,
+          height: 34.h,
           imageUrl: (false)
               ? 'assets/images/ic_timer_done.png'
               : 'assets/images/ic_timer.png',
