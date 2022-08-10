@@ -147,7 +147,7 @@ class SongCountAndPlayShuffleView extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '${songs.length} Song${calculateCountS(songs.length)}',
+          '${songs.length} Song'.calculateCountS(songs.length),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,

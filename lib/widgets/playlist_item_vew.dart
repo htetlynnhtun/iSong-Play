@@ -122,7 +122,7 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
           height: 4.h,
         ),
         Text(
-          '$songCount Track${calculateCountS(songCount)} ',
+          '$songCount Track'.calculateCountS(songCount),
           style:  TextStyle(
             fontSize: 13.sp,
           ),

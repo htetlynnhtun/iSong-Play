@@ -6,12 +6,14 @@ extension NavigationUtil on Widget {
   void navigateToNextPageWithNavBar(BuildContext context, Widget page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
   }
-  String calculateCountS(int count){
-    if(count!=0){
+}
+
+extension StringUtil on String {
+  String calculateCountS(int count) {
+    if (count != 0) {
       return 's';
     }
     return '';
-
   }
 }
 

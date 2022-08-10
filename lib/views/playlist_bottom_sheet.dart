@@ -134,7 +134,7 @@ class PlayListItemView extends StatelessWidget {
                 height: 4.h,
               ),
               Text(
-                '${playlistVo.songList.length} Track${calculateCountS(playlistVo.songList.length)}',
+                '${playlistVo.songList.length} Track'.calculateCountS(playlistVo.songList.length),
                 style:  TextStyle(
                   fontSize: 13.sp,
                   color: primaryColor,
