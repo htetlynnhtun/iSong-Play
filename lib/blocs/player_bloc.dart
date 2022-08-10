@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/song_dao.dart';
@@ -41,9 +43,14 @@ class PlayerBloc extends ChangeNotifier {
   bool? isLongDuration;
 
   var isLoadingSong = false;
+  var timerMinute = 0;
+  var isTimerActive = false;
+  Duration? countDownDuration;
+  var readableCountDown = '00:00';
 
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
   final _isLongDurationSubject = BehaviorSubject<bool?>();
+  Timer? perodicTimer;
 
   static var songsList = <SongVO>[];
 
@@ -147,18 +154,6 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.updateQueue(mediaItems);
     await _playerHandler.play();
   }
-
-  // void onTapOneSong(SongVO songVO) async {
-  //   print("wtbug: onTapOneSong");
-  //   final link = await _youtubeService.getLink(songVO.id);
-  //   final mediaItem = MediaItem(
-  //     id: songVO.id,
-  //     title: songVO.title,
-  //     duration: songVO.duration,
-  //     extras: {"url": link.toString()},
-  //   );
-  //   await _playerHandler.playMediaItem(mediaItem);
-  // }
 
   void onSeek(Duration position) {
     _playerHandler.seek(position);
@@ -279,6 +274,41 @@ extension UIEvent on PlayerBloc {
   void onDialogDismissed() {
     // isLongDuration = null;
     _isLongDurationSubject.add(null);
+  }
+
+  void onSelectTimerMinute(int minute) {
+    timerMinute = minute;
+    notifyListeners();
+  }
+
+  void onTapSetTimer() {
+    if (timerMinute != 0) {
+      isTimerActive = true;
+      notifyListeners();
+      countDownDuration = Duration(minutes: timerMinute);
+      perodicTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        final remainingSeconds = countDownDuration!.inSeconds - 1;
+        if (remainingSeconds > 0) {
+          countDownDuration = Duration(seconds: remainingSeconds);
+          final minutes = countDownDuration!.inMinutes.remainder(60).toString().padLeft(2, '0');
+          final seconds = countDownDuration!.inSeconds.remainder(60).toString().padLeft(2, '0');
+          readableCountDown = '$minutes:$seconds';
+          notifyListeners();
+        } else {
+          readableCountDown = '00:00';
+          _playerHandler.stop();
+          onTapStopTimer();
+        }
+      });
+    }
+  }
+
+  void onTapStopTimer() {
+    perodicTimer?.cancel();
+    isTimerActive = false;
+    countDownDuration = null;
+    timerMinute = 0;
+    notifyListeners();
   }
 }
 

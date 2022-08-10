@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/blocs/player_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
 import '../resources/dimens.dart';
@@ -26,11 +28,17 @@ class PlaybackTimerDialog extends StatelessWidget {
             Container(
               height: 90.h,
               child: Center(
-                child: Text('29:59',style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 32.sp,
-                  color: primaryColor,
-                ),),
+                child: Selector<PlayerBloc, String>(
+                  selector: (_, playerBloc) => playerBloc.readableCountDown,
+                  builder: (_, countDown, __) => Text(
+                    countDown,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 32.sp,
+                      color: primaryColor,
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(
@@ -45,12 +53,17 @@ class PlaybackTimerDialog extends StatelessWidget {
                   DialogTextButton(
                     title: 'Stop',
                     color: Colors.black,
-                    onTap: (){},
+                    onTap: () {
+                      context.read<PlayerBloc>().onTapStopTimer();
+                      Navigator.pop(context);
+                    },
                   ),
                   DialogTextButton(
                     title: 'Ok',
                     color: primaryColor,
-                    onTap: (){},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   )
                 ],
               ),
