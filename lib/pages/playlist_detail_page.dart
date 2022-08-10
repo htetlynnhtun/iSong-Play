@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
@@ -50,18 +51,35 @@ class PlaylistDetailPage extends StatelessWidget {
                         context: context,
                         builder: (context) => AddRenamePlaylistDialog(
                           initialText: playlistVo.name,
-                          onRename: (oldName) => context
-                              .read<LibraryBloc>()
-                              .onTapRenamePlaylist(oldName),
+                          onRename: (oldName) => context.read<LibraryBloc>().onTapRenamePlaylist(oldName),
                           title: "Playlist Name",
                           onTapTitle: "Rename",
                         ),
                       );
                     } else if (value == "delete") {
-                      await context
-                          .read<LibraryBloc>()
-                          .onTapDeletePlaylist(playlistVo);
-                      Navigator.pop(context);
+                      showDialog<bool>(
+                        context: context,
+                        builder: (context) => CupertinoAlertDialog(
+                          title: const Text("Are you sure?"),
+                          actions: [
+                            CupertinoDialogAction(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("Cancel"),
+                            ),
+                            CupertinoDialogAction(
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                                context.read<LibraryBloc>().onTapDeletePlaylist(playlistVo);
+                              },
+                              child: const Text("Yes"),
+                            ),
+                          ],
+                        ),
+                      ).then((shouldPopParentPage) {
+                        if (shouldPopParentPage == true) {
+                          Navigator.pop(context);
+                        }
+                      });
                     }
                   },
                   itemBuilder: (context) => [
@@ -91,7 +109,7 @@ class PlaylistDetailPage extends StatelessWidget {
                     height: 12.h,
                   ),
                   Padding(
-                    padding:  EdgeInsets.only(right: 16.w),
+                    padding: EdgeInsets.only(right: 16.w),
                     child: PlaylistHeaderView(playlistVo: playlistVo),
                   ),
                   SizedBox(
@@ -116,8 +134,7 @@ class PlaylistHeaderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width * 0.45;
-    final imageUrl = playlistVo.thumbnail ??
-        'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
+    final imageUrl = playlistVo.thumbnail ?? 'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
     return SizedBox(
       height: 90.h,
       child: Row(
@@ -209,15 +226,13 @@ class PlayAndShuffleView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () =>
-              context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
+          onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
           child: const PlaylistButton(
             imageUrl: 'assets/images/ic_play.png',
           ),
         ),
         GestureDetector(
-          onTap: () =>
-              context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
+          onTap: () => context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
           child: const PlaylistButton(
             imageUrl: 'assets/images/ic_shuffle.png',
           ),
