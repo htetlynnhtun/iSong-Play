@@ -26,18 +26,18 @@ class PlaylistDetailPage extends StatelessWidget {
         shouldRebuild: (_, __) => true,
         builder: (_, playlistVo, __) {
           return Scaffold(
-            backgroundColor: Colors.white,
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
               leading: const AppBarBackIcon(),
               title: const AppBarTitle(title: 'Playlist'),
               actions: [
                 PopupMenuButton(
-                  icon: const Icon(
+                  padding: context.isMobile()?EdgeInsets.zero:EdgeInsets.only(right: 16.w),
+                  icon:  Icon(
                     Icons.more_horiz,
                     color: primaryColor,
+                    size:24.h
                   ),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
@@ -109,7 +109,7 @@ class PlaylistDetailPage extends StatelessWidget {
                     height: 12.h,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 16.w),
+                    padding: context.isMobile()? EdgeInsets.only(right: 14.w):EdgeInsets.only(right: 10.w),
                     child: PlaylistHeaderView(playlistVo: playlistVo),
                   ),
                   SizedBox(
@@ -140,7 +140,7 @@ class PlaylistHeaderView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
+          Expanded(
             flex: 1,
             child: CustomCachedImage(
               imageUrl: imageUrl,
@@ -151,10 +151,11 @@ class PlaylistHeaderView extends StatelessWidget {
           SizedBox(
             width: 14.w,
           ),
-          Flexible(
+          Expanded(
             flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   playlistVo.name,
@@ -169,7 +170,7 @@ class PlaylistHeaderView extends StatelessWidget {
                   height: 12.h,
                 ),
                 Text(
-                  "${playlistVo.songList.length} Track${calculateCountS(playlistVo.songList.length)}",
+                  "${playlistVo.songList.length} Track".calculateCountS(playlistVo.songList.length),
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
@@ -223,7 +224,6 @@ class PlayAndShuffleView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
           onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
@@ -231,6 +231,7 @@ class PlayAndShuffleView extends StatelessWidget {
             imageUrl: 'assets/images/ic_play.png',
           ),
         ),
+        const Spacer(),
         GestureDetector(
           onTap: () => context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
           child: const PlaylistButton(

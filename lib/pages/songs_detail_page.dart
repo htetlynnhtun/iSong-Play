@@ -25,15 +25,14 @@ class SongsDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         leading: const AppBarBackIcon(),
         title: AppBarTitle(title: title),
         actions: [
           PopupMenuButton<String>(
+            padding: context.isMobile()?EdgeInsets.zero:EdgeInsets.only(right: 16.w),
             icon:  Icon(
               Icons.sort,
               size: 24.h,
@@ -107,7 +106,7 @@ class SongsDetailPage extends StatelessWidget {
                   height: 10.h,
                 ),
                 Padding(
-                  padding:  EdgeInsets.only(right: 16.w),
+                  padding:  EdgeInsets.only(right: context.isMobile()?16.w:12.w),
                   child: SongCountAndPlayShuffleView(songs: filteredSongs),
                 ),
                  SizedBox(
@@ -147,10 +146,10 @@ class SongCountAndPlayShuffleView extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '${songs.length} Song${calculateCountS(songs.length)}',
-          style: const TextStyle(
+          '${songs.length} Song'.calculateCountS(songs.length),
+          style:  TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 18.sp,
             color: primaryColor,
           ),
         ),
@@ -162,8 +161,8 @@ class SongCountAndPlayShuffleView extends StatelessWidget {
           imageUrl: 'assets/images/ic_play.png',
           color: primaryColor,
         ),
-        const SizedBox(
-          width: 16,
+         SizedBox(
+          width: 12.w,
         ),
         AssetImageButton(
           onTap: () => context.read<PlayerBloc>().onTapShufflePlay(songs),

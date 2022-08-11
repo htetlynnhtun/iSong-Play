@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/search_bloc.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:provider/provider.dart';
 
 import 'asset_image_button.dart';
@@ -18,11 +19,11 @@ class RecentAndSuggestionView extends StatelessWidget {
       children: [
         Image.asset(
           'assets/images/ic_search.png',
-          color: Colors.black,
           height: 12.h,
           width: 12.h,
+          color: context.isDarkMode(context)?Colors.white:Colors.black,
         ),
-         SizedBox(
+        SizedBox(
           width: 7.w,
         ),
         Expanded(
@@ -30,7 +31,7 @@ class RecentAndSuggestionView extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style:  TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 16.sp,
             ),

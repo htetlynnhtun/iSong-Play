@@ -20,13 +20,16 @@ class PlaybackTimerDialog extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.5,
         child: ListView(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             const SleepTimerHeader(title: 'Playback Timer'),
-            SizedBox(
+            Container(
+              color: Colors.white,
               height: 2.h,
             ),
             Container(
               height: 90.h,
+              color: Colors.white,
               child: Center(
                 child: Selector<PlayerBloc, String>(
                   selector: (_, playerBloc) => playerBloc.readableCountDown,
@@ -41,11 +44,17 @@ class PlaybackTimerDialog extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            Container(
+              color: Colors.white,
               height: 2.h,
             ),
             Container(
-              color: Colors.black12,
+              decoration: BoxDecoration(
+                  color: sleepTimerHeaderBackgroundColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16.h),
+                    bottomRight: Radius.circular(16.h),
+                  )),
               height: 40.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
+import 'package:music_app/blocs/theme_bloc.dart';
 import 'package:music_app/persistance/color_adapter.dart';
 import 'package:music_app/persistance/duration_adapter.dart';
+import 'package:music_app/theme/app_theme.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/vos/playlist_vo.dart';
@@ -17,8 +19,13 @@ import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/pages/index_page.dart';
 import 'package:music_app/persistance/box_names.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+late SharedPreferences prefs;
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  prefs = await SharedPreferences.getInstance();
   await Hive.initFlutter();
 
   Hive.registerAdapter(RecentSearchVOAdapter());
@@ -53,24 +60,24 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LibraryBloc()),
         ChangeNotifierProvider(create: (_) => HomeBloc()),
         ChangeNotifierProvider(create: (_) => SearchBloc()),
+        ChangeNotifierProvider(create: (_) => ThemeBloc()),
       ],
-      child: ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (_, child) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
+      child: Selector<ThemeBloc, ThemeMode?>(
+        selector: (context, bloc) => bloc.themeMode,
+        builder: (context, themeMode, _) => ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (_, child) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            themeMode: themeMode,
+            theme: AppTheme.lightTheme(context),
+            darkTheme: AppTheme.darkTheme(context),
+            title: 'Music App',
+            home: child,
           ),
-          title: 'Music App',
-          home: child,
+          child: const IndexPage(),
         ),
-        child: const IndexPage(),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/search_bloc.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
@@ -48,20 +49,23 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               width: double.infinity,
-              height: 34.h,
+              height: context.isMobile()?34.h:40.h,
               child: CupertinoSlidingSegmentedControl<int>(
-                backgroundColor: searchBackgroundColor,
-                thumbColor: CupertinoColors.white,
+                backgroundColor: context.isDarkMode(context)?darkSearchBackgroundColor:searchBackgroundColor,
+                thumbColor: context.isDarkMode(context)?slidingControlSelectedColor:CupertinoColors.white,
                 groupValue: slidingValue,
                 onValueChanged: (value) {
                   context.read<SearchBloc>().onSlidingValueChange(value!);
                 },
                 children: {
-                  0: Text(
-                    'Online',
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      color: primaryColor,
+                  0: Container(
+                     margin: context.isMobile()?EdgeInsets.zero:EdgeInsets.symmetric(vertical: 6.h),
+                    child: Text(
+                      'Online',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: primaryColor,
+                      ),
                     ),
                   ),
                   1: Text(
@@ -120,7 +124,7 @@ class SearchAndCancelView extends StatelessWidget {
                     decoration: InputDecoration(
                       isCollapsed: true,
                       filled: true,
-                      fillColor: searchBackgroundColor,
+                      fillColor: context.isDarkMode(context)?darkSearchBackgroundColor:searchBackgroundColor,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 26.h,

@@ -65,8 +65,8 @@ class SongItemView extends StatelessWidget {
 
                           return Lottie.asset(
                             'assets/animation.json',
-                            width: 32,
-                            height: 32,
+                            width: 32.w,
+                            height: 32.w,
                             animate: isAnimate,
                           );
                         }),
@@ -76,9 +76,11 @@ class SongItemView extends StatelessWidget {
                 width: 16.w,
               ),
               PopupMenuButton<SongItemPopupMenu>(
-                icon: const Icon(
+                padding: context.isMobile()?EdgeInsets.only(right: 8.w):EdgeInsets.only(right: 16.w),
+                icon:  Icon(
                   Icons.more_horiz,
                   color: primaryColor,
+                  size: 24.h,
                 ),
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -190,7 +192,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
                   return Image.asset(
                     'assets/images/ic_downloaded.png',
                     color: primaryColor,
-                    scale: 4,
+                    scale: context.isMobile()?4:2.5,
                   );
                 }
                 return const SizedBox();

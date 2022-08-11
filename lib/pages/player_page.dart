@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/resources/dimens.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
@@ -74,7 +75,7 @@ class PlayerDetailView extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(horizontal: context.isMobile()?8.w:16.w, vertical: 8.h),
             icon: Icon(
               Icons.more_horiz,
               size: 24.h,
@@ -122,7 +123,7 @@ class PlayerDetailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 54.h,
+                height: context.isMobile()? 20.h:54.h,
               ),
               Align(
                 alignment: Alignment.center,
@@ -190,9 +191,9 @@ class PlayerDetailView extends StatelessWidget {
                       context: context,
                       builder: (context) => const UpNextView());
                 },
-                child: const Padding(
-                  padding: EdgeInsets.only(bottom: 46),
-                  child: UpNextButton(
+                child:  Padding(
+                  padding: EdgeInsets.only(bottom: 38.h),
+                  child: const UpNextButton(
                     iconUrl: 'assets/images/ic_up_next.png',
                   ),
                 )),
@@ -221,8 +222,8 @@ class FavoriteAndTimerView extends StatelessWidget {
                   onTap: () => context
                       .read<LibraryBloc>()
                       .onTapFavorite(nowPlayingSong!),
-                  width: 32.h,
-                  height: 32.h,
+                  width: 26.h,
+                  height: 26.h,
                   imageUrl: nowPlayingSong!.isFavorite
                       ? 'assets/images/ic_favorite_done.png'
                       : 'assets/images/ic_favorite.png',
@@ -246,8 +247,8 @@ class FavoriteAndTimerView extends StatelessWidget {
                         : const SleepTimerDialog(),
                   );
                 },
-                width: 36,
-                height: 36,
+                width: 26.h,
+                height: 26.h,
                 imageUrl: isTimerActive
                     ? 'assets/images/ic_timer_done.png'
                     : 'assets/images/ic_timer.png',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/pages/playlist_detail_page.dart';
+import 'package:music_app/pages/setting_page.dart';
 import 'package:music_app/pages/songs_detail_page.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/vos/playlist_vo.dart';
@@ -31,18 +32,19 @@ class LibraryPage extends StatelessWidget {
             child: TitleAndSettingIconButtonView(
               title: 'Library',
               onTap: () {
-                },
+                navigateToNextPageWithNavBar(context, const SettingPage());
+              },
               imageUrl: 'assets/images/ic_setting.png',
             ),
           ),
-           SizedBox(
+          SizedBox(
             height: 28.h,
           ),
           Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: const YourSongAndFavouriteHeaderView(),
           ),
-           SizedBox(
+          SizedBox(
             height: 26.h,
           ),
           Padding(
@@ -64,7 +66,7 @@ class LibraryPage extends StatelessWidget {
               imageUrl: 'assets/images/ic_add.png',
             ),
           ),
-           SizedBox(
+          SizedBox(
             height: 18.h,
           ),
           Expanded(
@@ -73,13 +75,15 @@ class LibraryPage extends StatelessWidget {
               shouldRebuild: (_, __) => true,
               builder: (_, playlists, __) {
                 return ListView.separated(
-                    padding:  EdgeInsets.only(left: 16.w),
+                    padding: EdgeInsets.only(left: 16.w),
                     itemBuilder: (context, index) {
                       final playlistVo = playlists[index];
                       return PlaylistItemView(
                         playlistVO: playlistVo,
                         onTap: () {
-                          context.read<LibraryBloc>().onViewPlaylistDetail(playlistVo);
+                          context
+                              .read<LibraryBloc>()
+                              .onViewPlaylistDetail(playlistVo);
                           navigateToNextPageWithNavBar(
                             context,
                             const PlaylistDetailPage(),
@@ -87,7 +91,8 @@ class LibraryPage extends StatelessWidget {
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 12),
                     itemCount: playlists.length);
               },
             ),
@@ -125,7 +130,7 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
                 );
               },
             ),
-             SizedBox(
+            SizedBox(
               width: 16.w,
             ),
             LibraryHeaderView(
