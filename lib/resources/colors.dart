@@ -15,3 +15,5 @@ const playlistButtonUnselectedColor = Color(0xffF4F4F5);
 const seekBarBackgroundColor = Color.fromRGBO(170, 170, 170, 1.0);
 
 const defaultPlayerColor = Color(0xff222222);
+
+const sleepTimerHeaderBackgroundColor = Color.fromRGBO(244, 244, 245, 1.0);

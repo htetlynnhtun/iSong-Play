@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/utils/extension.dart';
 
 class UpNextButton extends StatelessWidget {
   final String iconUrl;
@@ -15,6 +16,7 @@ class UpNextButton extends StatelessWidget {
       children: [
         Image.asset(
           iconUrl,
+          scale: context.isMobile() ? 2.5 : 1.5,
         ),
         SizedBox(
           height: 10.h,

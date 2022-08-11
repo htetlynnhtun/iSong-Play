@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,7 @@ class SleepTimerDialog extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.5,
         child: ListView(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             const SleepTimerHeader(title: 'Set a Duration'),
             SizedBox(
@@ -30,7 +32,12 @@ class SleepTimerDialog extends StatelessWidget {
               height: 2.h,
             ),
             Container(
-              color: Colors.black12,
+              decoration: BoxDecoration(
+                  color: sleepTimerHeaderBackgroundColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16.h),
+                    bottomRight: Radius.circular(16.h),
+                  )),
               height: 40.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -72,7 +79,6 @@ class DurationsView extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final minute = (index + 1) * 5;
-
         return Padding(
           padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
           child: Center(
@@ -88,8 +94,7 @@ class DurationsView extends StatelessWidget {
                       '$minute mins',
                       style: TextStyle(
                         fontSize: 16.sp,
-                        color: isSelected ? primaryColor : Colors.black.withOpacity(0.5),
-                        fontWeight: FontWeight.bold,
+                        color: isSelected ? primaryColor : searchIconColor,
                       ),
                     );
                   }),

@@ -70,15 +70,15 @@ class MiniPlayerView extends StatelessWidget {
                     artist: artist,
                   ),
                 ),
-                    const SizedBox(
-                  width: 16,
+                     SizedBox(
+                  width: 16.w,
                 ),
                 Selector<PlayerBloc, double>(
                     selector: (_, playerBloc) => playerBloc.circularProgressPercentage,
                     builder: (_, percent, __) {
                       return CircularPercentIndicator(
-                        radius: 18.0,
-                        lineWidth: 4.0,
+                        radius: 18.h,
+                        lineWidth: 4.h,
                         percent: percent,
                         center: Selector<PlayerBloc, ButtonState>(
                           selector: (_, playerBloc) => playerBloc.buttonState,
@@ -87,8 +87,8 @@ class MiniPlayerView extends StatelessWidget {
                             switch (buttonState) {
                               case ButtonState.loading:
                                 if (currentSongID == nowPlayingSong?.id) {
-                                  return const CupertinoActivityIndicator(
-                                    radius: 10,
+                                  return  CupertinoActivityIndicator(
+                                    radius: 9.r,
                                     animating: true,
                                     color: homePlaylistPlayerCircleColor,
                                   );

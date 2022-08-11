@@ -11,9 +11,16 @@ extension NavigationUtil on Widget {
 extension StringUtil on String {
   String calculateCountS(int count) {
     if (count != 0) {
-      return 's';
+      return '${this}s';
     }
-    return '';
+    return this;
+  }
+}
+
+extension SizeUtil on BuildContext {
+  bool isMobile() {
+    final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
+    return data.size.shortestSide < 550;
   }
 }
 

@@ -32,8 +32,8 @@ class PlaylistItemView extends StatelessWidget {
           CustomCachedImage(
             imageUrl: imageUrl,
             cornerRadius: 10.h,
-            width: 99.w,
-            height: 56.h,
+            width: context.isMobile()?99.w:90.w,
+            height: context.isMobile()?56.h:65.h,
           ),
            SizedBox(
             width: 12.w,
@@ -45,6 +45,7 @@ class PlaylistItemView extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
+            padding: context.isMobile()?EdgeInsets.zero:EdgeInsets.only(right: 20.w),
             icon:  Icon(
               Icons.more_horiz,
               color: primaryColor,
