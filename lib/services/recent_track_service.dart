@@ -44,7 +44,7 @@ class RecentTrackServiceImpl implements RecentTrackService {
   @override
   Stream<List<SongVO>> getRecentTracks() {
     return _recentTrackDao.watchItems().map((items) {
-      items.sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
+      items.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return items.map(_mapTrackToSong).toList();
     });
   }
@@ -57,7 +57,9 @@ class RecentTrackServiceImpl implements RecentTrackService {
       return null;
     }
 
-    return _mapTrackToSong(allTracks.last);
+    allTracks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+
+    return _mapTrackToSong(allTracks.first);
   }
 
   SongVO _mapTrackToSong(RecentTrackVO track) {
