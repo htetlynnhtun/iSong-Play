@@ -1,4 +1,5 @@
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
@@ -114,9 +115,7 @@ class BannerView extends StatelessWidget {
                         itemBuilder: (_, itemIndex, __) => GestureDetector(
                           onTap: () {
                             // if offline, show alert
-                            context
-                                .read<PlayerBloc>()
-                                .onTapSong(itemIndex, songs);
+                            context.read<PlayerBloc>().onTapSong(itemIndex, songs, forBanner: true);
                           },
                           child: BannerImageAndSongNameView(
                             songVO: songs[itemIndex],
@@ -127,9 +126,7 @@ class BannerView extends StatelessWidget {
                             enlargeCenterPage: true,
                             viewportFraction: 1,
                             onPageChanged: (index, reason) {
-                              context
-                                  .read<HomeBloc>()
-                                  .onBannerPageChanged(index);
+                              context.read<HomeBloc>().onBannerPageChanged(index);
                             }),
                       ),
                     ),
@@ -142,8 +139,7 @@ class BannerView extends StatelessWidget {
                           dotsCount: songs.length,
                           position: pageIndex.toDouble(),
                           decorator: DotsDecorator(
-                            color: Colors.white
-                                .withOpacity(0.38), // Inactive color
+                            color: Colors.white.withOpacity(0.38), // Inactive color
                             activeColor: primaryColor,
                             size: Size(6.h, 6.h),
                             activeSize: Size(6.h, 6.h),
@@ -224,7 +220,7 @@ class BannerTitleAndArtistView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width*0.9,
+            width: MediaQuery.of(context).size.width * 0.9,
             child: Text(
               songVO.title,
               style: TextStyle(
@@ -270,8 +266,7 @@ class RecentTracksView extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) => GestureDetector(
-              onTap: () =>
-                  context.read<PlayerBloc>().onTapSong(index, recentTracks),
+              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks),
               child: TracksAndTitleView(recentTracks[index]),
             ),
             separatorBuilder: (_, __) => SizedBox(width: 14.w),

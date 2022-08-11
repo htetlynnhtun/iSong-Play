@@ -42,7 +42,7 @@ class PlayerBloc extends ChangeNotifier {
   /// If song is longer than 10 minutes.
   bool? isLongDuration;
 
-  var isLoadingSong = false;
+  var isLoadingBannerSongs = false;
   var timerMinute = 0;
   var isTimerActive = false;
   Duration? countDownDuration;
@@ -107,7 +107,7 @@ class PlayerBloc extends ChangeNotifier {
 
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
-  void onTapSong(int index, List<SongVO> songs) async {
+  void onTapSong(int index, List<SongVO> songs, {bool forBanner = false}) async {
     _playerHandler.stop();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
@@ -126,14 +126,18 @@ extension UIEvent on PlayerBloc {
     } else {
       PlayerBloc.songsList = [];
       PlayerBloc.songsList.addAll(songs);
-      isLoadingSong = true;
+      if (forBanner) {
+        isLoadingBannerSongs = true;
+      }
       currentSongID = songs[index].id;
       buttonState = ButtonState.loading;
       notifyListeners();
       final mediaItems = await _songsToMediaItems(songs);
       // await _playerHandler.updateQueue(mediaItems);
       await _playerHandler.setQueue(index, mediaItems);
-      isLoadingSong = false;
+      if (forBanner) {
+        isLoadingBannerSongs = false;
+      }
       notifyListeners();
     }
 
