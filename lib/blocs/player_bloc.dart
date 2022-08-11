@@ -56,8 +56,6 @@ class PlayerBloc extends ChangeNotifier {
 
   PlayerBloc() {
     _init();
-    _songDao.watchItems().listen((_) => notifyListeners());
-    _loadRecentTrack();
   }
 
   void _init() async {
@@ -80,6 +78,8 @@ class PlayerBloc extends ChangeNotifier {
       isLongDuration = isLong;
       notifyListeners();
     });
+
+    _loadRecentTrack();
   }
 
   void _loadRecentTrack() async {

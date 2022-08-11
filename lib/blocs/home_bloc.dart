@@ -40,7 +40,7 @@ class HomeBloc extends ChangeNotifier {
     });
 
     _recentTrackService.getRecentTracks().listen((data) {
-      recentTracks = data.reversed.toList();
+      recentTracks = data.toList();
       notifyListeners();
     });
 
