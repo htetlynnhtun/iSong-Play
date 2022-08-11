@@ -23,11 +23,13 @@ class PlaybackTimerDialog extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             const SleepTimerHeader(title: 'Playback Timer'),
-            SizedBox(
+            Container(
+              color: Colors.white,
               height: 2.h,
             ),
-            SizedBox(
+            Container(
               height: 90.h,
+              color: Colors.white,
               child: Center(
                 child: Selector<PlayerBloc, String>(
                   selector: (_, playerBloc) => playerBloc.readableCountDown,
@@ -42,7 +44,8 @@ class PlaybackTimerDialog extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            Container(
+              color: Colors.white,
               height: 2.h,
             ),
             Container(

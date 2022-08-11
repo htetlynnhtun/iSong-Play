@@ -24,11 +24,15 @@ class SleepTimerDialog extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             const SleepTimerHeader(title: 'Set a Duration'),
-            SizedBox(
+            Container(
+              color: Colors.white,
               height: 2.h,
             ),
-            const DurationsView(),
-            SizedBox(
+            Container(
+                color: Colors.white,
+                child: const DurationsView()),
+            Container(
+              color: Colors.white,
               height: 2.h,
             ),
             Container(
@@ -102,7 +106,9 @@ class DurationsView extends StatelessWidget {
           ),
         );
       },
-      separatorBuilder: (context, index) => const Divider(),
+      separatorBuilder: (context, index) => const Divider(
+        color: searchIconColor,
+      ),
       itemCount: 12,
     );
   }

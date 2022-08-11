@@ -51,8 +51,8 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
               width: double.infinity,
               height: context.isMobile()?34.h:40.h,
               child: CupertinoSlidingSegmentedControl<int>(
-                backgroundColor: searchBackgroundColor,
-                thumbColor: CupertinoColors.white,
+                backgroundColor: context.isDarkMode(context)?darkSearchBackgroundColor:searchBackgroundColor,
+                thumbColor: context.isDarkMode(context)?slidingControlSelectedColor:CupertinoColors.white,
                 groupValue: slidingValue,
                 onValueChanged: (value) {
                   context.read<SearchBloc>().onSlidingValueChange(value!);
@@ -124,7 +124,7 @@ class SearchAndCancelView extends StatelessWidget {
                     decoration: InputDecoration(
                       isCollapsed: true,
                       filled: true,
-                      fillColor: searchBackgroundColor,
+                      fillColor: context.isDarkMode(context)?darkSearchBackgroundColor:searchBackgroundColor,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 26.h,

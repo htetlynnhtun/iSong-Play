@@ -22,6 +22,10 @@ extension SizeUtil on BuildContext {
     final data = MediaQueryData.fromWindow(WidgetsBinding.instance.window);
     return data.size.shortestSide < 550;
   }
+
+  bool isDarkMode(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
 }
 
 extension ToastMessage on Widget {

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
+import 'package:music_app/pages/setting_page.dart';
 import 'package:music_app/resources/colors.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/title_text.dart';
@@ -33,7 +35,9 @@ class HomePage extends StatelessWidget {
               ),
               child: TitleAndSettingIconButtonView(
                 title: 'Home',
-                onTap: () {},
+                onTap: () {
+                  navigateToNextPageWithNavBar(context,const SettingPage());
+                },
                 imageUrl: 'assets/images/ic_setting.png',
               ),
             ),

@@ -21,7 +21,7 @@ class PlaylistBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: bottomSheetBackgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(cornerRadius),
       ),
       margin: const EdgeInsets.fromLTRB(25, 0, 25, 25),
@@ -34,12 +34,12 @@ class PlaylistBottomSheet extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   SizedBox(
+                  SizedBox(
                     height: 22.h,
                   ),
                   const AddToPlaylistView(),
                   if (playlists.isEmpty)
-                     SizedBox(
+                    SizedBox(
                       height: 43.h,
                     ),
                   PlayListsView(
@@ -66,7 +66,7 @@ class PlayListsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-       SizedBox(
+      SizedBox(
         height: 22.h,
       ),
       ListView.separated(
@@ -77,7 +77,9 @@ class PlayListsView extends StatelessWidget {
           return GestureDetector(
             onTap: () async {
               Navigator.pop(context);
-              final result = await context.read<LibraryBloc>().onTapAddToPlaylist(playlistVo, songVO);
+              final result = await context
+                  .read<LibraryBloc>()
+                  .onTapAddToPlaylist(playlistVo, songVO);
               switch (result) {
                 case AddToPlaylistResult.alreadyInPlaylist:
                   showToast("Song is already in the playlist");
@@ -103,7 +105,8 @@ class PlayListItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = playlistVo.thumbnail ?? 'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
+    final imageUrl = playlistVo.thumbnail ??
+        'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
     return Row(
       children: [
         CustomCachedImage(
@@ -112,7 +115,7 @@ class PlayListItemView extends StatelessWidget {
           height: 52.h,
           width: 52.h,
         ),
-         SizedBox(
+        SizedBox(
           width: 6.h,
         ),
         Expanded(
@@ -124,18 +127,19 @@ class PlayListItemView extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
-                style:  TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 17.sp,
                   color: primaryColor,
                 ),
               ),
-               SizedBox(
+              SizedBox(
                 height: 4.h,
               ),
               Text(
-                '${playlistVo.songList.length} Track'.calculateCountS(playlistVo.songList.length),
-                style:  TextStyle(
+                '${playlistVo.songList.length} Track'
+                    .calculateCountS(playlistVo.songList.length),
+                style: TextStyle(
                   fontSize: 13.sp,
                   color: primaryColor,
                 ),

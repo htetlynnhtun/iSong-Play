@@ -25,10 +25,8 @@ class SongsDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         leading: const AppBarBackIcon(),
         title: AppBarTitle(title: title),

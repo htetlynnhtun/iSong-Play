@@ -26,10 +26,8 @@ class PlaylistDetailPage extends StatelessWidget {
         shouldRebuild: (_, __) => true,
         builder: (_, playlistVo, __) {
           return Scaffold(
-            backgroundColor: Colors.white,
             appBar: AppBar(
               elevation: 0,
-              backgroundColor: Colors.white,
               automaticallyImplyLeading: false,
               leading: const AppBarBackIcon(),
               title: const AppBarTitle(title: 'Playlist'),
