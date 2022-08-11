@@ -33,137 +33,148 @@ class _IndexPageState extends State<IndexPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final isFirstRouteInCurrentTab =
-        !await _navigatorKeys[currentIndex].currentState!.maybePop();
-
-        return isFirstRouteInCurrentTab;
-      },
-      child: Scaffold(
-        body: Selector<PlayerBloc, bool?>(
-            selector: (_, playerBloc) => playerBloc.isLongDuration,
-            builder: (context, isLongDuration, __) {
-              if (isLongDuration == true) {
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  showCupertinoDialog(
-                    context: context,
-                    builder: (_) => CupertinoAlertDialog(
-                      content: const Text(
-                          "Songs longer than 10 minutes need to be added to Library first."),
-                      actions: [
-                        CupertinoDialogAction(
-                          isDefaultAction: true,
-                          child: TextButton(
-                            child: const Text("Add To Library"),
-                            onPressed: () async {
-                              context
-                                  .read<PlayerBloc>()
-                                  .onTapAddToLibraryForLongDurationSong(
-                                      (songVO) async {
-                                    final result = await context
-                                        .read<LibraryBloc>()
-                                        .onTapAddToLibrary(songVO);
-                                    switch (result) {
-                                      case AddToLibraryResult.success:
-                                        widget.showToast(
-                                            "Successfully added to library");
-                                        break;
-                                      case AddToLibraryResult.alreadyInLibrary:
-                                        widget.showToast(
-                                            "Song is already in library");
-                                        break;
-                                    }
-                                  });
-
-                              // Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                        CupertinoDialogAction(
-                          child: TextButton(
-                            child: const Text("Skip"),
-                            onPressed: () {
-                              print("Skip long duration song");
-                              context
-                                  .read<PlayerBloc>()
-                                  .onTapSkipForLongDurationSong();
-                              // Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                });
-              }
-
-              if (isLongDuration == false) {
-                SchedulerBinding.instance.addPostFrameCallback((_) {
-                  Navigator.pop(context);
-                  context.read<PlayerBloc>().onDialogDismissed();
-                });
-              }
-
-              return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle.dark,
-                child: Stack(
-                  children: [
-                    _buildOffstageNavigator(0),
-                    _buildOffstageNavigator(1),
-                    _buildOffstageNavigator(2),
-                  ],
-                ),
-              );
-            }),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
+    return Selector<PlayerBloc, bool>(
+      selector: (_, playerBloc) => playerBloc.isLoadingBannerSongs,
+      builder: (_, isLoadingBannerSongs, child) {
+        return Stack(
           children: [
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context, SlideRightRoute(page: const PlayerPage()));
-                },
-                child: const MiniPlayer()),
-            SizedBox(
-              height: 70.h,
-              child: BottomNavigationBar(
-                iconSize: 18.h,
-                selectedFontSize: 12.sp,
-                unselectedFontSize: 10.sp,
-                selectedItemColor: primaryColor,
-                unselectedItemColor: navbarUnselectedItemColor,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/ic_library.png'),
-                    ),
-                    label: 'Library',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/ic_home.png'),
-                    ),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: ImageIcon(
-                      AssetImage('assets/images/ic_search.png'),
-                    ),
-                    label: 'Search',
-                  ),
-                ],
-                currentIndex: currentIndex,
-                onTap: (index) {
-                  setState(
-                        () {
-                      currentIndex = index;
-                    },
-                  );
-                },
+            child!,
+            if (isLoadingBannerSongs)
+              Container(
+                color: Colors.black.withOpacity(0.7),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
               ),
-            )
+            if (isLoadingBannerSongs)
+              const Center(
+                child: CupertinoActivityIndicator(
+                  radius: 32,
+                  color: Colors.white,
+                ),
+              ),
           ],
+        );
+      },
+      child: WillPopScope(
+        onWillPop: () async {
+          final isFirstRouteInCurrentTab = !await _navigatorKeys[currentIndex].currentState!.maybePop();
+
+          return isFirstRouteInCurrentTab;
+        },
+        child: Scaffold(
+          body: Selector<PlayerBloc, bool?>(
+              selector: (_, playerBloc) => playerBloc.isLongDuration,
+              builder: (context, isLongDuration, __) {
+                if (isLongDuration == true) {
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    showCupertinoDialog(
+                      context: context,
+                      builder: (_) => CupertinoAlertDialog(
+                        content: const Text("Songs longer than 10 minutes need to be added to Library first."),
+                        actions: [
+                          CupertinoDialogAction(
+                            isDefaultAction: true,
+                            child: TextButton(
+                              child: const Text("Add To Library"),
+                              onPressed: () async {
+                                context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
+                                  final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                                  switch (result) {
+                                    case AddToLibraryResult.success:
+                                      widget.showToast("Successfully added to library");
+                                      break;
+                                    case AddToLibraryResult.alreadyInLibrary:
+                                      widget.showToast("Song is already in library");
+                                      break;
+                                  }
+                                });
+
+                                // Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                          CupertinoDialogAction(
+                            child: TextButton(
+                              child: const Text("Skip"),
+                              onPressed: () {
+                                print("Skip long duration song");
+                                context.read<PlayerBloc>().onTapSkipForLongDurationSong();
+                                // Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+                }
+
+                if (isLongDuration == false) {
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    Navigator.pop(context);
+                    context.read<PlayerBloc>().onDialogDismissed();
+                  });
+                }
+
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: SystemUiOverlayStyle.dark,
+                  child: Stack(
+                    children: [
+                      _buildOffstageNavigator(0),
+                      _buildOffstageNavigator(1),
+                      _buildOffstageNavigator(2),
+                    ],
+                  ),
+                );
+              }),
+          bottomNavigationBar: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
+                  },
+                  child: const MiniPlayer()),
+              SizedBox(
+                height: 70.h,
+                child: BottomNavigationBar(
+                  iconSize: 18.h,
+                  selectedFontSize: 12.sp,
+                  unselectedFontSize: 10.sp,
+                  selectedItemColor: primaryColor,
+                  unselectedItemColor: navbarUnselectedItemColor,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: ImageIcon(
+                        AssetImage('assets/images/ic_library.png'),
+                      ),
+                      label: 'Library',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: ImageIcon(
+                        AssetImage('assets/images/ic_home.png'),
+                      ),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: ImageIcon(
+                        AssetImage('assets/images/ic_search.png'),
+                      ),
+                      label: 'Search',
+                    ),
+                  ],
+                  currentIndex: currentIndex,
+                  onTap: (index) {
+                    setState(
+                      () {
+                        currentIndex = index;
+                      },
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
