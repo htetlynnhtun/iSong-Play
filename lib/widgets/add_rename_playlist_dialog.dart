@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/utils/callback_typedefs.dart';
 import 'package:music_app/utils/extension.dart';
-
 import '../resources/colors.dart';
 
 class AddRenamePlaylistDialog extends StatelessWidget {
