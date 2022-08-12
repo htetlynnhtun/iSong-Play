@@ -144,9 +144,15 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.play();
   }
 
-  void onTapMusicList(String id) async {
+  Future<List<SongVO>> onTapMusicList(String id) async {
+    // just temp - make a dedicated state for loading songs of a musiclist
+    isLoadingBannerSongs = true;
+    notifyListeners();
     final songs = await _youtubeService.getSongsOfMusicList(id);
     onTapSong(0, songs);
+    isLoadingBannerSongs = false;
+    notifyListeners();
+    return songs;
   }
 
   void onTapShufflePlay(List<SongVO> songs) async {
