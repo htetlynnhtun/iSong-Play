@@ -157,11 +157,10 @@ extension UIEvent on PlayerBloc {
 
   void onTapShufflePlay(List<SongVO> songs) async {
     List<MediaItem> mediaItems = await _songsToMediaItems(songs);
-    isShuffleModeEnabled = true;
-    notifyListeners();
+    PlayerBloc.songsList = songs;
 
-    await _playerHandler.setShuffleMode(AudioServiceShuffleMode.all);
     await _playerHandler.updateQueue(mediaItems);
+    await _playerHandler.setShuffleMode(AudioServiceShuffleMode.all);
     await _playerHandler.play();
   }
 
