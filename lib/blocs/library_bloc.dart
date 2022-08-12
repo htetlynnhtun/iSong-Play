@@ -16,7 +16,7 @@ class LibraryBloc extends ChangeNotifier {
 
   LibraryBloc() {
     _songDao.watchItems().listen((data) {
-      songs = data;
+      songs = data.where((song) => song.isDownloadFinished).toList();
       songs.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       notifyListeners();
     });
@@ -41,7 +41,7 @@ extension UICallbacks on LibraryBloc {
     final completer = Completer<AddToLibraryResult>();
     final songInHive = _songDao.getItem(songVO.id);
 
-    if (songInHive == null) {
+    if (songInHive == null || !songInHive.isDownloadFinished) {
       activeDownloadIDs.add(songVO.id);
       notifyListeners();
       _downloader.requestDownload(
@@ -85,7 +85,22 @@ extension UICallbacks on LibraryBloc {
         activeDownloadIDs.remove(songVO.id);
         songVO.filePath = filePath;
         songVO.isDownloadFinished = true;
+
+        // Because we can't save the same instance of hiveobject in two different boxes, init a new stance
+        // final downloadedSong = SongVO(
+        //   artist: songVO.artist,
+        //   createdAt: DateTime.now(),
+        //   dominantColor: songVO.dominantColor,
+        //   duration: songVO.duration,
+        //   filePath: songVO.filePath,
+        //   id: songVO.id,
+        //   isFavorite: songVO.isFavorite,
+        //   thumbnail: songVO.thumbnail,
+        //   title: songVO.title,
+        // );
+        // downloadedSong.isDownloadFinished = true;
         await _songDao.saveItem(songVO);
+        // await _songDao.saveItem(downloadedSong);
         notifyListeners();
       },
     );

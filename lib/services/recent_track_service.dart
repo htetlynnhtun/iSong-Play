@@ -1,4 +1,3 @@
-import 'package:music_app/persistance/online_song_dao.dart';
 import 'package:music_app/persistance/recent_tracks_dao.dart';
 import 'package:music_app/persistance/song_dao.dart';
 import 'package:music_app/vos/recent_track_vo.dart';
@@ -17,10 +16,14 @@ class RecentTrackServiceImpl implements RecentTrackService {
 
   final _recentTrackDao = RecentTracksDao();
   final _songDao = SongDao();
-  final _onlineSongDao = OnlineSongDao();
 
   @override
   void addToRecentTracks(SongVO songVO) async {
+    final songInHive = _songDao.getItem(songVO.id);
+    if (songInHive == null) {
+      await _songDao.saveItem(songVO);
+    }
+
     final trackInHive = _recentTrackDao.getItem(songVO.id);
 
     if (trackInHive == null) {
@@ -29,15 +32,20 @@ class RecentTrackServiceImpl implements RecentTrackService {
     } else {
       trackInHive.updatedAt = DateTime.now();
       trackInHive.isDownloaded = songVO.isDownloadFinished;
-      trackInHive.save();
+      await trackInHive.save();
     }
 
-    if (!songVO.isDownloadFinished) {
-      _onlineSongDao.saveItem(songVO);
-    }
+    final allTracks = _recentTrackDao.getAll();
+    if (allTracks.length > 20) {
+      allTracks.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      final oldestTrack = allTracks.last;
 
-    if (_recentTrackDao.getAll().length > 20) {
-      _recentTrackDao.deleteAt(0);
+      final theSong = _songDao.getItem(oldestTrack.songID)!;
+      if (!theSong.isDownloadFinished) {
+        await theSong.delete();
+      }
+
+      await oldestTrack.delete();
     }
   }
 
@@ -45,7 +53,7 @@ class RecentTrackServiceImpl implements RecentTrackService {
   Stream<List<SongVO>> getRecentTracks() {
     return _recentTrackDao.watchItems().map((items) {
       items.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-      return items.map(_mapTrackToSong).toList();
+      return items.map(_mapTrackToSong).whereType<SongVO>().toList();
     });
   }
 
@@ -62,11 +70,7 @@ class RecentTrackServiceImpl implements RecentTrackService {
     return _mapTrackToSong(allTracks.first);
   }
 
-  SongVO _mapTrackToSong(RecentTrackVO track) {
-    if (track.isDownloaded) {
-      return _songDao.getItem(track.songID)!;
-    } else {
-      return _onlineSongDao.getItem(track.songID)!;
-    }
+  SongVO? _mapTrackToSong(RecentTrackVO track) {
+    return _songDao.getItem(track.songID);
   }
 }

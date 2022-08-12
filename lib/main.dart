@@ -40,7 +40,6 @@ void main() async {
   await Hive.openBox<SongVO>(trendingSongsBox);
   await Hive.openBox<RecentSearchVO>(recentSearchBox);
   await Hive.openBox<SongVO>(songBox);
-  await Hive.openBox<SongVO>(onlineSongBox);
   await Hive.openBox<PlaylistVo>(playlistBox);
   await Hive.openBox<MusicSectionVO>(musicSectionBox);
   await Hive.openBox<RecentTrackVO>(recentTracksBox);

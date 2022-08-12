@@ -2,7 +2,6 @@ const recentSearchBox = "recentSearch";
 const recentSearchTypeId = 0;
 
 const songBox = "song";
-const onlineSongBox = "onlineSong";
 const songTypeId = 1;
 
 const colorTypeId = 2;
