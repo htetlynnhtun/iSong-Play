@@ -75,7 +75,8 @@ class PlayerDetailView extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
-            padding: EdgeInsets.symmetric(horizontal: context.isMobile()?8.w:16.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(
+                horizontal: context.isMobile() ? 8.w : 16.w, vertical: 8.h),
             icon: Icon(
               Icons.more_horiz,
               size: 24.h,
@@ -123,7 +124,7 @@ class PlayerDetailView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: context.isMobile()? 20.h:54.h,
+                height: context.isMobile() ? 20.h : 54.h,
               ),
               Align(
                 alignment: Alignment.center,
@@ -191,7 +192,7 @@ class PlayerDetailView extends StatelessWidget {
                       context: context,
                       builder: (context) => const UpNextView());
                 },
-                child:  Padding(
+                child: Padding(
                   padding: EdgeInsets.only(bottom: 38.h),
                   child: const UpNextButton(
                     iconUrl: 'assets/images/ic_up_next.png',
@@ -300,7 +301,7 @@ class PlayerIconsCollectionView extends StatelessWidget {
                   );
                 }),
             SizedBox(
-              width: 30.w,
+              width: 32.w,
             ),
             Selector<PlayerBloc, ButtonState>(
               selector: (_, playerBloc) => playerBloc.buttonState,
@@ -336,15 +337,15 @@ class PlayerIconsCollectionView extends StatelessWidget {
                 }
                 return AssetImageButton(
                   onTap: onTap,
-                  width: 64.h,
-                  height: 64.h,
+                  width: 62.h,
+                  height: 62.h,
                   imageUrl: imageUrl,
                   color: Colors.white,
                 );
               },
             ),
             SizedBox(
-              width: 30.w,
+              width: 32.w,
             ),
             Selector<PlayerBloc, bool>(
               selector: (_, playerBloc) => playerBloc.isLastSong,

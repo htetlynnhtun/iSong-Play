@@ -10,6 +10,7 @@ import 'package:music_app/pages/player_page.dart';
 import 'package:music_app/pages/search_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
+import 'package:music_app/widgets/loading_view.dart';
 import 'package:music_app/widgets/mini_player.dart';
 import 'package:provider/provider.dart';
 
@@ -39,25 +40,14 @@ class _IndexPageState extends State<IndexPage> {
         return Stack(
           children: [
             child!,
-            if (isShowingBlockingIndicator)
-              Container(
-                color: Colors.black.withOpacity(0.7),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-              ),
-            if (isShowingBlockingIndicator)
-              const Center(
-                child: CupertinoActivityIndicator(
-                  radius: 32,
-                  color: Colors.white,
-                ),
-              ),
+            if (isShowingBlockingIndicator) const LoadingView(),
           ],
         );
       },
       child: WillPopScope(
         onWillPop: () async {
-          final isFirstRouteInCurrentTab = !await _navigatorKeys[currentIndex].currentState!.maybePop();
+          final isFirstRouteInCurrentTab =
+              !await _navigatorKeys[currentIndex].currentState!.maybePop();
 
           return isFirstRouteInCurrentTab;
         },
@@ -70,21 +60,29 @@ class _IndexPageState extends State<IndexPage> {
                     showCupertinoDialog(
                       context: context,
                       builder: (_) => CupertinoAlertDialog(
-                        content: const Text("Songs longer than 10 minutes need to be added to Library first."),
+                        content: const Text(
+                            "Songs longer than 10 minutes need to be added to Library first."),
                         actions: [
                           CupertinoDialogAction(
                             isDefaultAction: true,
                             child: TextButton(
                               child: const Text("Add To Library"),
                               onPressed: () async {
-                                context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
-                                  final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                                context
+                                    .read<PlayerBloc>()
+                                    .onTapAddToLibraryForLongDurationSong(
+                                        (songVO) async {
+                                  final result = await context
+                                      .read<LibraryBloc>()
+                                      .onTapAddToLibrary(songVO);
                                   switch (result) {
                                     case AddToLibraryResult.success:
-                                      widget.showToast("Successfully added to library");
+                                      widget.showToast(
+                                          "Successfully added to library");
                                       break;
                                     case AddToLibraryResult.alreadyInLibrary:
-                                      widget.showToast("Song is already in library");
+                                      widget.showToast(
+                                          "Song is already in library");
                                       break;
                                   }
                                 });
@@ -98,7 +96,9 @@ class _IndexPageState extends State<IndexPage> {
                               child: const Text("Skip"),
                               onPressed: () {
                                 print("Skip long duration song");
-                                context.read<PlayerBloc>().onTapSkipForLongDurationSong();
+                                context
+                                    .read<PlayerBloc>()
+                                    .onTapSkipForLongDurationSong();
                                 // Navigator.pop(context);
                               },
                             ),
@@ -132,7 +132,8 @@ class _IndexPageState extends State<IndexPage> {
             children: [
               GestureDetector(
                   onTap: () {
-                    Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
+                    Navigator.push(
+                        context, SlideRightRoute(page: const PlayerPage()));
                   },
                   child: const MiniPlayer()),
               SizedBox(

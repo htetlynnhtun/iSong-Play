@@ -69,6 +69,7 @@ class MusicListDetailPage extends StatelessWidget {
             selector: (_, bloc) => bloc.songs,
             builder: (_, songs, __) {
               return ListView.separated(
+                padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.h),
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
@@ -93,7 +94,7 @@ class MusicListDetailPage extends StatelessWidget {
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => SizedBox(height: 16.h),
+                separatorBuilder: (context, index) => SizedBox(height: 10.h),
                 itemCount: songs.length,
               );
             }
