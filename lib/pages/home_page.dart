@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
               child: TitleAndSettingIconButtonView(
                 title: 'Home',
                 onTap: () {
-                  navigateToNextPageWithNavBar(context,const SettingPage());
+                  navigateToNextPageWithNavBar(context, const SettingPage());
                 },
                 imageUrl: 'assets/images/ic_setting.png',
               ),
@@ -81,10 +81,7 @@ class HomePage extends StatelessWidget {
               builder: (_, sections, __) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: sections
-                      .map((section) =>
-                          MusicSectionView(musicSectionVO: section))
-                      .toList(),
+                  children: sections.map((section) => MusicSectionView(musicSectionVO: section)).toList(),
                 );
               },
             ),
@@ -119,7 +116,7 @@ class BannerView extends StatelessWidget {
                         itemBuilder: (_, itemIndex, __) => GestureDetector(
                           onTap: () {
                             // if offline, show alert
-                            context.read<PlayerBloc>().onTapSong(itemIndex, songs, forBanner: true);
+                            context.read<PlayerBloc>().onTapSong(itemIndex, songs, withBlocking: true);
                           },
                           child: BannerImageAndSongNameView(
                             songVO: songs[itemIndex],
@@ -270,7 +267,7 @@ class RecentTracksView extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) => GestureDetector(
-              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks),
+              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks, withBlocking: true),
               child: TracksAndTitleView(recentTracks[index]),
             ),
             separatorBuilder: (_, __) => SizedBox(width: 14.w),

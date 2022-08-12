@@ -42,7 +42,7 @@ class PlayerBloc extends ChangeNotifier {
   /// If song is longer than 10 minutes.
   bool? isLongDuration;
 
-  var isLoadingBannerSongs = false;
+  var isShowingBlockingIndicator = false;
   var timerMinute = 0;
   var isTimerActive = false;
   Duration? countDownDuration;
@@ -107,7 +107,7 @@ class PlayerBloc extends ChangeNotifier {
 
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
-  void onTapSong(int index, List<SongVO> songs, {bool forBanner = false}) async {
+  void onTapSong(int index, List<SongVO> songs, {bool withBlocking = false}) async {
     _playerHandler.stop();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
@@ -126,8 +126,8 @@ extension UIEvent on PlayerBloc {
     } else {
       PlayerBloc.songsList = [];
       PlayerBloc.songsList.addAll(songs);
-      if (forBanner) {
-        isLoadingBannerSongs = true;
+      if (withBlocking) {
+        isShowingBlockingIndicator = true;
       }
       currentSongID = songs[index].id;
       buttonState = ButtonState.loading;
@@ -135,8 +135,8 @@ extension UIEvent on PlayerBloc {
       final mediaItems = await _songsToMediaItems(songs);
       // await _playerHandler.updateQueue(mediaItems);
       await _playerHandler.setQueue(index, mediaItems);
-      if (forBanner) {
-        isLoadingBannerSongs = false;
+      if (withBlocking) {
+        isShowingBlockingIndicator = false;
       }
       notifyListeners();
     }
@@ -145,12 +145,11 @@ extension UIEvent on PlayerBloc {
   }
 
   Future<List<SongVO>> onTapMusicList(String id) async {
-    // just temp - make a dedicated state for loading songs of a musiclist
-    isLoadingBannerSongs = true;
+    isShowingBlockingIndicator = true;
     notifyListeners();
     final songs = await _youtubeService.getSongsOfMusicList(id);
     onTapSong(0, songs);
-    isLoadingBannerSongs = false;
+    isShowingBlockingIndicator = false;
     notifyListeners();
     return songs;
   }

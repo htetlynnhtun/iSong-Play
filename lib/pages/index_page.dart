@@ -34,18 +34,18 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Selector<PlayerBloc, bool>(
-      selector: (_, playerBloc) => playerBloc.isLoadingBannerSongs,
-      builder: (_, isLoadingBannerSongs, child) {
+      selector: (_, playerBloc) => playerBloc.isShowingBlockingIndicator,
+      builder: (_, isShowingBlockingIndicator, child) {
         return Stack(
           children: [
             child!,
-            if (isLoadingBannerSongs)
+            if (isShowingBlockingIndicator)
               Container(
                 color: Colors.black.withOpacity(0.7),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
               ),
-            if (isLoadingBannerSongs)
+            if (isShowingBlockingIndicator)
               const Center(
                 child: CupertinoActivityIndicator(
                   radius: 32,
