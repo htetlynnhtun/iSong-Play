@@ -4,7 +4,7 @@ import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/pages/playlist_detail_page.dart';
 import 'package:music_app/pages/setting_page.dart';
 import 'package:music_app/pages/songs_detail_page.dart';
-import 'package:music_app/pages/trend_detail.dart';
+import 'package:music_app/pages/music_list_detail_page.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';

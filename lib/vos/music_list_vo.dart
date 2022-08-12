@@ -24,6 +24,10 @@ class MusicListVO extends HiveObject {
     required this.songCount,
   });
 
+  static MusicListVO empty() {
+    return MusicListVO(playlistId: "", songCount: 0, title: "", thumbnail: "");
+  }
+
   @override
   String toString() {
     return "Title - $title | ID - $playlistId";

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
+import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
 import 'package:music_app/persistance/color_adapter.dart';
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeBloc()),
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
+        ChangeNotifierProvider(create: (_) => MusicListDetailBloc()),
       ],
       child: Selector<ThemeBloc, ThemeMode?>(
         selector: (context, bloc) => bloc.themeMode,

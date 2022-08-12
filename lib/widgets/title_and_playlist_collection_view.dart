@@ -4,8 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
+import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
-import 'package:music_app/pages/trend_detail.dart';
+import 'package:music_app/pages/music_list_detail_page.dart';
 import 'package:music_app/resources/constants.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
@@ -41,15 +42,10 @@ class MusicSectionView extends StatelessWidget {
             itemBuilder: (context, index) {
               final musicList = musicSectionVO.musicLists[index];
               return GestureDetector(
-                onTap: () async {
-                  final songs = await context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
-                  final data = {
-                    "songs": songs,
-                    "title": musicList.title,
-                    "thumbnail": musicList.thumbnail,
-                  };
-                  // Todo: Route to MusicList page.
-                  navigateToNextPageWithNavBar(context, TrendDetailPage(data: data));
+                onTap: () {
+                  // final songs = await context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
+                  context.read<MusicListDetailBloc>().onTapMusicList(musicList);
+                  navigateToNextPageWithNavBar(context, const MusicListDetailPage());
                 },
                 child: PlayListImageView(
                   musicListVO: musicList,
