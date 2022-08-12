@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
@@ -32,10 +33,10 @@ class PlaylistItemView extends StatelessWidget {
           CustomCachedImage(
             imageUrl: imageUrl,
             cornerRadius: 10.h,
-            width: context.isMobile()?99.w:90.w,
-            height: context.isMobile()?56.h:65.h,
+            width: context.isMobile() ? 99.w : 90.w,
+            height: context.isMobile() ? 56.h : 65.h,
           ),
-           SizedBox(
+          SizedBox(
             width: 12.w,
           ),
           Expanded(
@@ -45,8 +46,8 @@ class PlaylistItemView extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            padding: context.isMobile()?EdgeInsets.zero:EdgeInsets.only(right: 20.w),
-            icon:  Icon(
+            padding: context.isMobile() ? EdgeInsets.zero : EdgeInsets.only(right: 20.w),
+            icon: Icon(
               Icons.more_horiz,
               color: primaryColor,
               size: 24.h,
@@ -70,7 +71,25 @@ class PlaylistItemView extends StatelessWidget {
                   ),
                 );
               } else if (value == "delete") {
-                await context.read<LibraryBloc>().onTapDeletePlaylist(playlistVO);
+                showDialog<bool>(
+                  context: context,
+                  builder: (context) => CupertinoAlertDialog(
+                    title: const Text("Are you sure?"),
+                    actions: [
+                      CupertinoDialogAction(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text("Cancel"),
+                      ),
+                      CupertinoDialogAction(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          context.read<LibraryBloc>().onTapDeletePlaylist(playlistVO);
+                        },
+                        child: const Text("Yes"),
+                      ),
+                    ],
+                  ),
+                );
               }
             },
             itemBuilder: (context) => [
@@ -114,17 +133,17 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
           title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style:  TextStyle(
+          style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-         SizedBox(
+        SizedBox(
           height: 4.h,
         ),
         Text(
           '$songCount Track'.calculateCountS(songCount),
-          style:  TextStyle(
+          style: TextStyle(
             fontSize: 13.sp,
           ),
         ),
@@ -132,5 +151,3 @@ class PlaylistTitleAndTracksView extends StatelessWidget {
     );
   }
 }
-
-
