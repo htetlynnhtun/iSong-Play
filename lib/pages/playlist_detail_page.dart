@@ -199,7 +199,7 @@ class SongsCollectionView extends StatelessWidget {
     return Expanded(
       child: ListView.separated(
         itemBuilder: (_, index) => GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
+          onTap: () => context.read<PlayerBloc>().onTapSong(index, songs, withBlocking: false),
           child: SongItemView(
             songs[index],
             menus: const [
@@ -226,7 +226,7 @@ class PlayAndShuffleView extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList),
+          onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList, withBlocking: false),
           child: const PlaylistButton(
             imageUrl: 'assets/images/ic_play.png',
           ),

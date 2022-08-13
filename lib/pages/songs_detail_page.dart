@@ -90,14 +90,14 @@ class SongsDetailPage extends StatelessWidget {
                 SongItemPopupMenu.deleteFromFavorite,
                 SongItemPopupMenu.deleteFromLibrary,
               ];
-              filteredSongs = songs.where((e) => e.isFavorite).toList();
+              // filteredSongs = songs.where((e) => e.isFavorite).toList();
             } else {
               menus = [
                 SongItemPopupMenu.addToQueue,
                 SongItemPopupMenu.addToPlaylist,
                 SongItemPopupMenu.deleteFromLibrary,
               ];
-              filteredSongs = songs;
+              // filteredSongs = songs;
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +107,7 @@ class SongsDetailPage extends StatelessWidget {
                 ),
                 Padding(
                   padding:  EdgeInsets.only(right: context.isMobile()?16.w:12.w),
-                  child: SongCountAndPlayShuffleView(songs: filteredSongs),
+                  child: SongCountAndPlayShuffleView(songs: songs),
                 ),
                  SizedBox(
                   height: 16.h,
@@ -115,14 +115,14 @@ class SongsDetailPage extends StatelessWidget {
                 Expanded(
                   child: ListView.separated(
                     itemBuilder: (context, index) => GestureDetector(
-                      onTap: () => context.read<PlayerBloc>().onTapSong(index, filteredSongs),
+                      onTap: () => context.read<PlayerBloc>().onTapSong(index, songs, withBlocking: false),
                       child: SongItemView(
-                        filteredSongs[index],
+                        songs[index],
                         menus: menus,
                       ),
                     ),
                     separatorBuilder: (context, index) =>  SizedBox(height: 10.h),
-                    itemCount: filteredSongs.length,
+                    itemCount: songs.length,
                   ),
                 ),
               ],
@@ -155,7 +155,7 @@ class SongCountAndPlayShuffleView extends StatelessWidget {
         ),
         const Spacer(),
         AssetImageButton(
-          onTap: () => context.read<PlayerBloc>().onTapSong(0, songs),
+          onTap: () => context.read<PlayerBloc>().onTapSong(0, songs, withBlocking: false),
           width: 16.h,
           height: 16.h,
           imageUrl: 'assets/images/ic_play.png',

@@ -19,7 +19,7 @@ class OfflineSearchView extends StatelessWidget {
           child: ListView.separated(
             padding:  EdgeInsets.only(left: 16.w),
             itemBuilder: (context, index) => GestureDetector(
-              onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
+              onTap: () => context.read<PlayerBloc>().onTapSong(index, songs, withBlocking: false),
               child: SongItemView(
                 songs[index],
                 menus: const [

@@ -116,7 +116,7 @@ class BannerView extends StatelessWidget {
                         itemBuilder: (_, itemIndex, __) => GestureDetector(
                           onTap: () {
                             // if offline, show alert
-                            context.read<PlayerBloc>().onTapSong(itemIndex, songs, withBlocking: true);
+                            context.read<PlayerBloc>().onTapSong(itemIndex, songs);
                           },
                           child: BannerImageAndSongNameView(
                             songVO: songs[itemIndex],
@@ -267,7 +267,7 @@ class RecentTracksView extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) => GestureDetector(
-              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks, withBlocking: true),
+              onTap: () => context.read<PlayerBloc>().onTapSong(index, recentTracks),
               child: TracksAndTitleView(recentTracks[index]),
             ),
             separatorBuilder: (_, __) => SizedBox(width: 14.w),

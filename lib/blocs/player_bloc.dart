@@ -107,7 +107,7 @@ class PlayerBloc extends ChangeNotifier {
 
 // ========================= UIEvent extensions =========================
 extension UIEvent on PlayerBloc {
-  void onTapSong(int index, List<SongVO> songs, {bool withBlocking = false}) async {
+  void onTapSong(int index, List<SongVO> songs, {bool withBlocking = true}) async {
     _playerHandler.stop();
     await _playerHandler.setShuffleMode(AudioServiceShuffleMode.none);
     isShuffleModeEnabled = false;
@@ -121,7 +121,8 @@ extension UIEvent on PlayerBloc {
     //   List<MediaItem> mediaItems = await _songsToMediaItems(songs);
     //   await _playerHandler.updateQueue(mediaItems);
     // }
-    if (PlayerBloc.songsList.isNotEmpty && (PlayerBloc.songsList.first == songs.first)) {
+    if (PlayerBloc.songsList.isNotEmpty && PlayerBloc.songsList.length == songs.length && (PlayerBloc.songsList.first == songs.first)) {
+      isShowingBlockingIndicator = false;
       await _playerHandler.skipToQueueItem(index);
     } else {
       PlayerBloc.songsList = [];
@@ -133,7 +134,6 @@ extension UIEvent on PlayerBloc {
       buttonState = ButtonState.loading;
       notifyListeners();
       final mediaItems = await _songsToMediaItems(songs);
-      // await _playerHandler.updateQueue(mediaItems);
       await _playerHandler.setQueue(index, mediaItems);
       if (withBlocking) {
         isShowingBlockingIndicator = false;
@@ -144,15 +144,15 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.play();
   }
 
-  Future<List<SongVO>> onTapMusicList(String id) async {
-    isShowingBlockingIndicator = true;
-    notifyListeners();
-    final songs = await _youtubeService.getSongsOfMusicList(id);
-    onTapSong(0, songs);
-    isShowingBlockingIndicator = false;
-    notifyListeners();
-    return songs;
-  }
+  // Future<List<SongVO>> onTapMusicList(String id) async {
+  //   isShowingBlockingIndicator = true;
+  //   notifyListeners();
+  //   final songs = await _youtubeService.getSongsOfMusicList(id);
+  //   onTapSong(0, songs);
+  //   isShowingBlockingIndicator = false;
+  //   notifyListeners();
+  //   return songs;
+  // }
 
   void onTapShufflePlay(List<SongVO> songs) async {
     List<MediaItem> mediaItems = await _songsToMediaItems(songs);
@@ -258,7 +258,7 @@ extension UIEvent on PlayerBloc {
       // onTapSong(0, songsList);
       _playerHandler.stop();
     } else {
-      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList);
+      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList, withBlocking: false);
     }
   }
 
@@ -275,7 +275,7 @@ extension UIEvent on PlayerBloc {
       // onTapSong(0, songsList);
       _playerHandler.stop();
     } else {
-      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList);
+      onTapSong(nowPlayingIndex + 1, PlayerBloc.songsList, withBlocking: false);
     }
   }
 
