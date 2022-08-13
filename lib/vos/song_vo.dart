@@ -6,7 +6,7 @@ import 'package:music_app/persistance/box_names.dart';
 part 'song_vo.g.dart';
 
 @HiveType(typeId: songTypeId)
-class SongVO  extends HiveObject{
+class SongVO extends HiveObject {
   @HiveField(0)
   DateTime createdAt;
 
@@ -52,6 +52,12 @@ class SongVO  extends HiveObject{
     required this.dominantColor,
     required this.isFavorite,
   });
+
+  @override
+  bool operator == (other) => other is SongVO && other.id == id && other.isDownloadFinished == isDownloadFinished;
+
+  @override
+  int get hashCode => hashValues(id, isDownloadFinished);
 
   static SongVO dummySong() {
     return SongVO(

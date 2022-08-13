@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/song_dao.dart';
 import 'package:music_app/services/recent_track_service.dart';
@@ -121,7 +122,8 @@ extension UIEvent on PlayerBloc {
     //   List<MediaItem> mediaItems = await _songsToMediaItems(songs);
     //   await _playerHandler.updateQueue(mediaItems);
     // }
-    if (PlayerBloc.songsList.isNotEmpty && PlayerBloc.songsList.length == songs.length && (PlayerBloc.songsList.first == songs.first)) {
+    // if (PlayerBloc.songsList.isNotEmpty && PlayerBloc.songsList.length == songs.length && (PlayerBloc.songsList.first == songs.first)) {
+    if (listEquals(PlayerBloc.songsList, songs)) {
       isShowingBlockingIndicator = false;
       await _playerHandler.skipToQueueItem(index);
     } else {
@@ -425,6 +427,7 @@ extension InternalLogic on PlayerBloc {
 
         _isLongDurationSubject.add(true);
       } else {
+        // _logNowPlaying(mediaItem);
         _internalNowPlayingSubject.add(nowPlayingSong!);
       }
     });
@@ -490,6 +493,7 @@ extension InternalLogic on PlayerBloc {
     return mediaItems;
   }
 
+  // ignore: unused_element
   void _logNowPlaying(MediaItem mediaItem) {
     String nowPlaying;
     if (mediaItem.extras!["isOffline"] as bool) {
@@ -497,7 +501,7 @@ extension InternalLogic on PlayerBloc {
     } else {
       nowPlaying = mediaItem.extras!["url"];
     }
-    print("wtbug: Now playing: $nowPlaying");
+    print("==> wtbug: Now playing: $nowPlaying");
   }
 
   SongVO _getNowPlayingSong(MediaItem mediaItem) {

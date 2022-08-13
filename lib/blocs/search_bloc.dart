@@ -16,6 +16,11 @@ class SearchBloc extends ChangeNotifier {
       recentSearches.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       notifyListeners();
     });
+
+    _songDao.watchItems().listen((_) {
+      _syncResultsWithLibrary();
+      notifyListeners();
+    });
   }
 
   // ========================= States =========================
@@ -121,6 +126,10 @@ extension InternalLogic on SearchBloc {
 
   Future<void> _startSearching(String query) async {
     searchResults = await _youtubeService.getSongs(query);
+    _syncResultsWithLibrary();
+  }
+
+  void _syncResultsWithLibrary() {
     searchResults.asMap().forEach((index, resultSong) {
       final songInHive = _songDao.getItem(resultSong.id);
       if (songInHive != null) {

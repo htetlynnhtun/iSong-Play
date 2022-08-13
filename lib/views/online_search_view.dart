@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
@@ -57,6 +58,7 @@ class SearchResultsView extends StatelessWidget {
           return Expanded(
             child: Selector<SearchBloc, List<SongVO>>(
                 selector: (_, searchBloc) => searchBloc.searchResults,
+                shouldRebuild: (p, n) => listEquals(p, n),
                 builder: (_, searchResults, __) {
                   return ListView.separated(
                     padding: EdgeInsets.only(left: 16.w),
