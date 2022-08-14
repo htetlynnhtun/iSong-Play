@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/music_list_detail_bloc.dart';
+import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
 import 'package:music_app/persistance/color_adapter.dart';
@@ -56,6 +57,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<NetworkConnectionBloc>(
+          create: (_) => NetworkConnectionBloc(),
+          dispose: (_, bloc) => bloc.dispose(),
+        ),
         ChangeNotifierProvider(create: (_) => PlayerBloc()),
         ChangeNotifierProvider(create: (_) => LibraryBloc()),
         ChangeNotifierProvider(create: (_) => HomeBloc()),
@@ -77,7 +82,14 @@ class MyApp extends StatelessWidget {
             title: 'Music App',
             home: child,
           ),
-          child: const IndexPage(),
+          child: ValueListenableBuilder<ConnectionStatus>(
+            valueListenable: context.read<NetworkConnectionBloc>().status,
+            builder: (_, status, child) {
+              print("Connection status: $status");
+              return child!;
+            },
+            child: const IndexPage(),
+          ),
         ),
       ),
     );
