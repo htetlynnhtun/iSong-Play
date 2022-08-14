@@ -10,6 +10,7 @@ abstract class AudioPlayerHandler implements AudioHandler {
   Future<void> setVolume(double volume);
   Future<void> setQueue(int initialIndex, List<MediaItem> queue);
   // ValueStream<double> get speed;
+  void dispose();
 }
 
 class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implements AudioPlayerHandler {
@@ -139,6 +140,11 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler with SeekHandler implement
     _player.positionStream.listen((event) {
       playbackState.add(playbackState.value.copyWith(updatePosition: event));
     });
+  }
+
+  @override
+  void dispose() {
+    _player.dispose();
   }
 
   // ========================= Implementations of audio_handler callbacks =========================

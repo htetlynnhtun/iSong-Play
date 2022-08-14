@@ -112,6 +112,7 @@ class PlayerBloc extends ChangeNotifier {
 
   @override
   void dispose() {
+    _playerHandler.dispose();
     _youtubeService.dispose();
     perodicTimer?.cancel();
     _aTimer?.cancel();
