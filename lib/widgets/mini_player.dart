@@ -46,7 +46,6 @@ class MiniPlayerView extends StatelessWidget {
       color: Colors.transparent,
       child: Selector<PlayerBloc, SongVO?>(
           selector: (_, playerBloc) => playerBloc.nowPlayingSong,
-          shouldRebuild: (_, __) => true,
           builder: (_, nowPlayingSong, __) {
             final imageUrl = nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
             final title = nowPlayingSong?.title ?? "Title";
@@ -70,7 +69,7 @@ class MiniPlayerView extends StatelessWidget {
                     artist: artist,
                   ),
                 ),
-                     SizedBox(
+                SizedBox(
                   width: 16.w,
                 ),
                 Selector<PlayerBloc, double>(
@@ -87,7 +86,7 @@ class MiniPlayerView extends StatelessWidget {
                             switch (buttonState) {
                               case ButtonState.loading:
                                 if (currentSongID == nowPlayingSong?.id) {
-                                  return  CupertinoActivityIndicator(
+                                  return CupertinoActivityIndicator(
                                     radius: 9.r,
                                     animating: true,
                                     color: homePlaylistPlayerCircleColor,

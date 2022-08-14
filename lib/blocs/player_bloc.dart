@@ -52,6 +52,7 @@ class PlayerBloc extends ChangeNotifier {
   final _internalNowPlayingSubject = BehaviorSubject<SongVO>();
   final _isLongDurationSubject = BehaviorSubject<bool?>();
   Timer? perodicTimer;
+  Timer? _aTimer;
 
   static var songsList = <SongVO>[];
 
@@ -81,6 +82,16 @@ class PlayerBloc extends ChangeNotifier {
     });
 
     _loadRecentTrack();
+
+    _aTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      /*
+        When the player is not playing, any changes made to nowPlayingSong
+        such us onTapDownload and onTapFavorite are not reflect in widgets.
+        So manually notify widgets(DownloadProcessView, FavoriteView) that to keep
+        rebuilding periodically.
+      */
+      notifyListeners();
+    });
   }
 
   void _loadRecentTrack() async {
@@ -102,6 +113,8 @@ class PlayerBloc extends ChangeNotifier {
   @override
   void dispose() {
     _youtubeService.dispose();
+    perodicTimer?.cancel();
+    _aTimer?.cancel();
     super.dispose();
   }
 }
