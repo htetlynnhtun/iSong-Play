@@ -90,7 +90,9 @@ class PlayerBloc extends ChangeNotifier {
         So manually notify widgets(DownloadProcessView, FavoriteView) that to keep
         rebuilding periodically.
       */
-      notifyListeners();
+      if (buttonState != ButtonState.playing) {
+        notifyListeners();
+      }
     });
   }
 
