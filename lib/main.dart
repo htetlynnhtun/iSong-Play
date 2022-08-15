@@ -82,14 +82,7 @@ class MyApp extends StatelessWidget {
             title: 'Music App',
             home: child,
           ),
-          child: ValueListenableBuilder<ConnectionStatus>(
-            valueListenable: context.read<NetworkConnectionBloc>().status,
-            builder: (_, status, child) {
-              print("Connection status: $status");
-              return child!;
-            },
-            child: const IndexPage(),
-          ),
+          child: const IndexPage(),
         ),
       ),
     );
