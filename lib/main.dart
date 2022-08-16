@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
@@ -27,6 +28,9 @@ late SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await MobileAds.instance.initialize();
+
   prefs = await SharedPreferences.getInstance();
   await Hive.initFlutter();
 
