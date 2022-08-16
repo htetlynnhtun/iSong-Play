@@ -20,7 +20,6 @@ import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/pages/index_page.dart';
 import 'package:music_app/persistance/box_names.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late SharedPreferences prefs;
