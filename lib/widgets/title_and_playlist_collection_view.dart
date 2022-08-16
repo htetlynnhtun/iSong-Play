@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
+import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/music_list_detail_page.dart';
@@ -44,8 +45,11 @@ class MusicSectionView extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   // final songs = await context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
-                  context.read<MusicListDetailBloc>().onTapMusicList(musicList);
-                  navigateToNextPageWithNavBar(context, const MusicListDetailPage());
+                  context.read<InterstitialAdBloc>().onNewPageTransition();
+                  context.read<InterstitialAdBloc>().showAd(onDone: () {
+                    context.read<MusicListDetailBloc>().onTapMusicList(musicList);
+                    navigateToNextPageWithNavBar(context, const MusicListDetailPage());
+                  });
                 },
                 child: PlayListImageView(
                   musicListVO: musicList,

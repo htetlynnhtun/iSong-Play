@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
@@ -21,14 +23,13 @@ import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/pages/index_page.dart';
 import 'package:music_app/persistance/box_names.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await MobileAds.instance.initialize();
 
   prefs = await SharedPreferences.getInstance();
@@ -71,6 +72,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
         ChangeNotifierProvider(create: (_) => MusicListDetailBloc()),
+        Provider<InterstitialAdBloc>(
+          create: (_) => InterstitialAdBloc(),
+          lazy: false,
+          dispose: (_, bloc) => bloc.dispose(),
+        ),
       ],
       child: Selector<ThemeBloc, ThemeMode?>(
         selector: (context, bloc) => bloc.themeMode,
