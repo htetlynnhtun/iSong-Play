@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/utils/extension.dart';
+import 'package:music_app/widgets/banner_ad_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
@@ -78,6 +79,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 },
               ),
             ),
+            const BannerAdWidget(),
             SizedBox(
               height: 14.h,
             ),
