@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/pages/playlist_detail_page.dart';
 import 'package:music_app/pages/setting_page.dart';
@@ -82,18 +83,18 @@ class LibraryPage extends StatelessWidget {
                       return PlaylistItemView(
                         playlistVO: playlistVo,
                         onTap: () {
-                          context
-                              .read<LibraryBloc>()
-                              .onViewPlaylistDetail(playlistVo);
-                          navigateToNextPageWithNavBar(
-                            context,
-                            const PlaylistDetailPage(),
-                          );
+                          context.read<LibraryBloc>().onViewPlaylistDetail(playlistVo);
+                          context.read<InterstitialAdBloc>().onNewPageTransition();
+                          context.read<InterstitialAdBloc>().showAd(onDone: () {
+                            navigateToNextPageWithNavBar(
+                              context,
+                              const PlaylistDetailPage(),
+                            );
+                          });
                         },
                       );
                     },
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 12),
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemCount: playlists.length);
               },
             ),
@@ -122,13 +123,16 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
               songs: songs.length,
               imageUrl: 'assets/images/ic_library.png',
               onTap: () {
-                navigateToNextPageWithNavBar(
-                  context,
-                  const SongsDetailPage(
-                    title: 'Your Song',
-                    isFavorite: false,
-                  ),
-                );
+                context.read<InterstitialAdBloc>().onNewPageTransition();
+                context.read<InterstitialAdBloc>().showAd(onDone: () {
+                  navigateToNextPageWithNavBar(
+                    context,
+                    const SongsDetailPage(
+                      title: 'Your Song',
+                      isFavorite: false,
+                    ),
+                  );
+                });
               },
             ),
             SizedBox(
@@ -139,13 +143,16 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
               songs: songs.where((e) => e.isFavorite).length,
               imageUrl: 'assets/images/ic_library_favorite.png',
               onTap: () {
-                navigateToNextPageWithNavBar(
-                  context,
-                  const SongsDetailPage(
-                    title: 'Favorite',
-                    isFavorite: true,
-                  ),
-                );
+                context.read<InterstitialAdBloc>().onNewPageTransition();
+                context.read<InterstitialAdBloc>().showAd(onDone: () {
+                  navigateToNextPageWithNavBar(
+                    context,
+                    const SongsDetailPage(
+                      title: 'Favorite',
+                      isFavorite: true,
+                    ),
+                  );
+                });
               },
             ),
           ],

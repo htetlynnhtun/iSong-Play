@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/library_page.dart';
@@ -46,8 +47,7 @@ class _IndexPageState extends State<IndexPage> {
       },
       child: WillPopScope(
         onWillPop: () async {
-          final isFirstRouteInCurrentTab =
-              !await _navigatorKeys[currentIndex].currentState!.maybePop();
+          final isFirstRouteInCurrentTab = !await _navigatorKeys[currentIndex].currentState!.maybePop();
 
           return isFirstRouteInCurrentTab;
         },
@@ -60,29 +60,21 @@ class _IndexPageState extends State<IndexPage> {
                     showCupertinoDialog(
                       context: context,
                       builder: (_) => CupertinoAlertDialog(
-                        content: const Text(
-                            "Songs longer than 10 minutes need to be added to Library first."),
+                        content: const Text("Songs longer than 10 minutes need to be added to Library first."),
                         actions: [
                           CupertinoDialogAction(
                             isDefaultAction: true,
                             child: TextButton(
                               child: const Text("Add To Library"),
                               onPressed: () async {
-                                context
-                                    .read<PlayerBloc>()
-                                    .onTapAddToLibraryForLongDurationSong(
-                                        (songVO) async {
-                                  final result = await context
-                                      .read<LibraryBloc>()
-                                      .onTapAddToLibrary(songVO);
+                                context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
+                                  final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
                                   switch (result) {
                                     case AddToLibraryResult.success:
-                                      widget.showToast(
-                                          "Successfully added to library");
+                                      widget.showToast("Successfully added to library");
                                       break;
                                     case AddToLibraryResult.alreadyInLibrary:
-                                      widget.showToast(
-                                          "Song is already in library");
+                                      widget.showToast("Song is already in library");
                                       break;
                                   }
                                 });
@@ -96,9 +88,7 @@ class _IndexPageState extends State<IndexPage> {
                               child: const Text("Skip"),
                               onPressed: () {
                                 print("Skip long duration song");
-                                context
-                                    .read<PlayerBloc>()
-                                    .onTapSkipForLongDurationSong();
+                                context.read<PlayerBloc>().onTapSkipForLongDurationSong();
                                 // Navigator.pop(context);
                               },
                             ),
@@ -132,8 +122,10 @@ class _IndexPageState extends State<IndexPage> {
             children: [
               GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                        context, SlideRightRoute(page: const PlayerPage()));
+                    context.read<InterstitialAdBloc>().onNewPageTransition();
+                    context.read<InterstitialAdBloc>().showAd(onDone: () {
+                      Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
+                    });
                   },
                   child: const MiniPlayer()),
               SizedBox(
