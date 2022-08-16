@@ -71,9 +71,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
         ChangeNotifierProvider(create: (_) => MusicListDetailBloc()),
-        ChangeNotifierProvider(
+        Provider<InterstitialAdBloc>(
           create: (_) => InterstitialAdBloc(),
           lazy: false,
+          dispose: (_, bloc) => bloc.dispose(),
         ),
       ],
       child: Selector<ThemeBloc, ThemeMode?>(
