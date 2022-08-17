@@ -17,6 +17,7 @@ import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/recent_track_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:music_app/widgets/app_open_ad_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_app/blocs/home_bloc.dart';
@@ -92,7 +93,9 @@ class MyApp extends StatelessWidget {
             title: 'Music App',
             home: child,
           ),
-          child: const IndexPage(),
+          child: const AppOpenAdWidget(
+            child: IndexPage(),
+          ),
         ),
       ),
     );
