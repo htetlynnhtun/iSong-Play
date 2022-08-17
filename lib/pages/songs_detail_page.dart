@@ -6,6 +6,7 @@ import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/app_bar_back_icon.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:music_app/widgets/native_ad_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_bar_title.dart';
@@ -32,14 +33,14 @@ class SongsDetailPage extends StatelessWidget {
         title: AppBarTitle(title: title),
         actions: [
           PopupMenuButton<String>(
-            padding: context.isMobile()?EdgeInsets.zero:EdgeInsets.only(right: 16.w),
-            icon:  Icon(
+            padding: context.isMobile() ? EdgeInsets.zero : EdgeInsets.only(right: 16.w),
+            icon: Icon(
               Icons.sort,
               size: 24.h,
               color: primaryColor,
             ),
             elevation: 4,
-            shape:  RoundedRectangleBorder(
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(8.h),
               ),
@@ -71,7 +72,7 @@ class SongsDetailPage extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding:  EdgeInsets.only(left: 16.w),
+        padding: EdgeInsets.only(left: 16.w),
         child: Selector<LibraryBloc, List<SongVO>>(
           selector: (_, libraryBloc) {
             if (isFavorite) {
@@ -102,14 +103,14 @@ class SongsDetailPage extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 SizedBox(
+                SizedBox(
                   height: 10.h,
                 ),
                 Padding(
-                  padding:  EdgeInsets.only(right: context.isMobile()?16.w:12.w),
+                  padding: EdgeInsets.only(right: context.isMobile() ? 16.w : 12.w),
                   child: SongCountAndPlayShuffleView(songs: songs),
                 ),
-                 SizedBox(
+                SizedBox(
                   height: 16.h,
                 ),
                 Expanded(
@@ -121,7 +122,13 @@ class SongsDetailPage extends StatelessWidget {
                         menus: menus,
                       ),
                     ),
-                    separatorBuilder: (context, index) =>  SizedBox(height: 10.h),
+                    separatorBuilder: (context, index) {
+                      if (index == 0) {
+                        return const NativeAdWidget();
+                      } else {
+                        return SizedBox(height: 10.h);
+                      }
+                    },
                     itemCount: songs.length,
                   ),
                 ),
@@ -147,7 +154,7 @@ class SongCountAndPlayShuffleView extends StatelessWidget {
       children: [
         Text(
           '${songs.length} Song'.calculateCountS(songs.length),
-          style:  TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,
             color: primaryColor,
@@ -161,7 +168,7 @@ class SongCountAndPlayShuffleView extends StatelessWidget {
           imageUrl: 'assets/images/ic_play.png',
           color: primaryColor,
         ),
-         SizedBox(
+        SizedBox(
           width: 12.w,
         ),
         AssetImageButton(
