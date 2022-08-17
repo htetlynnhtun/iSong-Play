@@ -1,22 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:music_app/main.dart';
 import 'package:music_app/utils/ad_mob_helper.dart';
 
 class InterstitialAdBloc {
   InterstitialAd? _interstitialAd;
   late VoidCallback _onDone;
-  var _counter = 0;
+  static const _interstitialCounter = "InterstitialCounter";
 
   InterstitialAdBloc() {
+    _init();
     _loadAd();
+  }
+
+  void _init() async {
+    final savedCounter = prefs.getInt(InterstitialAdBloc._interstitialCounter);
+    if (savedCounter == null) {
+      await prefs.setInt(InterstitialAdBloc._interstitialCounter, 0);
+    }
   }
 
   void dispose() {
     _interstitialAd?.dispose();
   }
 
+  int get _counter {
+    return prefs.getInt(InterstitialAdBloc._interstitialCounter) ?? 0;
+  }
+
+  set _counter(int value) {
+    prefs.setInt(InterstitialAdBloc._interstitialCounter, value);
+  }
+
   void onNewPageTransition() {
-    _counter += 1;
+    _counter = _counter + 1;
   }
 
   void showAd({required VoidCallback onDone}) {
