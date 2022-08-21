@@ -46,11 +46,14 @@ class NativeAdFactoryExample: NSObject, FLTNativeAdFactory {
 
         (adView.advertiserView as! UILabel).text = nativeAd.advertiser
         adView.advertiserView!.isHidden = nativeAd.advertiser == nil
+        
+        adView.mediaView?.mediaContent = nativeAd.mediaContent
 
         // In order for the SDK to process touch events properly, user interaction
         // should be disabled.
         adView.callToActionView!.isUserInteractionEnabled = false
-
+        (adView.callToActionView as! UIButton).titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        
         return adView
     }
 }

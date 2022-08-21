@@ -54,8 +54,8 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
         : Container(
             padding: const EdgeInsets.only(right: 16, top: 10, bottom: 10),
             alignment: Alignment.center,
-            width: 500,
-            height: 300,
+            width: MediaQuery.of(context).size.width - 32,
+            height: 350,
             child: AdWidget(ad: _nativeAd!),
           );
   }
