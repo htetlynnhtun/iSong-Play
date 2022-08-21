@@ -83,11 +83,15 @@ class YoutubeService {
     );
   }
 
-  Future<List<SongVO>> getSongsOfMusicList(String id) async {
-    final videos = await _yt.playlists.getVideos(id).take(10).toList();
-    final songs = await Future.wait(videos.where((video) => !video.isLive).map((video) => video.toSongVO()));
+  Future<List<SongVO>?> getSongsOfMusicList(String id) async {
+    try {
+      final videos = await _yt.playlists.getVideos(id).take(10).toList().timeout(const Duration(seconds: 10));
+      final songs = await Future.wait(videos.where((video) => !video.isLive).map((video) => video.toSongVO())).timeout(const Duration(seconds: 10));
 
-    return songs;
+      return songs;
+    } catch (error) {
+      return null;
+    }
   }
 
   Future<Map<String, List>> getTrendingData() async {

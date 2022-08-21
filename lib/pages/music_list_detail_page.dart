@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
+import 'package:tuple/tuple.dart';
 
 import '../widgets/app_bar_back_icon.dart';
 
@@ -19,10 +18,6 @@ class MusicListDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final thumbnail = data["thumbnail"] as String;
-    // final title = data["title"] as String;
-    // final songs = data["songs"] as List<SongVO>;
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -65,40 +60,57 @@ class MusicListDetailPage extends StatelessWidget {
               return child!;
             }
           },
-          child: Selector<MusicListDetailBloc, List<SongVO>>(
-            selector: (_, bloc) => bloc.songs,
-            builder: (_, songs, __) {
-              return ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.h),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
-                    child: Selector<PlayerBloc, ButtonState>(
-                      selector: (_, playerBloc) => playerBloc.buttonState,
-                      builder: (context, buttonState, __) {
-                        final songVO = songs[index];
-                        final currentSongID = context.read<PlayerBloc>().currentSongID;
-                        final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
-
-                        return SongItemView(
-                          songVO,
-                          menus: const [
-                            SongItemPopupMenu.addToQueue,
-                            SongItemPopupMenu.addToLibrary,
-                            SongItemPopupMenu.addToPlaylist,
-                          ],
-                          havePlaceHolderImage: true,
-                          isLoading: isLoading,
-                        );
-                      },
+          child: Selector<MusicListDetailBloc, Tuple2<List<SongVO>, String?>>(
+              selector: (_, bloc) => Tuple2(bloc.songs, bloc.errorMessage),
+              builder: (_, tuple, __) {
+                if (tuple.item2 != null) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(tuple.item2!),
+                        ElevatedButton(
+                          onPressed: context.read<MusicListDetailBloc>().onTapRetry,
+                          style: ElevatedButton.styleFrom(primary: primaryColor),
+                          child: const Text("Retry"),
+                        ),
+                      ],
                     ),
                   );
-                },
-                separatorBuilder: (context, index) => SizedBox(height: 10.h),
-                itemCount: songs.length,
-              );
-            }
-          ),
+                }
+
+                return ListView.separated(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  itemBuilder: (context, index) {
+                    final songs = tuple.item1;
+                    return GestureDetector(
+                      onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
+                      child: Selector<PlayerBloc, ButtonState>(
+                        selector: (_, playerBloc) => playerBloc.buttonState,
+                        builder: (context, buttonState, __) {
+                          final songVO = songs[index];
+                          final currentSongID = context.read<PlayerBloc>().currentSongID;
+                          final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
+
+                          return SongItemView(
+                            songVO,
+                            menus: const [
+                              SongItemPopupMenu.addToQueue,
+                              SongItemPopupMenu.addToLibrary,
+                              SongItemPopupMenu.addToPlaylist,
+                            ],
+                            havePlaceHolderImage: true,
+                            isLoading: isLoading,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 10.h),
+                  itemCount: tuple.item1.length,
+                );
+              }),
         ),
       ),
     );

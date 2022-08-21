@@ -59,6 +59,7 @@ dependencies:
   shared_preferences: ^2.0.15
   internet_connection_checker: ^0.0.1+4
   google_mobile_ads: ^2.0.1
+  tuple: ^2.0.0
 
 dev_dependencies:
   flutter_test:

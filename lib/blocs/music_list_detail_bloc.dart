@@ -12,17 +12,43 @@ class MusicListDetailBloc extends ChangeNotifier {
   var selectedMusicList = MusicListVO.empty();
   var songs = <SongVO>[];
   var isLoadingSongs = false;
+  String? errorMessage;
 }
 
 extension UICallbacks on MusicListDetailBloc {
   void onTapMusicList(MusicListVO musicListVO) {
     selectedMusicList = musicListVO;
     isLoadingSongs = true;
+    errorMessage = null;
+    songs = [];
 
     notifyListeners();
 
     _youtubeService.getSongsOfMusicList(selectedMusicList.playlistId).then((value) {
-      songs = value;
+      if (value == null) {
+        errorMessage = "Failed to get songs, please check your connection and try again";
+        songs = [];
+      } else {
+        errorMessage = null;
+        songs = value;
+      }
+      isLoadingSongs = false;
+      notifyListeners();
+    });
+  }
+
+  void onTapRetry() {
+    isLoadingSongs = true;
+    notifyListeners();
+
+    _youtubeService.getSongsOfMusicList(selectedMusicList.playlistId).then((value) {
+      if (value == null) {
+        errorMessage = "Failed to get songs, please check your connection and try again";
+        songs = [];
+      } else {
+        errorMessage = null;
+        songs = value;
+      }
       isLoadingSongs = false;
       notifyListeners();
     });
