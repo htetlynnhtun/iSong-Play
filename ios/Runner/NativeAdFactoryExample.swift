@@ -7,6 +7,7 @@
 
 import Foundation
 import google_mobile_ads
+import UIKit
 
 class NativeAdFactoryExample: NSObject, FLTNativeAdFactory {
     func createNativeAd(
