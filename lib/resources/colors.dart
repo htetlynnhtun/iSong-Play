@@ -29,3 +29,7 @@ const darkSearchBackgroundColor = Color.fromRGBO(36, 52, 72, 1.0);
 const slidingControlSelectedColor = Color.fromRGBO(29, 39, 51, 1.0);
 
 
+///setting
+const containerBackgroundColor = Color(0xffF4F4F5);
+const darkModeContainerBackgroundColor = Color(0xff243448);
+

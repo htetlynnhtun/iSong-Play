@@ -26,6 +26,10 @@ class ThemeBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isAutomatic() {
+    return themeMode == ThemeMode.system;
+  }
+
   ThemeMode? _updateThemeMode(String themeName) {
     switch (themeName) {
       case 'light':
