@@ -115,15 +115,13 @@ class BannerView extends StatelessWidget {
                     Positioned.fill(
                       child: CarouselSlider.builder(
                         itemCount: songs.length,
-                        itemBuilder: (_, itemIndex, __) => NetworkAwareWidget(
-                          child: GestureDetector(
-                            onTap: () {
-                              // if offline, show alert
-                              context.read<PlayerBloc>().onTapSong(itemIndex, songs);
-                            },
-                            child: BannerImageAndSongNameView(
-                              songVO: songs[itemIndex],
-                            ),
+                        itemBuilder: (_, itemIndex, __) => GestureDetector(
+                          onTap: () {
+                            // if offline, show alert
+                            context.read<PlayerBloc>().onTapSong(itemIndex, songs);
+                          },
+                          child: BannerImageAndSongNameView(
+                            songVO: songs[itemIndex],
                           ),
                         ),
                         options: CarouselOptions(
@@ -318,5 +316,3 @@ class TracksAndTitleView extends StatelessWidget {
     );
   }
 }
-
-

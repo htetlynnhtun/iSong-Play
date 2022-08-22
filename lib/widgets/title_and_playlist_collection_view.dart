@@ -1,17 +1,13 @@
-import 'dart:ui';
+// ignore_for_file: use_build_context_synchronously
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:music_app/blocs/home_bloc.dart';
 import 'package:music_app/blocs/interstitial_ad_bloc.dart';
-import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/music_list_detail_page.dart';
-import 'package:music_app/resources/constants.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
-import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/title_text.dart';
 import 'package:provider/provider.dart';
 import '../resources/dimens.dart';
@@ -43,13 +39,40 @@ class MusicSectionView extends StatelessWidget {
             itemBuilder: (context, index) {
               final musicList = musicSectionVO.musicLists[index];
               return GestureDetector(
-                onTap: () {
-                  // final songs = await context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
-                  context.read<InterstitialAdBloc>().onNewPageTransition();
-                  context.read<InterstitialAdBloc>().showAd(onDone: () {
-                    context.read<MusicListDetailBloc>().onTapMusicList(musicList);
-                    navigateToNextPageWithNavBar(context, const MusicListDetailPage());
-                  });
+                onTap: () async {
+                  try {
+                    final songs = await context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
+                    context.read<InterstitialAdBloc>().onNewPageTransition();
+                    context.read<InterstitialAdBloc>().showAd(onDone: () {
+                      navigateToNextPageWithNavBar(
+                        context,
+                        MusicListDetailPage(
+                          songs: songs,
+                          musicListVO: musicList,
+                        ),
+                      );
+                    });
+                  } catch (error) {
+                    showCupertinoDialog(
+                      context: context,
+                      builder: (context) {
+                        return CupertinoAlertDialog(
+                          content: Text(error as String),
+                          actions: [
+                            CupertinoDialogAction(
+                              child: TextButton(
+                                onPressed: () {
+                                  context.read<PlayerBloc>().onDismissNetworkErrorDialog();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text("OK"),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: PlayListImageView(
                   musicListVO: musicList,

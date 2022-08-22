@@ -42,6 +42,7 @@ class PlayerBloc extends ChangeNotifier {
 
   /// If song is longer than 10 minutes.
   bool? isLongDuration;
+  String? errorMessage;
 
   var isShowingBlockingIndicator = false;
   var timerMinute = 0;
@@ -141,18 +142,26 @@ extension UIEvent on PlayerBloc {
     // if (PlayerBloc.songsList.isNotEmpty && PlayerBloc.songsList.length == songs.length && (PlayerBloc.songsList.first == songs.first)) {
     if (listEquals(PlayerBloc.songsList, songs)) {
       isShowingBlockingIndicator = false;
+      notifyListeners();
       await _playerHandler.skipToQueueItem(index);
     } else {
-      PlayerBloc.songsList = [];
-      PlayerBloc.songsList.addAll(songs);
+      // PlayerBloc.songsList = [];
+      // PlayerBloc.songsList.addAll(songs);
       if (withBlocking) {
         isShowingBlockingIndicator = true;
       }
       currentSongID = songs[index].id;
       buttonState = ButtonState.loading;
       notifyListeners();
+
       final mediaItems = await _songsToMediaItems(songs);
-      await _playerHandler.setQueue(index, mediaItems);
+      if (mediaItems.isEmpty) {
+        PlayerBloc.songsList = [];
+      } else {
+        PlayerBloc.songsList.addAll(songs);
+        await _playerHandler.setQueue(index, mediaItems);
+      }
+
       if (withBlocking) {
         isShowingBlockingIndicator = false;
       }
@@ -162,15 +171,24 @@ extension UIEvent on PlayerBloc {
     await _playerHandler.play();
   }
 
-  // Future<List<SongVO>> onTapMusicList(String id) async {
-  //   isShowingBlockingIndicator = true;
-  //   notifyListeners();
-  //   final songs = await _youtubeService.getSongsOfMusicList(id);
-  //   onTapSong(0, songs);
-  //   isShowingBlockingIndicator = false;
-  //   notifyListeners();
-  //   return songs;
-  // }
+  Future<List<SongVO>> onTapMusicList(String id) async {
+    isShowingBlockingIndicator = true;
+    notifyListeners();
+    final songs = (await _youtubeService.getSongsOfMusicList(id)).when(
+      (error) {
+        isShowingBlockingIndicator = false;
+        notifyListeners();
+        throw error;
+      },
+      (songs) {
+        isShowingBlockingIndicator = false;
+        notifyListeners();
+        return songs;
+      },
+    );
+
+    return songs;
+  }
 
   void onTapShufflePlay(List<SongVO> songs) async {
     List<MediaItem> mediaItems = await _songsToMediaItems(songs);
@@ -246,6 +264,7 @@ extension UIEvent on PlayerBloc {
         },
       );
     } else {
+      // TODO: Fix me
       final link = await _youtubeService.getLink(songVO.id);
       mediaItem = MediaItem(
         id: songVO.id,
@@ -300,6 +319,11 @@ extension UIEvent on PlayerBloc {
   void onDialogDismissed() {
     // isLongDuration = null;
     _isLongDurationSubject.add(null);
+  }
+
+  void onDismissNetworkErrorDialog() {
+    errorMessage = null;
+    notifyListeners();
   }
 
   void onSelectTimerMinute(int minute) {
@@ -464,8 +488,21 @@ extension InternalLogic on PlayerBloc {
       if (song.isDownloadFinished) {
         urls.add(song.filePath);
       } else {
-        final url = await _youtubeService.getLink(song.id);
-        urls.add(url.toString());
+        final result = (await _youtubeService.getLink(song.id)).when(
+          (error) {
+            errorMessage = error;
+            notifyListeners();
+            // if one link failed to fetch, stop all links parsing
+            return "stop";
+          },
+          (url) {
+            urls.add(url.toString());
+          },
+        );
+
+        if (result == "stop") {
+          return [];
+        }
       }
     }
 

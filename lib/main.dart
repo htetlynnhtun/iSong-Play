@@ -4,7 +4,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
-import 'package:music_app/blocs/music_list_detail_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
@@ -72,7 +71,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeBloc()),
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
-        ChangeNotifierProvider(create: (_) => MusicListDetailBloc()),
         Provider<InterstitialAdBloc>(
           create: (_) => InterstitialAdBloc(),
           lazy: false,

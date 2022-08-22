@@ -14,6 +14,7 @@ import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/loading_view.dart';
 import 'package:music_app/widgets/mini_player.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 import '../utils/animate_route.dart';
 import 'home_page.dart';
@@ -35,9 +36,36 @@ class _IndexPageState extends State<IndexPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Selector<PlayerBloc, bool>(
-      selector: (_, playerBloc) => playerBloc.isShowingBlockingIndicator,
-      builder: (_, isShowingBlockingIndicator, child) {
+    return Selector<PlayerBloc, Tuple2<bool, String?>>(
+      selector: (_, playerBloc) => Tuple2(playerBloc.isShowingBlockingIndicator, playerBloc.errorMessage),
+      builder: (_, tuple, child) {
+        final isShowingBlockingIndicator = tuple.item1;
+        final errorMessage = tuple.item2;
+
+        if (errorMessage != null) {
+          Future.delayed(Duration.zero, () {
+            showCupertinoDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  content: Text(errorMessage),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: TextButton(
+                        onPressed: () {
+                          context.read<PlayerBloc>().onDismissNetworkErrorDialog();
+                          Navigator.pop(context);
+                        },
+                        child: const Text("OK"),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          });
+        }
+
         return Stack(
           children: [
             child!,

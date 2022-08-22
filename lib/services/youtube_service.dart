@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:multiple_result/multiple_result.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -61,10 +64,17 @@ class YoutubeService {
     return songs;
   }
 
-  Future<Uri> getLink(String id) async {
-    final manifest = await _yt.videos.streams.getManifest(id);
-    final url = manifest.audioOnly.firstWhere((audio) => audio.tag == 140).url;
-    return url;
+  Future<Result<String, Uri>> getLink(String id) async {
+    try {
+      final manifest = await _yt.videos.streams.getManifest(id).timeout(const Duration(seconds: 10));
+      final url = manifest.audioOnly.firstWhere((audio) => audio.tag == 140).url;
+
+      return Success(url);
+    } on SocketException catch (_) {
+      return const Error("Your device is offline");
+    } on TimeoutException catch (_) {
+      return const Error("Please check your internet connection and try again.");
+    }
   }
 
   Future<MusicListVO> getMusicList(String playlistID) async {
@@ -83,14 +93,16 @@ class YoutubeService {
     );
   }
 
-  Future<List<SongVO>?> getSongsOfMusicList(String id) async {
+  Future<Result<String, List<SongVO>>> getSongsOfMusicList(String id) async {
     try {
       final videos = await _yt.playlists.getVideos(id).take(10).toList().timeout(const Duration(seconds: 10));
       final songs = await Future.wait(videos.where((video) => !video.isLive).map((video) => video.toSongVO())).timeout(const Duration(seconds: 10));
 
-      return songs;
-    } catch (error) {
-      return null;
+      return Success(songs);
+    } on SocketException catch (_) {
+      return const Error("Your device is offline");
+    } on TimeoutException catch (_) {
+      return const Error("Please check your internet connection and try again.");
     }
   }
 
