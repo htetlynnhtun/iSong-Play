@@ -50,17 +50,17 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               width: double.infinity,
-              height: context.isMobile()?34.h:40.h,
+              height: context.isMobile() ? 34.h : 40.h,
               child: CupertinoSlidingSegmentedControl<int>(
-                backgroundColor: context.isDarkMode(context)?darkSearchBackgroundColor:searchBackgroundColor,
-                thumbColor: context.isDarkMode(context)?slidingControlSelectedColor:CupertinoColors.white,
+                backgroundColor: context.isDarkMode(context) ? darkSearchBackgroundColor : searchBackgroundColor,
+                thumbColor: context.isDarkMode(context) ? slidingControlSelectedColor : CupertinoColors.white,
                 groupValue: slidingValue,
                 onValueChanged: (value) {
                   context.read<SearchBloc>().onSlidingValueChange(value!);
                 },
                 children: {
                   0: Container(
-                     margin: context.isMobile()?EdgeInsets.zero:EdgeInsets.symmetric(vertical: 6.h),
+                    margin: context.isMobile() ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 6.h),
                     child: Text(
                       'Online',
                       style: TextStyle(
@@ -126,7 +126,7 @@ class SearchAndCancelView extends StatelessWidget {
                     decoration: InputDecoration(
                       isCollapsed: true,
                       filled: true,
-                      fillColor: context.isDarkMode(context)?darkSearchBackgroundColor:searchBackgroundColor,
+                      fillColor: context.isDarkMode(context) ? darkSearchBackgroundColor : searchBackgroundColor,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 26.h,
@@ -142,6 +142,7 @@ class SearchAndCancelView extends StatelessWidget {
                         },
                         child: AssetImageButton(
                           onTap: () {
+                            searchController.text = "";
                             context.read<SearchBloc>().clearQuery();
                           },
                           width: 16.h,

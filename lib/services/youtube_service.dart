@@ -42,16 +42,23 @@ class YoutubeService {
     }
   }
 
-  Future<List<SongVO>> getSongs(String query) async {
-    final searchQuery = await SearchQuery.search(YoutubeHttpClient(), query);
-    final searchVideos = searchQuery.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10);
-    final songs = <SongVO>[];
-    for (var video in searchVideos) {
-      final song = await video.toSongVO();
-      songs.add(song);
+  Future<Result<String, List<SongVO>>> getSongs(String query) async {
+    try {
+      final searchQuery = await SearchQuery.search(YoutubeHttpClient(), query).timeout(const Duration(seconds: 30));
+      final searchVideos = searchQuery.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10);
+      final songs = <SongVO>[];
+      for (var video in searchVideos) {
+        final song = await video.toSongVO();
+        songs.add(song);
+      }
+
+      return Success(songs);
+    } on SocketException catch (_) {
+      return const Error("Your device is offline");
+    } on TimeoutException catch (_) {
+      return const Error("Please check your internet connection and try again.");
     }
 
-    return songs;
     // return SearchQuery.search(YoutubeHttpClient(), query).then((value) {
     //   return value.content.whereType<SearchVideo>().where((video) => !video.isLive).take(10).map((e) => e.toSongVO()).toList();
     // });

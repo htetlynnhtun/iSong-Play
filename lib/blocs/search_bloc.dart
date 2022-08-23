@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:music_app/persistance/recent_search_dao.dart';
 import 'package:music_app/persistance/song_dao.dart';
@@ -34,6 +36,7 @@ class SearchBloc extends ChangeNotifier {
   var tappedQuery = "";
   var showSearchingLoadingIndicator = false;
   var offlineSearchResults = <SongVO>[];
+  String? errorMessage;
 
   // ========================= UI Callbacks =========================
   void onSlidingValueChange(int value) {
@@ -102,6 +105,11 @@ class SearchBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  void onDismissErrorDialog() {
+    errorMessage = null;
+    clearQuery();
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -125,7 +133,17 @@ extension InternalLogic on SearchBloc {
   }
 
   Future<void> _startSearching(String query) async {
-    searchResults = await _youtubeService.getSongs(query);
+    // searchResults = await _youtubeService.getSongs(query);
+    (await _youtubeService.getSongs(query)).when(
+      (error) {
+        errorMessage = error;
+        searchResults = [];
+        notifyListeners();
+      },
+      (songs) {
+        searchResults = songs;
+      },
+    );
     _syncResultsWithLibrary();
   }
 

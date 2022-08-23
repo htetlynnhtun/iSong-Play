@@ -42,55 +42,88 @@ class SearchResultsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<SearchBloc, bool>(
-        selector: (_, searchBloc) => searchBloc.showSearchingLoadingIndicator,
-        builder: (_, showSearchingLoadingIndicator, __) {
-          if (showSearchingLoadingIndicator) {
-            return const Expanded(
-              child: Center(
-                child: CupertinoActivityIndicator(
-                  animating: true,
-                  radius: 16,
-                  color: primaryColor,
-                ),
+      selector: (_, searchBloc) => searchBloc.showSearchingLoadingIndicator,
+      builder: (_, showSearchingLoadingIndicator, child) {
+        if (showSearchingLoadingIndicator) {
+          return const Expanded(
+            child: Center(
+              child: CupertinoActivityIndicator(
+                animating: true,
+                radius: 16,
+                color: primaryColor,
               ),
-            );
-          }
-          return Expanded(
-            child: Selector<SearchBloc, List<SongVO>>(
-                selector: (_, searchBloc) => searchBloc.searchResults,
-                shouldRebuild: (p, n) => listEquals(p, n),
-                builder: (_, searchResults, __) {
-                  return ListView.separated(
-                    padding: EdgeInsets.only(left: 16.w),
-                    itemBuilder: (context, index) => GestureDetector(
-                      onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
-                      child: Selector<PlayerBloc, ButtonState>(
-                          selector: (_, playerBloc) => playerBloc.buttonState,
-                          builder: (context, buttonState, __) {
-                            final songVO = searchResults[index];
-                            final currentSongID = context.read<PlayerBloc>().currentSongID;
-                            final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
-
-                            return SongItemView(
-                              songVO,
-                              menus: const [
-                                SongItemPopupMenu.addToQueue,
-                                SongItemPopupMenu.addToLibrary,
-                                SongItemPopupMenu.addToPlaylist,
-                              ],
-                              havePlaceHolderImage: true,
-                              isLoading: isLoading,
-                            );
-                          }),
-                    ),
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: 10.h,
-                    ),
-                    itemCount: searchResults.length,
-                  );
-                }),
+            ),
           );
-        });
+        }
+
+        return child!;
+      },
+      child: Selector<SearchBloc, String?>(
+        selector: (_, bloc) => bloc.errorMessage,
+        builder: (_, errorMessage, child) {
+          if (errorMessage != null) {
+            Future.delayed(Duration.zero, () {
+              showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    content: Text(errorMessage),
+                    actions: [
+                      CupertinoDialogAction(
+                        child: TextButton(
+                          onPressed: () {
+                            context.read<SearchBloc>().onDismissErrorDialog();
+                            Navigator.pop(context);
+                          },
+                          child: const Text("OK"),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            });
+          }
+
+          return child!;
+        },
+        child: Expanded(
+          child: Selector<SearchBloc, List<SongVO>>(
+              selector: (_, searchBloc) => searchBloc.searchResults,
+              shouldRebuild: (p, n) => listEquals(p, n),
+              builder: (_, searchResults, __) {
+                return ListView.separated(
+                  padding: EdgeInsets.only(left: 16.w),
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
+                    child: Selector<PlayerBloc, ButtonState>(
+                        selector: (_, playerBloc) => playerBloc.buttonState,
+                        builder: (context, buttonState, __) {
+                          final songVO = searchResults[index];
+                          final currentSongID = context.read<PlayerBloc>().currentSongID;
+                          final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
+
+                          return SongItemView(
+                            songVO,
+                            menus: const [
+                              SongItemPopupMenu.addToQueue,
+                              SongItemPopupMenu.addToLibrary,
+                              SongItemPopupMenu.addToPlaylist,
+                            ],
+                            havePlaceHolderImage: true,
+                            isLoading: isLoading,
+                          );
+                        }),
+                  ),
+                  separatorBuilder: (context, index) => SizedBox(
+                    height: 10.h,
+                  ),
+                  itemCount: searchResults.length,
+                );
+              }),
+        ),
+      ),
+    );
   }
 }
 
