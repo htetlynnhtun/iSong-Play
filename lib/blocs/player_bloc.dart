@@ -283,10 +283,9 @@ extension UIEvent on PlayerBloc {
 
   void onTapAddToQueue(SongVO songVO) async {
     print("wtbug: onTapAddToQueue");
-    MediaItem mediaItem;
 
     if (songVO.isDownloadFinished) {
-      mediaItem = MediaItem(
+      final mediaItem = MediaItem(
         id: songVO.id,
         title: songVO.title,
         artist: songVO.artist,
@@ -300,26 +299,36 @@ extension UIEvent on PlayerBloc {
           "endColor": songVO.dominantColor[1]?.value ?? 0
         },
       );
+
+      await _playerHandler.addQueueItem(mediaItem);
+      play();
     } else {
-      // TODO: Fix me
-      final link = await _youtubeService.getLink(songVO.id);
-      mediaItem = MediaItem(
-        id: songVO.id,
-        title: songVO.title,
-        artist: songVO.artist,
-        duration: songVO.duration,
-        artUri: Uri.parse(songVO.thumbnail),
-        extras: {
-          "isOffline": false,
-          "url": link.toString(),
-          // if color is null, provide default color
-          "beginColor": songVO.dominantColor[0]?.value ?? 0,
-          "endColor": songVO.dominantColor[1]?.value ?? 0
+      (await _youtubeService.getLink(songVO.id)).when(
+        (error) {
+          errorMessage = error;
+          notifyListeners();
+        },
+        (url) async {
+          final mediaItem = MediaItem(
+            id: songVO.id,
+            title: songVO.title,
+            artist: songVO.artist,
+            duration: songVO.duration,
+            artUri: Uri.parse(songVO.thumbnail),
+            extras: {
+              "isOffline": false,
+              "url": url.toString(),
+              // if color is null, provide default color
+              "beginColor": songVO.dominantColor[0]?.value ?? 0,
+              "endColor": songVO.dominantColor[1]?.value ?? 0
+            },
+          );
+
+          await _playerHandler.addQueueItem(mediaItem);
+          play();
         },
       );
     }
-    await _playerHandler.addQueueItem(mediaItem);
-    play();
   }
 
   void onTapSkipForLongDurationSong() {
