@@ -108,8 +108,45 @@ class PlayerBloc extends ChangeNotifier {
       currentSongID = lastRecentTrack.id;
       notifyListeners();
 
-      final mediaItem = (await _songsToMediaItems([lastRecentTrack])).first;
-      _playerHandler.addQueueItem(mediaItem);
+      if (lastRecentTrack.isDownloadFinished) {
+        final mediaItem = MediaItem(
+          id: lastRecentTrack.id,
+          title: lastRecentTrack.title,
+          artist: lastRecentTrack.artist,
+          duration: lastRecentTrack.duration,
+          artUri: Uri.parse(lastRecentTrack.thumbnail),
+          extras: {
+            "isOffline": true,
+            "filePath": lastRecentTrack.filePath,
+            // if color is null, provide default color
+            "beginColor": lastRecentTrack.dominantColor[0]?.value ?? 0,
+            "endColor": lastRecentTrack.dominantColor[1]?.value ?? 0
+          },
+        );
+        _playerHandler.addQueueItem(mediaItem);
+      } else {
+        (await _youtubeService.getLink(lastRecentTrack.id)).when(
+          (error) => null,
+          (uri) {
+            final mediaItem = MediaItem(
+              id: lastRecentTrack.id,
+              title: lastRecentTrack.title,
+              artist: lastRecentTrack.artist,
+              duration: lastRecentTrack.duration,
+              artUri: Uri.parse(lastRecentTrack.thumbnail),
+              extras: {
+                "isOffline": false,
+                "url": uri.toString(),
+                // if color is null, provide default color
+                "beginColor": lastRecentTrack.dominantColor[0]?.value ?? 0,
+                "endColor": lastRecentTrack.dominantColor[1]?.value ?? 0
+              },
+            );
+
+            _playerHandler.addQueueItem(mediaItem);
+          },
+        );
+      }
     }
   }
 
