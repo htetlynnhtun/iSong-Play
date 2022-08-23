@@ -44,6 +44,7 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<SearchBloc, int>(
       selector: (context, bloc) => bloc.slidingValue,
+      shouldRebuild: (_, __) => true,
       builder: (context, slidingValue, _) => Expanded(
         child: Column(
           children: [
