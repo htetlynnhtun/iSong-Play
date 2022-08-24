@@ -20,6 +20,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
       size: AdSize.banner,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
+          print("Banner ad Loaded");
           setState(() {
             _bannerAd = ad as BannerAd;
           });
@@ -29,6 +30,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
             _bannerAd = null;
           });
         },
+        onAdImpression: (ad) => print("BannerAd impression"),
       ),
     ).load();
 

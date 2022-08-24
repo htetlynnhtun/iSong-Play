@@ -22,7 +22,7 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
       request: const AdRequest(),
       listener: NativeAdListener(
         onAdLoaded: (ad) {
-          print('Ad loaded.');
+          print('Native Ad loaded.');
           setState(() {
             _nativeAd = ad as NativeAd;
           });
@@ -48,11 +48,9 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
   @override
   Widget build(BuildContext context) {
     return _nativeAd == null
-        ? SizedBox(
-            height: 10.h,
-          )
+        ? SizedBox(height: 10.h)
         : Container(
-            padding: const EdgeInsets.only(right: 16, top: 10, bottom: 10),
+            padding: EdgeInsets.only(right: 16.h, top: 10.h, bottom: 10.h),
             alignment: Alignment.center,
             width: MediaQuery.of(context).size.width - 32,
             height: 350,

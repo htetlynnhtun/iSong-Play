@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -80,9 +82,12 @@ class OnlineAndOfflineSlidingView extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(
+              height: 4.h,
+            ),
             const BannerAdWidget(),
             SizedBox(
-              height: 14.h,
+              height: 8.h,
             ),
             searchViewList[slidingValue],
           ],

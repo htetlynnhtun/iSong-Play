@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/vos/music_list_vo.dart';
+import 'package:music_app/widgets/native_ad_widget.dart';
 import 'package:music_app/widgets/song_item_view.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
@@ -66,7 +67,12 @@ class MusicListDetailPage extends StatelessWidget {
               ),
             );
           },
-          separatorBuilder: (context, index) => SizedBox(height: 10.h),
+          separatorBuilder: (context, index) {
+            if (index == 1) {
+              return const NativeAdWidget();
+            }
+            return SizedBox(height: 10.h);
+          },
           itemCount: songs.length,
         ),
       ),

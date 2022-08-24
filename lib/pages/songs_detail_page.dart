@@ -83,7 +83,6 @@ class SongsDetailPage extends StatelessWidget {
           shouldRebuild: (_, __) => true,
           builder: (_, songs, __) {
             List<SongItemPopupMenu> menus;
-            List<SongVO> filteredSongs;
             if (isFavorite) {
               menus = [
                 SongItemPopupMenu.addToQueue,
@@ -91,14 +90,12 @@ class SongsDetailPage extends StatelessWidget {
                 SongItemPopupMenu.deleteFromFavorite,
                 SongItemPopupMenu.deleteFromLibrary,
               ];
-              // filteredSongs = songs.where((e) => e.isFavorite).toList();
             } else {
               menus = [
                 SongItemPopupMenu.addToQueue,
                 SongItemPopupMenu.addToPlaylist,
                 SongItemPopupMenu.deleteFromLibrary,
               ];
-              // filteredSongs = songs;
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +120,7 @@ class SongsDetailPage extends StatelessWidget {
                       ),
                     ),
                     separatorBuilder: (context, index) {
-                      if (index == 0) {
+                      if (index == 1 || (index > 1 && index % 14 == 0)) {
                         return const NativeAdWidget();
                       } else {
                         return SizedBox(height: 10.h);

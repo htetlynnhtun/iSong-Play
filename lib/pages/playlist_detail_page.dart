@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/utils/extension.dart';
+import 'package:music_app/widgets/native_ad_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/vos/playlist_vo.dart';
@@ -33,12 +34,8 @@ class PlaylistDetailPage extends StatelessWidget {
               title: const AppBarTitle(title: 'Playlist'),
               actions: [
                 PopupMenuButton(
-                  padding: context.isMobile()?EdgeInsets.zero:EdgeInsets.only(right: 16.w),
-                  icon:  Icon(
-                    Icons.more_horiz,
-                    color: primaryColor,
-                    size:24.h
-                  ),
+                  padding: context.isMobile() ? EdgeInsets.zero : EdgeInsets.only(right: 16.w),
+                  icon: Icon(Icons.more_horiz, color: primaryColor, size: 24.h),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
@@ -109,7 +106,7 @@ class PlaylistDetailPage extends StatelessWidget {
                     height: 12.h,
                   ),
                   Padding(
-                    padding: context.isMobile()? EdgeInsets.only(right: 14.w):EdgeInsets.only(right: 10.w),
+                    padding: context.isMobile() ? EdgeInsets.only(right: 14.w) : EdgeInsets.only(right: 10.w),
                     child: PlaylistHeaderView(playlistVo: playlistVo),
                   ),
                   SizedBox(
@@ -210,7 +207,12 @@ class SongsCollectionView extends StatelessWidget {
             ],
           ),
         ),
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, index) {
+          if (index == 1 || (index > 1 && (index % 14 == 0))) {
+            return const NativeAdWidget();
+          }
+          return SizedBox(height: 10.h);
+        },
         itemCount: songs.length,
       ),
     );
