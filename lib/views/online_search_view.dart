@@ -7,6 +7,8 @@ import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:music_app/widgets/ads/banner_ad_widget.dart';
+import 'package:music_app/widgets/ads/inline_banner_ad_widget.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:music_app/widgets/song_item_view.dart';
 import 'package:provider/provider.dart';
@@ -115,9 +117,14 @@ class SearchResultsView extends StatelessWidget {
                           );
                         }),
                   ),
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 10.h,
-                  ),
+                  separatorBuilder: (context, index) {
+                    if (index == 2) {
+                      return const InlineBannerAdWidget();
+                    }
+                    return SizedBox(
+                      height: 10.h,
+                    );
+                  },
                   itemCount: searchResults.length,
                 );
               }),

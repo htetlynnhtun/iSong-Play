@@ -11,6 +11,7 @@ import 'package:music_app/pages/player_page.dart';
 import 'package:music_app/pages/search_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
+import 'package:music_app/widgets/ads/banner_ad_widget.dart';
 import 'package:music_app/widgets/loading_view.dart';
 import 'package:music_app/widgets/mini_player.dart';
 import 'package:provider/provider.dart';

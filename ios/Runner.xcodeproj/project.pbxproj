@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		4F15B83528B5E1DB004F04E3 /* ListTileNativeAdFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F15B83428B5E1DB004F04E3 /* ListTileNativeAdFactory.swift */; };
+		4F15B83D28B5EDC3004F04E3 /* ListTileNativeAdView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F15B83C28B5EDC3004F04E3 /* ListTileNativeAdView.xib */; };
 		4F4E988A28ACA8DF007434C2 /* NativeAdFactoryExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4E988928ACA8DF007434C2 /* NativeAdFactoryExample.swift */; };
 		4F4E988C28ACA954007434C2 /* NativeAdView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F4E988B28ACA954007434C2 /* NativeAdView.xib */; };
 		681682DAB7CDA11BD4E4A371 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8304C90DCF7992C9137947FC /* Pods_Runner.framework */; };
@@ -36,6 +38,9 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		1E7622F5EDF24B14916E4578 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		4F15B83428B5E1DB004F04E3 /* ListTileNativeAdFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTileNativeAdFactory.swift; sourceTree = "<group>"; };
+		4F15B83C28B5EDC3004F04E3 /* ListTileNativeAdView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListTileNativeAdView.xib; sourceTree = "<group>"; };
+		4F2B305A28B72F90001B308C /* CopyGADNativeAdView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CopyGADNativeAdView.h; sourceTree = "<group>"; };
 		4F4E988928ACA8DF007434C2 /* NativeAdFactoryExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAdFactoryExample.swift; sourceTree = "<group>"; };
 		4F4E988B28ACA954007434C2 /* NativeAdView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NativeAdView.xib; sourceTree = "<group>"; };
 		61B009DB5726A5051EF6DB57 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -118,6 +123,9 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				4F4E988B28ACA954007434C2 /* NativeAdView.xib */,
 				4F4E988928ACA8DF007434C2 /* NativeAdFactoryExample.swift */,
+				4F15B83428B5E1DB004F04E3 /* ListTileNativeAdFactory.swift */,
+				4F2B305A28B72F90001B308C /* CopyGADNativeAdView.h */,
+				4F15B83C28B5EDC3004F04E3 /* ListTileNativeAdView.xib */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -195,6 +203,7 @@
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
+				4F15B83D28B5EDC3004F04E3 /* ListTileNativeAdView.xib in Resources */,
 				4F4E988C28ACA954007434C2 /* NativeAdView.xib in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
@@ -280,6 +289,7 @@
 			files = (
 				4F4E988A28ACA8DF007434C2 /* NativeAdFactoryExample.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				4F15B83528B5E1DB004F04E3 /* ListTileNativeAdFactory.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

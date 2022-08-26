@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
-import 'package:music_app/widgets/banner_ad_widget.dart';
+import 'package:music_app/widgets/ads/banner_ad_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_bar_back_icon.dart';

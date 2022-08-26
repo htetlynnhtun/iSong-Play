@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/utils/extension.dart';
-import 'package:music_app/widgets/native_ad_widget.dart';
+import 'package:music_app/widgets/ads/native_ad_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/dimens.dart';
 import 'package:music_app/vos/playlist_vo.dart';
