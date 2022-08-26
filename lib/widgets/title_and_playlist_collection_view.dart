@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/music_list_detail_page.dart';
+import 'package:music_app/resources/colors.dart';
 import 'package:music_app/vos/music_list_vo.dart';
 import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/widgets/title_text.dart';
@@ -57,15 +58,17 @@ class MusicSectionView extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return CupertinoAlertDialog(
-                          content: Text(error as String),
+                          title: Text(error as String),
                           actions: [
                             CupertinoDialogAction(
-                              child: TextButton(
-                                onPressed: () {
-                                  context.read<PlayerBloc>().onDismissNetworkErrorDialog();
-                                  Navigator.pop(context);
-                                },
-                                child: const Text("OK"),
+                              isDefaultAction: true,
+                              onPressed: () {
+                                context.read<PlayerBloc>().onDismissNetworkErrorDialog();
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                "OK",
+                                style: TextStyle(color: primaryColor),
                               ),
                             ),
                           ],

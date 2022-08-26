@@ -11,7 +11,6 @@ import 'package:music_app/pages/player_page.dart';
 import 'package:music_app/pages/search_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
-import 'package:music_app/widgets/ads/banner_ad_widget.dart';
 import 'package:music_app/widgets/loading_view.dart';
 import 'package:music_app/widgets/mini_player.dart';
 import 'package:provider/provider.dart';
@@ -49,15 +48,17 @@ class _IndexPageState extends State<IndexPage> {
               context: context,
               builder: (context) {
                 return CupertinoAlertDialog(
-                  content: Text(errorMessage),
+                  title: Text(errorMessage),
                   actions: [
                     CupertinoDialogAction(
-                      child: TextButton(
-                        onPressed: () {
-                          context.read<PlayerBloc>().onDismissNetworkErrorDialog();
-                          Navigator.pop(context);
-                        },
-                        child: const Text("OK"),
+                      isDefaultAction: true,
+                      onPressed: () {
+                        context.read<PlayerBloc>().onDismissNetworkErrorDialog();
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "OK",
+                        style: TextStyle(color: primaryColor),
                       ),
                     ),
                   ],
@@ -89,37 +90,35 @@ class _IndexPageState extends State<IndexPage> {
                     showCupertinoDialog(
                       context: context,
                       builder: (_) => CupertinoAlertDialog(
-                        content: const Text("Songs longer than 10 minutes need to be added to Library first."),
+                        title: const Text("Songs longer than 10 minutes need to be added to Library first."),
                         actions: [
                           CupertinoDialogAction(
-                            isDefaultAction: true,
-                            child: TextButton(
-                              child: const Text("Add To Library"),
-                              onPressed: () async {
-                                context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
-                                  final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
-                                  switch (result) {
-                                    case AddToLibraryResult.success:
-                                      widget.showToast("Successfully added to library");
-                                      break;
-                                    case AddToLibraryResult.alreadyInLibrary:
-                                      widget.showToast("Song is already in library");
-                                      break;
-                                  }
-                                });
-
-                                // Navigator.pop(context);
-                              },
+                            onPressed: () async {
+                              context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
+                                final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                                switch (result) {
+                                  case AddToLibraryResult.success:
+                                    widget.showToast("Successfully added to library");
+                                    break;
+                                  case AddToLibraryResult.alreadyInLibrary:
+                                    widget.showToast("Song is already in library");
+                                    break;
+                                }
+                              });
+                            },
+                            child: const Text(
+                              "Add to Library",
+                              style: TextStyle(color: primaryColor),
                             ),
                           ),
                           CupertinoDialogAction(
-                            child: TextButton(
-                              child: const Text("Skip"),
-                              onPressed: () {
-                                print("Skip long duration song");
-                                context.read<PlayerBloc>().onTapSkipForLongDurationSong();
-                                // Navigator.pop(context);
-                              },
+                            isDefaultAction: true,
+                            onPressed: () {
+                              context.read<PlayerBloc>().onTapSkipForLongDurationSong();
+                            },
+                            child: const Text(
+                              "Skip",
+                              style: TextStyle(color: primaryColor),
                             ),
                           ),
                         ],

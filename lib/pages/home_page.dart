@@ -1,16 +1,13 @@
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/home_bloc.dart';
-import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/setting_page.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/vos/music_section_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
-import 'package:music_app/widgets/network_aware_widget.dart';
 import 'package:music_app/widgets/title_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';

@@ -73,14 +73,14 @@ class PlaylistItemView extends StatelessWidget {
               } else if (value == "delete") {
                 showDialog<bool>(
                   context: context,
-                  builder: (context) => CupertinoAlertDialog(
+                  builder: (context) => AlertDialog(
                     title: const Text("Are you sure?"),
                     actions: [
-                      CupertinoDialogAction(
+                      ElevatedButton(
                         onPressed: () => Navigator.pop(context),
                         child: const Text("Cancel"),
                       ),
-                      CupertinoDialogAction(
+                      ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
                           context.read<LibraryBloc>().onTapDeletePlaylist(playlistVO);

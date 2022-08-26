@@ -7,13 +7,10 @@ import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
-import 'package:music_app/widgets/ads/banner_ad_widget.dart';
 import 'package:music_app/widgets/ads/inline_banner_ad_widget.dart';
-import 'package:music_app/widgets/custom_cached_image.dart';
 import 'package:music_app/widgets/song_item_view.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/asset_image_button.dart';
 import '../widgets/receint_and_suggestion_view.dart';
 
 class OnlineSearchView extends StatelessWidget {
@@ -69,15 +66,17 @@ class SearchResultsView extends StatelessWidget {
                 context: context,
                 builder: (context) {
                   return CupertinoAlertDialog(
-                    content: Text(errorMessage),
+                    title: Text(errorMessage),
                     actions: [
                       CupertinoDialogAction(
-                        child: TextButton(
-                          onPressed: () {
-                            context.read<SearchBloc>().onDismissErrorDialog();
-                            Navigator.pop(context);
-                          },
-                          child: const Text("OK"),
+                        isDefaultAction: true,
+                        onPressed: () {
+                          context.read<SearchBloc>().onDismissErrorDialog();
+                          Navigator.pop(context);
+                        },
+                        child: const Text(
+                          "OK",
+                          style: TextStyle(color: primaryColor),
                         ),
                       ),
                     ],
@@ -118,7 +117,7 @@ class SearchResultsView extends StatelessWidget {
                         }),
                   ),
                   separatorBuilder: (context, index) {
-                    if (index == 2) {
+                    if (index == 4) {
                       return const InlineBannerAdWidget();
                     }
                     return SizedBox(
