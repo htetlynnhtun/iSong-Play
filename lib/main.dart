@@ -30,7 +30,12 @@ late SharedPreferences prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await MobileAds.instance.initialize();
+  final statuses = (await MobileAds.instance.initialize()).adapterStatuses;
+  statuses.forEach((key, value) {
+    // if (value.state == AdapterInitializationState.ready) {
+    debugPrint('Adapter status for $key: ${value.description}');
+    // }
+  });
 
   prefs = await SharedPreferences.getInstance();
   await Hive.initFlutter();
