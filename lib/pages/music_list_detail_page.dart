@@ -14,7 +14,9 @@ import '../widgets/app_bar_back_icon.dart';
 class MusicListDetailPage extends StatelessWidget {
   final List<SongVO> songs;
   final MusicListVO musicListVO;
-  const MusicListDetailPage({Key? key, required this.songs, required this.musicListVO}) : super(key: key);
+  const MusicListDetailPage(
+      {Key? key, required this.songs, required this.musicListVO})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,21 +30,40 @@ class MusicListDetailPage extends StatelessWidget {
             expandedHeight: 150.h,
             floating: false,
             pinned: true,
+            title: Text(
+              musicListVO.title,
+              style: TextStyle(
+                color: primaryColor,
+                fontSize: 18.sp,
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(
-                musicListVO.title,
-                style: TextStyle(
-                  color: primaryColor,
-                  fontSize: 16.sp,
-                ),
+              background: Stack(
+                children: [
+                  CustomCachedImage(
+                      imageUrl: musicListVO.thumbnail, cornerRadius: 0),
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            musicListDetailImageColor,
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-              background: CustomCachedImage(imageUrl: musicListVO.thumbnail, cornerRadius: 0),
             ),
           ),
         ],
         body: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          padding: EdgeInsets.only(left: 16.w, top: 10.h, bottom: 10.h),
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () => context.read<PlayerBloc>().onTapSong(index, songs),
@@ -50,8 +71,10 @@ class MusicListDetailPage extends StatelessWidget {
                 selector: (_, playerBloc) => playerBloc.buttonState,
                 builder: (context, buttonState, __) {
                   final songVO = songs[index];
-                  final currentSongID = context.read<PlayerBloc>().currentSongID;
-                  final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
+                  final currentSongID =
+                      context.read<PlayerBloc>().currentSongID;
+                  final isLoading = (songVO.id == currentSongID) &&
+                      buttonState == ButtonState.loading;
 
                   return SongItemView(
                     songVO,
@@ -80,16 +103,16 @@ class MusicListDetailPage extends StatelessWidget {
   }
 }
 
-                            // final songVO = searchResults[index];
-                            // final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
+// final songVO = searchResults[index];
+// final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
 
-                            // return SongItemView(
-                            //   songVO,
-                            //   menus: const [
-                            //     SongItemPopupMenu.addToQueue,
-                            //     SongItemPopupMenu.addToLibrary,
-                            //     SongItemPopupMenu.addToPlaylist,
-                            //   ],
-                            //   havePlaceHolderImage: true,
-                            //   isLoading: isLoading,
-                            // );
+// return SongItemView(
+//   songVO,
+//   menus: const [
+//     SongItemPopupMenu.addToQueue,
+//     SongItemPopupMenu.addToLibrary,
+//     SongItemPopupMenu.addToPlaylist,
+//   ],
+//   havePlaceHolderImage: true,
+//   isLoading: isLoading,
+// );

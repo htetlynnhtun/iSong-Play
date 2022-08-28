@@ -35,7 +35,6 @@ class AddRenamePlaylistDialog extends StatelessWidget {
         height: height * (context.isMobile() ? 0.27 : 0.4),
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
-          color: dialogBackgroundColor,
           borderRadius: BorderRadius.all(Radius.circular(14.h)),
         ),
         child: Stack(
@@ -70,11 +69,10 @@ class AddRenamePlaylistDialog extends StatelessWidget {
               child: Container(
                 height: width * 0.15,
                 decoration: BoxDecoration(
-                    color: Colors.white,
                     borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(14.h),
-                      bottomLeft: Radius.circular(14.h),
-                    )),
+                  bottomRight: Radius.circular(14.h),
+                  bottomLeft: Radius.circular(14.h),
+                )),
                 child: Row(
                   children: [
                     Expanded(
@@ -155,7 +153,6 @@ class EditTextField extends StatelessWidget {
       style: TextStyle(
         fontSize: 15.sp,
         fontWeight: FontWeight.normal,
-        color: Colors.black,
       ),
       inputFormatters: [
         FilteringTextInputFormatter.allow(RegExp('[a-z A-Z 0-9]'))
@@ -166,7 +163,7 @@ class EditTextField extends StatelessWidget {
         contentPadding: EdgeInsets.all(8.h), // Added this
         isCollapsed: true,
         filled: true,
-        fillColor: Colors.white,
+
         hintText: 'Type your Playlist Name',
         hintStyle: TextStyle(
           color: searchIconColor,

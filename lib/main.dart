@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-
 import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
@@ -29,7 +29,6 @@ late SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   final statuses = (await MobileAds.instance.initialize()).adapterStatuses;
   statuses.forEach((key, value) {
     // if (value.state == AdapterInitializationState.ready) {
@@ -65,6 +64,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MultiProvider(
       providers: [
         Provider<NetworkConnectionBloc>(

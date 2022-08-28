@@ -5,7 +5,6 @@ import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/ads/banner_ad_widget.dart';
 import 'package:provider/provider.dart';
-
 import '../widgets/app_bar_back_icon.dart';
 
 class SettingPage extends StatelessWidget {
@@ -23,7 +22,10 @@ class SettingPage extends StatelessWidget {
         ),
         title: Text(
           'Setting',
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: primaryColor),
+          style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: primaryColor),
         ),
       ),
       body: Padding(
@@ -49,7 +51,7 @@ class SettingPage extends StatelessWidget {
               ),
               const Center(child: BannerAdWidget()),
               SizedBox(
-                height: 16.h,
+                height: 18.h,
               ),
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_privacy.png',
@@ -57,7 +59,15 @@ class SettingPage extends StatelessWidget {
                 onTap: () {},
               ),
               SizedBox(
-                height: 32.h,
+                height: 14.h,
+              ),
+              IconAndTextButton(
+                imageUrl: 'assets/images/ic_privacy.png',
+                title: 'Terms and Conditions',
+                onTap: () {},
+              ),
+              SizedBox(
+                height: 14.h,
               ),
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_rate_us.png',
@@ -65,7 +75,7 @@ class SettingPage extends StatelessWidget {
                 onTap: () {},
               ),
               SizedBox(
-                height: 32.h,
+                height: 14.h,
               ),
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_about.png',
@@ -99,8 +109,8 @@ class IconAndTextButton extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 34.h,
-            height: 34.h,
+            width: 30.h,
+            height: 30.h,
             decoration: BoxDecoration(
               color: primaryColor,
               borderRadius: BorderRadius.circular(7.h),
@@ -108,7 +118,7 @@ class IconAndTextButton extends StatelessWidget {
             child: Center(
               child: Image.asset(
                 imageUrl,
-                scale: 3.5,
+                scale: 4,
               ),
             ),
           ),
@@ -118,7 +128,7 @@ class IconAndTextButton extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 19.sp,
+              fontSize: 17.sp,
               color: primaryColor,
               fontWeight: FontWeight.bold,
             ),
@@ -140,7 +150,9 @@ class DarkLightAutomaticView extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.h),
-        color: context.isDarkMode(context) ? darkModeContainerBackgroundColor : containerBackgroundColor,
+        color: context.isDarkMode(context)
+            ? darkModeContainerBackgroundColor
+            : containerBackgroundColor,
       ),
       child: Column(
         children: [
@@ -156,7 +168,8 @@ class DarkLightAutomaticView extends StatelessWidget {
                 onTap: () {
                   context.read<ThemeBloc>().onTapRadio(ThemeMode.light);
                 },
-                isSelected: !context.isDarkMode(context) && !context.watch<ThemeBloc>().isAutomatic(),
+                isSelected: !context.isDarkMode(context) &&
+                    !context.watch<ThemeBloc>().isAutomatic(),
               ),
               LightDarkRadioButton(
                 title: 'Dark',
@@ -164,7 +177,8 @@ class DarkLightAutomaticView extends StatelessWidget {
                 onTap: () {
                   context.read<ThemeBloc>().onTapRadio(ThemeMode.dark);
                 },
-                isSelected: context.isDarkMode(context) && !context.watch<ThemeBloc>().isAutomatic(),
+                isSelected: context.isDarkMode(context) &&
+                    !context.watch<ThemeBloc>().isAutomatic(),
               ),
             ],
           ),
@@ -218,7 +232,9 @@ class AutomaticCheckBox extends StatelessWidget {
           ),
           const Spacer(),
           Image.asset(
-            isSelected ? 'assets/images/ic_checkbox_selected.png' : 'assets/images/ic_checkbox.png',
+            isSelected
+                ? 'assets/images/ic_checkbox_selected.png'
+                : 'assets/images/ic_checkbox.png',
             scale: 4,
           ),
         ],
@@ -249,7 +265,8 @@ class LightDarkRadioButton extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 10.h, right: 10.h, left: 10.h, bottom: 30.h),
+            padding: EdgeInsets.only(
+                top: 10.h, right: 10.h, left: 10.h, bottom: 30.h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.h),
               color: color,
