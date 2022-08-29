@@ -10,7 +10,7 @@ class NativeAdWidget extends StatefulWidget {
   State<NativeAdWidget> createState() => _NativeAdWidgetState();
 }
 
-class _NativeAdWidgetState extends State<NativeAdWidget> {
+class _NativeAdWidgetState extends State<NativeAdWidget> with AutomaticKeepAliveClientMixin {
   NativeAd? _nativeAd;
   @override
   void initState() {
@@ -46,7 +46,12 @@ class _NativeAdWidgetState extends State<NativeAdWidget> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return _nativeAd == null
         ? SizedBox(height: 10.h)
         : Container(
