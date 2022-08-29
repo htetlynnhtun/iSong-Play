@@ -82,6 +82,9 @@ class SettingPage extends StatelessWidget {
                 title: 'Version',
                 onTap: () {},
               ),
+              SizedBox(
+                height: 52.h,
+              )
             ],
           ),
         ),
