@@ -24,6 +24,7 @@ class AppTheme {
           backgroundColor: dialogBackgroundColor,
         ),
         cardColor: Colors.white,
+        splashFactory: NoSplash.splashFactory,
       );
   static ThemeData darkTheme(BuildContext context) => ThemeData(
         brightness: Brightness.dark,
@@ -45,5 +46,6 @@ class AppTheme {
           backgroundColor: darkScaffoldBackgroundColor,
         ),
         cardColor: darkScaffoldBackgroundColor,
+        splashFactory: NoSplash.splashFactory,
       );
 }

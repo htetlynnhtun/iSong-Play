@@ -78,6 +78,9 @@ class AddRenamePlaylistDialog extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: TextButton(
+                        style: ElevatedButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                        ),
                         onPressed: () {
                           context
                               .read<LibraryBloc>()
@@ -96,6 +99,9 @@ class AddRenamePlaylistDialog extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: TextButton(
+                        style: ElevatedButton.styleFrom(
+                          splashFactory: NoSplash.splashFactory,
+                        ),
                         onPressed: () async {
                           SavePlaylistResult result;
 
