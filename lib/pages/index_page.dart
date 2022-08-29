@@ -37,7 +37,8 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     return Selector<PlayerBloc, Tuple2<bool, String?>>(
-      selector: (_, playerBloc) => Tuple2(playerBloc.isShowingBlockingIndicator, playerBloc.errorMessage),
+      selector: (_, playerBloc) => Tuple2(
+          playerBloc.isShowingBlockingIndicator, playerBloc.errorMessage),
       builder: (_, tuple, child) {
         final isShowingBlockingIndicator = tuple.item1;
         final errorMessage = tuple.item2;
@@ -53,7 +54,9 @@ class _IndexPageState extends State<IndexPage> {
                     CupertinoDialogAction(
                       isDefaultAction: true,
                       onPressed: () {
-                        context.read<PlayerBloc>().onDismissNetworkErrorDialog();
+                        context
+                            .read<PlayerBloc>()
+                            .onDismissNetworkErrorDialog();
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -77,7 +80,8 @@ class _IndexPageState extends State<IndexPage> {
       },
       child: WillPopScope(
         onWillPop: () async {
-          final isFirstRouteInCurrentTab = !await _navigatorKeys[currentIndex].currentState!.maybePop();
+          final isFirstRouteInCurrentTab =
+              !await _navigatorKeys[currentIndex].currentState!.maybePop();
 
           return isFirstRouteInCurrentTab;
         },
@@ -90,18 +94,26 @@ class _IndexPageState extends State<IndexPage> {
                     showCupertinoDialog(
                       context: context,
                       builder: (_) => CupertinoAlertDialog(
-                        title: const Text("Songs longer than 10 minutes need to be added to Library first."),
+                        title: const Text(
+                            "Songs longer than 10 minutes need to be added to Library first."),
                         actions: [
                           CupertinoDialogAction(
                             onPressed: () async {
-                              context.read<PlayerBloc>().onTapAddToLibraryForLongDurationSong((songVO) async {
-                                final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                              context
+                                  .read<PlayerBloc>()
+                                  .onTapAddToLibraryForLongDurationSong(
+                                      (songVO) async {
+                                final result = await context
+                                    .read<LibraryBloc>()
+                                    .onTapAddToLibrary(songVO);
                                 switch (result) {
                                   case AddToLibraryResult.success:
-                                    widget.showToast("Successfully added to library");
+                                    widget.showToast(
+                                        "Successfully added to library");
                                     break;
                                   case AddToLibraryResult.alreadyInLibrary:
-                                    widget.showToast("Song is already in library");
+                                    widget.showToast(
+                                        "Song is already in library");
                                     break;
                                 }
                               });
@@ -114,7 +126,9 @@ class _IndexPageState extends State<IndexPage> {
                           CupertinoDialogAction(
                             isDefaultAction: true,
                             onPressed: () {
-                              context.read<PlayerBloc>().onTapSkipForLongDurationSong();
+                              context
+                                  .read<PlayerBloc>()
+                                  .onTapSkipForLongDurationSong();
                             },
                             child: const Text(
                               "Skip",
@@ -149,12 +163,14 @@ class _IndexPageState extends State<IndexPage> {
                   onTap: () {
                     context.read<InterstitialAdBloc>().onNewPageTransition();
                     context.read<InterstitialAdBloc>().showAd(onDone: () {
-                      Navigator.push(context, SlideRightRoute(page: const PlayerPage()));
+                      Navigator.push(
+                          context, SlideRightRoute(page: const PlayerPage()));
                     });
                   },
                   child: const MiniPlayer()),
               SizedBox(
-                height: 70.h,
+                //height: 82.h,
+                height: context.isMobile()?75.h:70.h,
                 child: BottomNavigationBar(
                   iconSize: 18.h,
                   selectedFontSize: 12.sp,
