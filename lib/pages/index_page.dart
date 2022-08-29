@@ -134,15 +134,12 @@ class _IndexPageState extends State<IndexPage> {
                   });
                 }
 
-                return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: SystemUiOverlayStyle.dark,
-                  child: Stack(
-                    children: [
-                      _buildOffstageNavigator(0),
-                      _buildOffstageNavigator(1),
-                      _buildOffstageNavigator(2),
-                    ],
-                  ),
+                return Stack(
+                  children: [
+                    _buildOffstageNavigator(0),
+                    _buildOffstageNavigator(1),
+                    _buildOffstageNavigator(2),
+                  ],
                 );
               }),
           bottomNavigationBar: Column(
