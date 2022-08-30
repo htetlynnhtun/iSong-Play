@@ -7,13 +7,7 @@ class CustomCachedImage extends StatelessWidget {
   final double? width, height;
   final double cornerRadius;
 
-  const CustomCachedImage(
-      {required this.imageUrl,
-      this.width,
-      this.height,
-      required this.cornerRadius,
-      this.havePlaceHolderImage = false,
-      Key? key})
+  const CustomCachedImage({required this.imageUrl, this.width, this.height, required this.cornerRadius, this.havePlaceHolderImage = false, Key? key})
       : super(key: key);
 
   @override
@@ -29,11 +23,9 @@ class CustomCachedImage extends StatelessWidget {
           image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
         ),
       ),
-      placeholder: (context, url) => (havePlaceHolderImage)
-          ? LogoImageView(width: width, height: height)
-          : const Center(child: CircularProgressIndicator.adaptive()),
-      errorWidget: (context, url, error) =>
-          Center(child: LogoImageView(width: width, height: height)),
+      placeholder: (context, url) =>
+          (havePlaceHolderImage) ? LogoImageView(width: width, height: height) : const Center(child: CircularProgressIndicator.adaptive()),
+      errorWidget: (context, url, error) => Center(child: LogoImageView(width: width, height: height)),
     );
   }
 }

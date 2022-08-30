@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:music_app/utils/extension.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:provider/provider.dart';
@@ -25,30 +26,34 @@ class SleepTimerDialog extends StatelessWidget {
           children: [
             const SleepTimerHeader(title: 'Set a Duration'),
             Container(
-              color: Colors.white,
-              height: 2.h,
+              color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
+              child: const DurationsView(),
             ),
             Container(
-                color: Colors.white,
-                child: const DurationsView()),
-            Container(
-              color: Colors.white,
-              height: 2.h,
+              height: 8.h,
+              decoration: BoxDecoration(
+                color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
+                border: const Border(
+                  bottom: BorderSide(
+                    width: 0.5,
+                    color: searchIconColor,
+                  ),
+                ),
+              ),
             ),
             Container(
               decoration: BoxDecoration(
-                  color: sleepTimerHeaderBackgroundColor,
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16.h),
-                    bottomRight: Radius.circular(16.h),
-                  )),
+                bottomLeft: Radius.circular(16.h),
+                bottomRight: Radius.circular(16.h),
+              )),
               height: 40.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   DialogTextButton(
                     title: 'Cancel',
-                    color: Colors.black,
+                    color: context.isDarkMode(context) ? Colors.white : Colors.black,
                     onTap: () {
                       Navigator.pop(context);
                     },

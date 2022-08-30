@@ -94,7 +94,7 @@ class SearchResultsView extends StatelessWidget {
               shouldRebuild: (p, n) => listEquals(p, n),
               builder: (_, searchResults, __) {
                 return ListView.separated(
-                  padding: EdgeInsets.only(left: 16.w),
+                  padding: EdgeInsets.only(left: 16.w, bottom: 10.h),
                   itemBuilder: (context, index) => GestureDetector(
                     onTap: () => context.read<PlayerBloc>().onTapSong(index, searchResults),
                     child: Selector<PlayerBloc, ButtonState>(

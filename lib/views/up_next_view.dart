@@ -49,11 +49,11 @@ class UpNextView extends StatelessWidget {
                           queueState[index],
                           isUpNext: true,
                           havePlaceHolderImage: true,
+                          showMenuButton: false,
                         ),
                       );
                     },
-                    separatorBuilder: (context, index) =>
-                         SizedBox(height: 10.h),
+                    separatorBuilder: (context, index) => SizedBox(height: 10.h),
                     itemCount: queueState.length,
                   );
                 },

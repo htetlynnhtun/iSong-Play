@@ -18,12 +18,14 @@ class SongItemView extends StatelessWidget {
   final bool isUpNext;
   final bool isLoading;
   final List<SongItemPopupMenu> menus;
+  final bool showMenuButton;
   const SongItemView(
     this.songVO, {
     this.menus = const [],
     this.havePlaceHolderImage = false,
     this.isUpNext = false,
     this.isLoading = false,
+    this.showMenuButton = true,
     Key? key,
   }) : super(key: key);
 
@@ -75,69 +77,69 @@ class SongItemView extends StatelessWidget {
               SizedBox(
                 width: 16.w,
               ),
-              PopupMenuButton<SongItemPopupMenu>(
-                padding: context.isMobile()?EdgeInsets.only(right: 8.w):EdgeInsets.only(right: 16.w),
-                icon:  Icon(
-                  Icons.more_horiz,
-                  color: primaryColor,
-                  size: 24.h,
-                ),
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(6.h),
+              if (showMenuButton)
+                PopupMenuButton<SongItemPopupMenu>(
+                  padding: context.isMobile() ? EdgeInsets.only(right: 8.w) : EdgeInsets.only(right: 16.w),
+                  icon: Icon(
+                    Icons.more_horiz,
+                    color: primaryColor,
+                    size: 24.h,
                   ),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(6.h),
+                    ),
+                  ),
+                  onSelected: (value) async {
+                    switch (value) {
+                      case SongItemPopupMenu.addToLibrary:
+                        final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
+                        switch (result) {
+                          case AddToLibraryResult.success:
+                            showToast("Successfully added to library");
+                            break;
+                          case AddToLibraryResult.alreadyInLibrary:
+                            showToast("Song is already in library");
+                            break;
+                        }
+                        break;
+                      case SongItemPopupMenu.deleteFromLibrary:
+                        context.read<LibraryBloc>().onTapDelete(songVO);
+                        break;
+                      // case SongItemPopupMenu.addToFavorite:
+                      //   print("add fav");
+                      //   break;
+                      case SongItemPopupMenu.deleteFromFavorite:
+                        context.read<LibraryBloc>().onTapDeleteFromFavorite(songVO);
+                        break;
+                      case SongItemPopupMenu.addToQueue:
+                        context.read<PlayerBloc>().onTapAddToQueue(songVO);
+                        break;
+                      case SongItemPopupMenu.addToPlaylist:
+                        showModalBottomSheet(
+                          isDismissible: true,
+                          backgroundColor: Colors.transparent,
+                          useRootNavigator: true,
+                          context: context,
+                          builder: (context) => PlaylistBottomSheet(songVO),
+                        );
+                        break;
+                      case SongItemPopupMenu.deleteFromPlaylist:
+                        context.read<LibraryBloc>().onTapDeleteFromPlaylist(songVO);
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => menus
+                      .map((menu) => PopupMenuItem(
+                            value: menu,
+                            child: MenuItemButton(
+                              title: menu.title,
+                              icon: menu.icon,
+                            ),
+                          ))
+                      .toList(),
                 ),
-                onSelected: (value) async {
-                  switch (value) {
-                    case SongItemPopupMenu.addToLibrary:
-                      final result = await context.read<LibraryBloc>().onTapAddToLibrary(songVO);
-                      switch (result) {
-                        case AddToLibraryResult.success:
-                          showToast("Successfully added to library");
-                          break;
-                        case AddToLibraryResult.alreadyInLibrary:
-                          showToast("Song is already in library");
-                          break;
-                      }
-                      break;
-                    case SongItemPopupMenu.deleteFromLibrary:
-                      context.read<LibraryBloc>().onTapDelete(songVO);
-                      break;
-                    // case SongItemPopupMenu.addToFavorite:
-                    //   print("add fav");
-                    //   break;
-                    case SongItemPopupMenu.deleteFromFavorite:
-                      context.read<LibraryBloc>().onTapDeleteFromFavorite(songVO);
-                      break;
-                    case SongItemPopupMenu.addToQueue:
-                      context.read<PlayerBloc>().onTapAddToQueue(songVO);
-                      break;
-                    case SongItemPopupMenu.addToPlaylist:
-                      showModalBottomSheet(
-                        isDismissible: true,
-                        backgroundColor: Colors.transparent,
-                        useRootNavigator: true,
-                        context: context,
-                        builder: (context) => PlaylistBottomSheet(songVO),
-                      );
-                      break;
-                    case SongItemPopupMenu.deleteFromPlaylist:
-                      context.read<LibraryBloc>().onTapDeleteFromPlaylist(songVO);
-                      break;
-                  }
-                },
-                itemBuilder: (context) => menus
-                    .map((menu) => PopupMenuItem(
-                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                          value: menu,
-                          child: MenuItemButton(
-                            title: menu.title,
-                            icon: menu.icon,
-                          ),
-                        ))
-                    .toList(),
-              ),
             ],
           );
         });
@@ -192,7 +194,7 @@ class TitleArtistAndDownloadStatusView extends StatelessWidget {
                   return Image.asset(
                     'assets/images/ic_downloaded.png',
                     color: primaryColor,
-                    scale: context.isMobile()?4:2.5,
+                    scale: context.isMobile() ? 4 : 2.5,
                   );
                 }
                 return const SizedBox();

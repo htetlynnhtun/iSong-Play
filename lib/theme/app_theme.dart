@@ -10,8 +10,7 @@ class AppTheme {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
-        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)
-            .apply(bodyColor: Colors.black),
+        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme).apply(bodyColor: Colors.black),
         dialogBackgroundColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
@@ -23,7 +22,7 @@ class AppTheme {
         dialogTheme: const DialogTheme(
           backgroundColor: dialogBackgroundColor,
         ),
-        cardColor: Colors.white,
+        cardColor: containerBackgroundColor,
         splashFactory: NoSplash.splashFactory,
       );
   static ThemeData darkTheme(BuildContext context) => ThemeData(
@@ -31,8 +30,7 @@ class AppTheme {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
-        textTheme:
-            GoogleFonts.robotoTextTheme(Theme.of(context).textTheme).apply(
+        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme).apply(
           bodyColor: Colors.white,
         ),
         scaffoldBackgroundColor: darkScaffoldBackgroundColor,
@@ -45,7 +43,8 @@ class AppTheme {
         dialogTheme: const DialogTheme(
           backgroundColor: darkScaffoldBackgroundColor,
         ),
-        cardColor: darkScaffoldBackgroundColor,
+        // cardColor: darkScaffoldBackgroundColor,
+        cardColor: darkModeContainerBackgroundColor,
         splashFactory: NoSplash.splashFactory,
       );
 }

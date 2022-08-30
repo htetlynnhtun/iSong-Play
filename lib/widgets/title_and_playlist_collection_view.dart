@@ -33,7 +33,7 @@ class MusicSectionView extends StatelessWidget {
           height: 8.h,
         ),
         SizedBox(
-          height: 155.h,
+          height: 135.h,
           child: ListView.separated(
             padding: EdgeInsets.symmetric(horizontal: 14.w),
             scrollDirection: Axis.horizontal,
@@ -106,8 +106,8 @@ class PlayListImageView extends StatelessWidget {
     return CustomCachedImage(
       havePlaceHolderImage: true,
       imageUrl: musicListVO.thumbnail,
-      width: 145.h,
-      height: 145.h,
+      width: 135.h,
+      height: 135.h,
       cornerRadius: cornerRadius,
     );
   }

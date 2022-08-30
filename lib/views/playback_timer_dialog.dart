@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:music_app/utils/extension.dart';
 
 import '../resources/colors.dart';
 import '../resources/dimens.dart';
@@ -24,12 +25,12 @@ class PlaybackTimerDialog extends StatelessWidget {
           children: [
             const SleepTimerHeader(title: 'Playback Timer'),
             Container(
-              color: Colors.white,
+              color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
               height: 2.h,
             ),
             Container(
               height: 90.h,
-              color: Colors.white,
+              color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
               child: Center(
                 child: Selector<PlayerBloc, String>(
                   selector: (_, playerBloc) => playerBloc.readableCountDown,
@@ -45,12 +46,13 @@ class PlaybackTimerDialog extends StatelessWidget {
               ),
             ),
             Container(
-              color: Colors.white,
+              color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
               height: 2.h,
             ),
             Container(
               decoration: BoxDecoration(
-                  color: sleepTimerHeaderBackgroundColor,
+                  color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
+                  // color: context.isDarkMode(context) ? darkScaffoldBackgroundColor :  sleepTimerHeaderBackgroundColor,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16.h),
                     bottomRight: Radius.circular(16.h),
@@ -61,7 +63,7 @@ class PlaybackTimerDialog extends StatelessWidget {
                 children: [
                   DialogTextButton(
                     title: 'Stop',
-                    color: Colors.black,
+                    color: context.isDarkMode(context) ? Colors.white : Colors.black,
                     onTap: () {
                       context.read<PlayerBloc>().onTapStopTimer();
                       Navigator.pop(context);

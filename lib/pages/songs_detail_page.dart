@@ -57,14 +57,14 @@ class SongsDetailPage extends StatelessWidget {
                 value: "title",
                 child: MenuItemButton(
                   title: "By Title",
-                  icon: Icons.add,
+                  icon: Icons.title,
                 ),
               ),
               const PopupMenuItem(
                 value: "date",
                 child: MenuItemButton(
                   title: "By Date",
-                  icon: Icons.add,
+                  icon: Icons.date_range,
                 ),
               ),
             ],

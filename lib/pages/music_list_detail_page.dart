@@ -14,9 +14,7 @@ import '../widgets/app_bar_back_icon.dart';
 class MusicListDetailPage extends StatelessWidget {
   final List<SongVO> songs;
   final MusicListVO musicListVO;
-  const MusicListDetailPage(
-      {Key? key, required this.songs, required this.musicListVO})
-      : super(key: key);
+  const MusicListDetailPage({Key? key, required this.songs, required this.musicListVO}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class MusicListDetailPage extends StatelessWidget {
             elevation: 0,
             automaticallyImplyLeading: false,
             leading: const AppBarBackIcon(),
-            expandedHeight: 150.h,
+            expandedHeight: 180.h,
             floating: false,
             pinned: true,
             title: Text(
@@ -41,8 +39,7 @@ class MusicListDetailPage extends StatelessWidget {
               centerTitle: true,
               background: Stack(
                 children: [
-                  CustomCachedImage(
-                      imageUrl: musicListVO.thumbnail, cornerRadius: 0),
+                  CustomCachedImage(imageUrl: musicListVO.thumbnail, cornerRadius: 0),
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
@@ -50,7 +47,8 @@ class MusicListDetailPage extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            musicListDetailImageColor,
+                            // musicListDetailImageColor,
+                            Color.fromARGB(255, 29, 39, 51),
                             Colors.transparent,
                           ],
                         ),
@@ -71,10 +69,8 @@ class MusicListDetailPage extends StatelessWidget {
                 selector: (_, playerBloc) => playerBloc.buttonState,
                 builder: (context, buttonState, __) {
                   final songVO = songs[index];
-                  final currentSongID =
-                      context.read<PlayerBloc>().currentSongID;
-                  final isLoading = (songVO.id == currentSongID) &&
-                      buttonState == ButtonState.loading;
+                  final currentSongID = context.read<PlayerBloc>().currentSongID;
+                  final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
 
                   return SongItemView(
                     songVO,
