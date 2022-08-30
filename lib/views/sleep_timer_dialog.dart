@@ -26,34 +26,45 @@ class SleepTimerDialog extends StatelessWidget {
           children: [
             const SleepTimerHeader(title: 'Set a Duration'),
             Container(
-              color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: context.isDarkMode(context)
+                    ? darkScaffoldBackgroundColor
+                    : Colors.white,
+              ),
+            ),
+            Container(
+              color: context.isDarkMode(context)
+                  ? darkScaffoldBackgroundColor
+                  : Colors.white,
               child: const DurationsView(),
             ),
             Container(
-              height: 8.h,
+              height: 4.h,
               decoration: BoxDecoration(
-                color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
-                border: const Border(
-                  bottom: BorderSide(
-                    width: 0.5,
-                    color: searchIconColor,
-                  ),
-                ),
+                color: context.isDarkMode(context)
+                    ? darkScaffoldBackgroundColor
+                    : Colors.white,
               ),
             ),
             Container(
               decoration: BoxDecoration(
+                  color: context.isDarkMode(context)
+                      ? darkModeContainerBackgroundColor.withOpacity(0.5)
+                      : containerBackgroundColor,
                   borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.h),
-                bottomRight: Radius.circular(16.h),
-              )),
+                    bottomLeft: Radius.circular(16.h),
+                    bottomRight: Radius.circular(16.h),
+                  )),
               height: 40.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   DialogTextButton(
                     title: 'Cancel',
-                    color: context.isDarkMode(context) ? Colors.white : Colors.black,
+                    color: context.isDarkMode(context)
+                        ? Colors.white
+                        : Colors.black,
                     onTap: () {
                       Navigator.pop(context);
                     },
@@ -103,7 +114,9 @@ class DurationsView extends StatelessWidget {
                       '$minute mins',
                       style: TextStyle(
                         fontSize: 16.sp,
-                        color: isSelected ? primaryColor : searchIconColor,
+                        color:
+                            isSelected ? primaryColor : const Color(0xff707070),
+                        fontWeight: isSelected ? FontWeight.bold : null,
                       ),
                     );
                   }),
@@ -111,8 +124,10 @@ class DurationsView extends StatelessWidget {
           ),
         );
       },
-      separatorBuilder: (context, index) => const Divider(
-        color: searchIconColor,
+      separatorBuilder: (context, index) => Divider(
+        color: context.isDarkMode(context)
+            ? const Color(0xff505050)
+            : searchIconColor,
       ),
       itemCount: 12,
     );

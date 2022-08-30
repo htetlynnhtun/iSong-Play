@@ -12,8 +12,7 @@ class SleepTimerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          // color: sleepTimerHeaderBackgroundColor,
-          color: context.isDarkMode(context) ? darkScaffoldBackgroundColor : Colors.white,
+          color: context.isDarkMode(context) ? darkModeContainerBackgroundColor : containerBackgroundColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(16.h),
             topRight: Radius.circular(16.h),

@@ -32,5 +32,5 @@ const slidingControlSelectedColor = Color.fromRGBO(29, 39, 51, 1.0);
 
 ///setting
 const containerBackgroundColor = Color(0xffF4F4F5);
-const darkModeContainerBackgroundColor = Color(0xff243448);
+Color darkModeContainerBackgroundColor = const Color(0xff243448).withOpacity(0.5);
 

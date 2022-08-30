@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../resources/colors.dart';
@@ -10,7 +9,8 @@ class AppTheme {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
-        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme).apply(bodyColor: Colors.black),
+        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)
+            .apply(bodyColor: Colors.black),
         dialogBackgroundColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
@@ -30,7 +30,8 @@ class AppTheme {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         hoverColor: Colors.transparent,
-        textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme).apply(
+        textTheme:
+            GoogleFonts.robotoTextTheme(Theme.of(context).textTheme).apply(
           bodyColor: Colors.white,
         ),
         scaffoldBackgroundColor: darkScaffoldBackgroundColor,

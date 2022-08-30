@@ -59,7 +59,7 @@ class SettingPage extends StatelessWidget {
                 height: 14.h,
               ),
               IconAndTextButton(
-                imageUrl: 'assets/images/ic_privacy.png',
+                imageUrl: 'assets/images/ic_terms.png',
                 title: 'Terms and Conditions',
                 onTap: () {},
               ),

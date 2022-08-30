@@ -24,8 +24,8 @@ class CustomCachedImage extends StatelessWidget {
         ),
       ),
       placeholder: (context, url) =>
-          (havePlaceHolderImage) ? LogoImageView(width: width, height: height) : const Center(child: CircularProgressIndicator.adaptive()),
-      errorWidget: (context, url, error) => Center(child: LogoImageView(width: width, height: height)),
+          (havePlaceHolderImage) ? LogoImageView(width: width, height: height,cornerRadius:cornerRadius) : const Center(child: CircularProgressIndicator.adaptive()),
+      errorWidget: (context, url, error) => Center(child: LogoImageView(width: width, height: height,cornerRadius:cornerRadius)),
     );
   }
 }
@@ -34,18 +34,22 @@ class LogoImageView extends StatelessWidget {
   const LogoImageView({
     Key? key,
     required this.width,
-    required this.height,
+    required this.height, required this.cornerRadius,
   }) : super(key: key);
 
   final double? width;
   final double? height;
+  final double cornerRadius;
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/logo.png',
-      width: width,
-      height: height,
+    return ClipRRect(
+      borderRadius:BorderRadius.circular(cornerRadius) ,
+      child: Image.asset(
+        'assets/images/logo.png',
+        width: width,
+        height: height,
+      ),
     );
   }
 }

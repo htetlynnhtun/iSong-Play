@@ -170,7 +170,7 @@ class _IndexPageState extends State<IndexPage> {
                   child: const MiniPlayer()),
               SizedBox(
                 //height: 82.h,
-                height: context.isMobile()?75.h:70.h,
+                height: context.isMobile() ? 75.h : 70.h,
                 child: BottomNavigationBar(
                   iconSize: 18.h,
                   selectedFontSize: 12.sp,
