@@ -101,8 +101,6 @@ class SearchResultsView extends StatelessWidget {
                         selector: (_, playerBloc) => playerBloc.buttonState,
                         builder: (context, buttonState, __) {
                           final songVO = searchResults[index];
-                          final currentSongID = context.read<PlayerBloc>().currentSongID;
-                          final isLoading = (songVO.id == currentSongID) && buttonState == ButtonState.loading;
 
                           return SongItemView(
                             songVO,
@@ -112,7 +110,6 @@ class SearchResultsView extends StatelessWidget {
                               SongItemPopupMenu.addToPlaylist,
                             ],
                             havePlaceHolderImage: true,
-                            isLoading: isLoading,
                           );
                         }),
                   ),
