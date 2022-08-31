@@ -5,6 +5,7 @@ import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/vos/song_vo.dart';
 import 'package:music_app/widgets/asset_image_button.dart';
 import 'package:music_app/widgets/custom_cached_image.dart';
+import 'package:music_app/widgets/playlist_default_view.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +23,10 @@ class MiniPlayer extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ?? searchIconColor,
-                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ?? searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.7) ??
+                    searchIconColor,
+                nowPlayingSong?.dominantColor.first?.withOpacity(0.9) ??
+                    searchIconColor,
               ],
             ),
           ),
@@ -47,19 +50,22 @@ class MiniPlayerView extends StatelessWidget {
       child: Selector<PlayerBloc, SongVO?>(
           selector: (_, playerBloc) => playerBloc.nowPlayingSong,
           builder: (_, nowPlayingSong, __) {
-            final imageUrl = nowPlayingSong?.thumbnail ?? "assets/images/logo.png";
+            final imageUrl = nowPlayingSong?.thumbnail;
             final title = nowPlayingSong?.title ?? "Title";
             final artist = nowPlayingSong?.artist ?? "Artist";
 
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CustomCachedImage(
-                  imageUrl: imageUrl,
-                  cornerRadius: 5.h,
-                  width: 44.h,
-                  height: 44.h,
-                ),
+                imageUrl != null
+                    ? CustomCachedImage(
+                        imageUrl: imageUrl,
+                        cornerRadius: 5.h,
+                        width: 44.h,
+                        height: 44.h,
+                      )
+                    : PlaylistDefaultView(
+                        width: 44.h, cornerRadius: 5.h, scale: 15, height: 44.h),
                 SizedBox(
                   width: 14.w,
                 ),
@@ -73,7 +79,8 @@ class MiniPlayerView extends StatelessWidget {
                   width: 16.w,
                 ),
                 Selector<PlayerBloc, double>(
-                    selector: (_, playerBloc) => playerBloc.circularProgressPercentage,
+                    selector: (_, playerBloc) =>
+                        playerBloc.circularProgressPercentage,
                     builder: (_, percent, __) {
                       return CircularPercentIndicator(
                         radius: 18.h,
@@ -82,7 +89,8 @@ class MiniPlayerView extends StatelessWidget {
                         center: Selector<PlayerBloc, ButtonState>(
                           selector: (_, playerBloc) => playerBloc.buttonState,
                           builder: (_, buttonState, __) {
-                            final currentSongID = context.read<PlayerBloc>().currentSongID;
+                            final currentSongID =
+                                context.read<PlayerBloc>().currentSongID;
                             switch (buttonState) {
                               case ButtonState.loading:
                                 if (currentSongID == nowPlayingSong?.id) {

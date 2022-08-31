@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const primaryColor = Color.fromRGBO(139, 47, 201, 1.0);
 const homePlaylistPlayerCircleColor = Color(0xffFDFDFD);
 Color bannerGradientEndColor = Colors.black.withOpacity(0.59);
+Color musicDetailGradientEndColor = Colors.black;
 Color musicListDetailImageColor = Colors.white;
 
 const searchIconColor =Color(0xffAAAAAA);
@@ -32,5 +33,6 @@ const slidingControlSelectedColor = Color.fromRGBO(29, 39, 51, 1.0);
 
 ///setting
 const containerBackgroundColor = Color(0xffF4F4F5);
-Color darkModeContainerBackgroundColor = const Color(0xff243448).withOpacity(0.5);
+//Color darkModeContainerBackgroundColor = const Color(0xff243448).withOpacity(0.5);
+Color darkModeContainerBackgroundColor = const Color(0xff1E2E41);
 

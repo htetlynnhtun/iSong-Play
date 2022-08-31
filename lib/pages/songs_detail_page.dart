@@ -39,7 +39,7 @@ class SongsDetailPage extends StatelessWidget {
               size: 24.h,
               color: primaryColor,
             ),
-            elevation: 4,
+            elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(8.h),

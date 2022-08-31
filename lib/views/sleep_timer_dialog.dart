@@ -50,7 +50,7 @@ class SleepTimerDialog extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                   color: context.isDarkMode(context)
-                      ? darkModeContainerBackgroundColor.withOpacity(0.5)
+                      ? darkModeContainerBackgroundColor
                       : containerBackgroundColor,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16.h),
@@ -99,13 +99,13 @@ class DurationsView extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final minute = (index + 1) * 5;
-        return Padding(
-          padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
-          child: Center(
-            child: GestureDetector(
-              onTap: () {
-                context.read<PlayerBloc>().onSelectTimerMinute(minute);
-              },
+        return InkResponse(
+          onTap: (){
+            context.read<PlayerBloc>().onSelectTimerMinute(minute);
+          },
+          child: Padding(
+            padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
+            child: Center(
               child: Selector<PlayerBloc, int>(
                   selector: (_, playerBloc) => playerBloc.timerMinute,
                   builder: (_, timerMinute, __) {

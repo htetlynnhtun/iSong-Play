@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/utils/extension.dart';
+import 'package:music_app/widgets/playlist_default_view.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/widgets/add_rename_playlist_dialog.dart';
@@ -23,19 +24,26 @@ class PlaylistItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Todo: If thumbnail is null, show a default playlist thumbnail.
-    final imageUrl = playlistVO.thumbnail ?? 'https://img.youtube.com/vi/e-ORhEE9VVg/maxresdefault.jpg';
+    final imageUrl = playlistVO.thumbnail;
     return GestureDetector(
       onTap: () {
         onTap();
       },
       child: Row(
         children: [
-          CustomCachedImage(
-            imageUrl: imageUrl,
-            cornerRadius: 10.h,
-            width: context.isMobile() ? 99.w : 90.w,
-            height: context.isMobile() ? 56.h : 65.h,
-          ),
+          imageUrl != null
+              ? CustomCachedImage(
+                  imageUrl: imageUrl,
+                  cornerRadius: 10.h,
+                  width: context.isMobile() ? 99.w : 90.w,
+                  height: context.isMobile() ? 56.h : 65.h,
+                )
+              : PlaylistDefaultView(
+                  width: context.isMobile() ? 99.w : 90.w,
+                  height: context.isMobile() ? 56.h : 65.h,
+                  cornerRadius: 10.h,
+                  scale: 12.5,
+                ),
           SizedBox(
             width: 12.w,
           ),
@@ -46,26 +54,32 @@ class PlaylistItemView extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            padding: context.isMobile() ? EdgeInsets.zero : EdgeInsets.only(right: 20.w),
+            padding: context.isMobile()
+                ? EdgeInsets.zero
+                : EdgeInsets.only(right: 20.w),
             icon: Icon(
               Icons.more_horiz,
               color: primaryColor,
               size: 24.h,
             ),
             elevation: 2,
-            shape: const RoundedRectangleBorder(
+            shape:  RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
-                Radius.circular(8),
+                Radius.circular(8.h),
               ),
             ),
             onSelected: (value) async {
-              context.read<LibraryBloc>().onStartRenamePlaylist(playlistVO.name);
+              context
+                  .read<LibraryBloc>()
+                  .onStartRenamePlaylist(playlistVO.name);
               if (value == "rename") {
                 showDialog(
                   context: context,
                   builder: (context) => AddRenamePlaylistDialog(
                     initialText: playlistVO.name,
-                    onRename: (oldName) => context.read<LibraryBloc>().onTapRenamePlaylist(oldName),
+                    onRename: (oldName) => context
+                        .read<LibraryBloc>()
+                        .onTapRenamePlaylist(oldName),
                     title: "Playlist Name",
                     onTapTitle: "Rename",
                   ),
@@ -83,7 +97,9 @@ class PlaylistItemView extends StatelessWidget {
                       CupertinoDialogAction(
                         onPressed: () {
                           Navigator.pop(context);
-                          context.read<LibraryBloc>().onTapDeletePlaylist(playlistVO);
+                          context
+                              .read<LibraryBloc>()
+                              .onTapDeletePlaylist(playlistVO);
                         },
                         child: const Text("Yes"),
                       ),

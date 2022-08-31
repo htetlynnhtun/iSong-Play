@@ -15,6 +15,7 @@ import '../resources/colors.dart';
 import '../widgets/app_bar_back_icon.dart';
 import '../widgets/app_bar_title.dart';
 import '../widgets/menu_item_button.dart';
+import '../widgets/playlist_default_view.dart';
 import '../widgets/song_item_view.dart';
 
 class PlaylistDetailPage extends StatelessWidget {
@@ -34,7 +35,9 @@ class PlaylistDetailPage extends StatelessWidget {
               title: const AppBarTitle(title: 'Playlist'),
               actions: [
                 PopupMenuButton(
-                  padding: context.isMobile() ? EdgeInsets.zero : EdgeInsets.only(right: 16.w),
+                  padding: context.isMobile()
+                      ? EdgeInsets.zero
+                      : EdgeInsets.only(right: 16.w),
                   icon: Icon(Icons.more_horiz, color: primaryColor, size: 24.h),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
@@ -48,7 +51,9 @@ class PlaylistDetailPage extends StatelessWidget {
                         context: context,
                         builder: (context) => AddRenamePlaylistDialog(
                           initialText: playlistVo.name,
-                          onRename: (oldName) => context.read<LibraryBloc>().onTapRenamePlaylist(oldName),
+                          onRename: (oldName) => context
+                              .read<LibraryBloc>()
+                              .onTapRenamePlaylist(oldName),
                           title: "Playlist Name",
                           onTapTitle: "Rename",
                         ),
@@ -66,7 +71,9 @@ class PlaylistDetailPage extends StatelessWidget {
                             CupertinoDialogAction(
                               onPressed: () {
                                 Navigator.pop(context, true);
-                                context.read<LibraryBloc>().onTapDeletePlaylist(playlistVo);
+                                context
+                                    .read<LibraryBloc>()
+                                    .onTapDeletePlaylist(playlistVo);
                               },
                               child: const Text("Yes"),
                             ),
@@ -106,7 +113,9 @@ class PlaylistDetailPage extends StatelessWidget {
                     height: 12.h,
                   ),
                   Padding(
-                    padding: context.isMobile() ? EdgeInsets.only(right: 14.w) : EdgeInsets.only(right: 10.w),
+                    padding: context.isMobile()
+                        ? EdgeInsets.only(right: 14.w)
+                        : EdgeInsets.only(right: 10.w),
                     child: PlaylistHeaderView(playlistVo: playlistVo),
                   ),
                   SizedBox(
@@ -131,7 +140,7 @@ class PlaylistHeaderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width * 0.45;
-    final imageUrl = playlistVo.thumbnail ?? 'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
+    final imageUrl = playlistVo.thumbnail;
     return SizedBox(
       height: 90.h,
       child: Row(
@@ -139,11 +148,18 @@ class PlaylistHeaderView extends StatelessWidget {
         children: [
           Expanded(
             flex: 1,
-            child: CustomCachedImage(
-              imageUrl: imageUrl,
-              cornerRadius: cornerRadius,
-              width: width,
-            ),
+            child: imageUrl != null
+                ? CustomCachedImage(
+                    imageUrl: imageUrl,
+                    cornerRadius: cornerRadius,
+                    width: width,
+                  )
+                : PlaylistDefaultView(
+                    width: width,
+                    height: 90.h,
+                    cornerRadius: cornerRadius,
+                    scale: 8,
+                  ),
           ),
           SizedBox(
             width: 14.w,
@@ -167,7 +183,8 @@ class PlaylistHeaderView extends StatelessWidget {
                   height: 12.h,
                 ),
                 Text(
-                  "${playlistVo.songList.length} Track".calculateCountS(playlistVo.songList.length),
+                  "${playlistVo.songList.length} Track"
+                      .calculateCountS(playlistVo.songList.length),
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
@@ -196,7 +213,9 @@ class SongsCollectionView extends StatelessWidget {
     return Expanded(
       child: ListView.separated(
         itemBuilder: (_, index) => GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapSong(index, songs, withBlocking: false),
+          onTap: () => context
+              .read<PlayerBloc>()
+              .onTapSong(index, songs, withBlocking: false),
           child: SongItemView(
             songs[index],
             menus: const [
@@ -228,14 +247,17 @@ class PlayAndShuffleView extends StatelessWidget {
     return Row(
       children: [
         GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapSong(0, playlistVo.songList, withBlocking: false),
+          onTap: () => context
+              .read<PlayerBloc>()
+              .onTapSong(0, playlistVo.songList, withBlocking: false),
           child: const PlaylistButton(
             imageUrl: 'assets/images/ic_play.png',
           ),
         ),
         const Spacer(),
         GestureDetector(
-          onTap: () => context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
+          onTap: () =>
+              context.read<PlayerBloc>().onTapShufflePlay(playlistVo.songList),
           child: const PlaylistButton(
             imageUrl: 'assets/images/ic_shuffle.png',
           ),
@@ -267,6 +289,7 @@ class PlaylistButton extends StatelessWidget {
           imageUrl,
           width: 18.w,
           height: 18.h,
+          color: Colors.white,
         ),
       ),
     );

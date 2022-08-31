@@ -6,20 +6,20 @@ import 'asset_image_button.dart';
 
 class AppBarBackIcon extends StatelessWidget {
   final Color color;
-  const AppBarBackIcon({
-    this.color = primaryColor,
-    Key? key}) : super(key: key);
+  const AppBarBackIcon({this.color = primaryColor, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  AssetImageButton(
-      imageUrl: 'assets/images/ic_back.png',
-      width:16.h,
-      height: 16.h,
-      color: color,
-      onTap: () {
+    return IconButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {
         Navigator.pop(context);
       },
+      icon: Icon(
+        Icons.chevron_left,
+        size: 30.h,
+        color: color,
+      ),
     );
   }
 }

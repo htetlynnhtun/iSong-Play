@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:music_app/blocs/interstitial_ad_bloc.dart';
@@ -56,7 +57,9 @@ void main() async {
   await Hive.openBox<MusicSectionVO>(musicSectionBox);
   await Hive.openBox<RecentTrackVO>(recentTracksBox);
 
-  runApp(const MyApp());
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

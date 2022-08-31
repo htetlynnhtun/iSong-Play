@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../resources/colors.dart';
@@ -14,7 +15,14 @@ class AppTheme {
         dialogBackgroundColor: Colors.white,
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
           backgroundColor: Colors.white,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.light,
+            systemNavigationBarIconBrightness: Brightness.light,
+          ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Colors.white,
@@ -37,6 +45,10 @@ class AppTheme {
         scaffoldBackgroundColor: darkScaffoldBackgroundColor,
         appBarTheme: const AppBarTheme(
           backgroundColor: darkScaffoldBackgroundColor,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarBrightness: Brightness.dark,
+            systemNavigationBarIconBrightness: Brightness.dark,
+          ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: darkScaffoldBackgroundColor,
