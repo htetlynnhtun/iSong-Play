@@ -22,7 +22,10 @@ class SettingPage extends StatelessWidget {
         ),
         title: Text(
           'Setting',
-          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: primaryColor),
+          style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: primaryColor),
         ),
       ),
       body: Padding(
@@ -54,7 +57,8 @@ class SettingPage extends StatelessWidget {
                 imageUrl: 'assets/images/ic_privacy.png',
                 title: 'Privacy Policy',
                 onTap: () {
-                  launchWebUrl('https://sites.google.com/view/i-song/privacy-policy');
+                  launchWebUrl(
+                      'https://sites.google.com/view/i-song/privacy-policy');
                 },
               ),
               SizedBox(
@@ -74,7 +78,8 @@ class SettingPage extends StatelessWidget {
                 imageUrl: 'assets/images/ic_rate_us.png',
                 title: 'Rate Us',
                 onTap: () {
-                  launchWebUrl('https://apps.apple.com/app/isong-play/id1642670157');
+                  launchWebUrl(
+                      'https://apps.apple.com/app/isong-play/id1642670157');
                 },
               ),
               SizedBox(
@@ -82,7 +87,7 @@ class SettingPage extends StatelessWidget {
               ),
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_about.png',
-                title: 'Version',
+                title: 'Version 1.0',
                 onTap: () {},
               ),
               SizedBox(
@@ -156,7 +161,9 @@ class DarkLightAutomaticView extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16.h),
-        color: context.isDarkMode(context) ? darkModeContainerBackgroundColor : containerBackgroundColor,
+        color: context.isDarkMode(context)
+            ? darkModeContainerBackgroundColor
+            : containerBackgroundColor,
       ),
       child: Column(
         children: [
@@ -172,7 +179,8 @@ class DarkLightAutomaticView extends StatelessWidget {
                 onTap: () {
                   context.read<ThemeBloc>().onTapRadio(ThemeMode.light);
                 },
-                isSelected: !context.isDarkMode(context) && !context.watch<ThemeBloc>().isAutomatic(),
+                isSelected: !context.isDarkMode(context) &&
+                    !context.watch<ThemeBloc>().isAutomatic(),
               ),
               LightDarkRadioButton(
                 title: 'Dark',
@@ -180,7 +188,8 @@ class DarkLightAutomaticView extends StatelessWidget {
                 onTap: () {
                   context.read<ThemeBloc>().onTapRadio(ThemeMode.dark);
                 },
-                isSelected: context.isDarkMode(context) && !context.watch<ThemeBloc>().isAutomatic(),
+                isSelected: context.isDarkMode(context) &&
+                    !context.watch<ThemeBloc>().isAutomatic(),
               ),
             ],
           ),
@@ -234,7 +243,9 @@ class AutomaticCheckBox extends StatelessWidget {
           ),
           const Spacer(),
           Image.asset(
-            isSelected ? 'assets/images/ic_checkbox_selected.png' : 'assets/images/ic_checkbox.png',
+            isSelected
+                ? 'assets/images/ic_checkbox_selected.png'
+                : 'assets/images/ic_checkbox.png',
             scale: 4,
           ),
         ],
@@ -265,7 +276,8 @@ class LightDarkRadioButton extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.only(top: 10.h, right: 10.h, left: 10.h, bottom: 30.h),
+            padding: EdgeInsets.only(
+                top: 10.h, right: 10.h, left: 10.h, bottom: 30.h),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.h),
               color: color,

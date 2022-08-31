@@ -6,7 +6,7 @@ Color bannerGradientEndColor = Colors.black.withOpacity(0.59);
 Color musicDetailGradientEndColor = Colors.black;
 Color musicListDetailImageColor = Colors.white;
 
-const searchIconColor =Color(0xffAAAAAA);
+const searchIconColor = Color(0xffAAAAAA);
 const dialogBackgroundColor = Color(0xffDDDDDD);
 const bottomSheetBackgroundColor = Color.fromRGBO(221, 221, 221, 1.0);
 
@@ -24,15 +24,12 @@ const navbarUnselectedItemColor = Color.fromRGBO(170, 170, 170, 1.0);
 ///white theme
 const searchBackgroundColor = Color(0xffDDDDDD);
 
-
 ///dark theme
-const darkScaffoldBackgroundColor =Color(0xff1D2733);
+const darkScaffoldBackgroundColor = Color(0xff1D2733);
 const darkSearchBackgroundColor = Color.fromRGBO(36, 52, 72, 1.0);
 const slidingControlSelectedColor = Color.fromRGBO(29, 39, 51, 1.0);
-
 
 ///setting
 const containerBackgroundColor = Color(0xffF4F4F5);
 //Color darkModeContainerBackgroundColor = const Color(0xff243448).withOpacity(0.5);
 Color darkModeContainerBackgroundColor = const Color(0xff1E2E41);
-

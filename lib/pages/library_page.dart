@@ -77,7 +77,7 @@ class LibraryPage extends StatelessWidget {
               shouldRebuild: (_, __) => true,
               builder: (_, playlists, __) {
                 return ListView.separated(
-                    padding: EdgeInsets.only(left: 16.w),
+                    padding: EdgeInsets.only(left: 16.w,bottom: 12.h),
                     itemBuilder: (context, index) {
                       final playlistVo = playlists[index];
                       return PlaylistItemView(
@@ -94,7 +94,7 @@ class LibraryPage extends StatelessWidget {
                         },
                       );
                     },
-                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    separatorBuilder: (context, index) =>  SizedBox(height: 12.h),
                     itemCount: playlists.length);
               },
             ),

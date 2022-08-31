@@ -7,6 +7,7 @@ extension NavigationUtil on Widget {
   void navigateToNextPageWithNavBar(BuildContext context, Widget page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
   }
+
   Future<void> launchWebUrl(String url) async {
     final uri = Uri.parse(url);
     if (!await launchUrl(uri)) {
