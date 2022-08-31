@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:music_app/resources/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 extension NavigationUtil on Widget {
   void navigateToNextPageWithNavBar(BuildContext context, Widget page) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
+  }
+  Future<void> launchWebUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw 'Could not launch $uri';
+    }
   }
 }
 

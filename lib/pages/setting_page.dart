@@ -69,7 +69,9 @@ class SettingPage extends StatelessWidget {
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_rate_us.png',
                 title: 'Rate Us',
-                onTap: () {},
+                onTap: () {
+                  launchWebUrl('https://apps.apple.com/app/isong-play/id1642670157');
+                },
               ),
               SizedBox(
                 height: 14.h,
