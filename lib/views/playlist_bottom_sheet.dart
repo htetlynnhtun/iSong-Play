@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
+import 'package:music_app/widgets/playlist_default_view.dart';
 import 'package:provider/provider.dart';
 import 'package:music_app/resources/colors.dart';
 import 'package:music_app/resources/dimens.dart';
@@ -77,9 +78,7 @@ class PlayListsView extends StatelessWidget {
           return GestureDetector(
             onTap: () async {
               Navigator.pop(context);
-              final result = await context
-                  .read<LibraryBloc>()
-                  .onTapAddToPlaylist(playlistVo, songVO);
+              final result = await context.read<LibraryBloc>().onTapAddToPlaylist(playlistVo, songVO);
               switch (result) {
                 case AddToPlaylistResult.alreadyInPlaylist:
                   showToast("Song is already in the playlist");
@@ -105,16 +104,22 @@ class PlayListItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = playlistVo.thumbnail ??
-        'https://img.youtube.com/vi/mNEUkkoUoIA/maxresdefault.jpg';
+    final imageUrl = playlistVo.thumbnail;
     return Row(
       children: [
-        CustomCachedImage(
-          imageUrl: imageUrl,
-          cornerRadius: 8.h,
-          height: 52.h,
-          width: 52.h,
-        ),
+        imageUrl != null
+            ? CustomCachedImage(
+                imageUrl: imageUrl,
+                cornerRadius: 8.h,
+                height: 52.h,
+                width: 52.h,
+              )
+            : PlaylistDefaultView(
+                cornerRadius: cornerRadius,
+                scale: 12.5,
+                height: 52.h,
+                width: 52.h,
+              ),
         SizedBox(
           width: 6.h,
         ),
@@ -137,8 +142,7 @@ class PlayListItemView extends StatelessWidget {
                 height: 4.h,
               ),
               Text(
-                '${playlistVo.songList.length} Track'
-                    .calculateCountS(playlistVo.songList.length),
+                '${playlistVo.songList.length} Track'.calculateCountS(playlistVo.songList.length),
                 style: TextStyle(
                   fontSize: 13.sp,
                   color: primaryColor,
