@@ -52,16 +52,20 @@ class SettingPage extends StatelessWidget {
               ),
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_privacy.png',
-                title: 'Privacy',
-                onTap: () {},
+                title: 'Privacy Policy',
+                onTap: () {
+                  launchWebUrl('https://sites.google.com/view/i-song/privacy-policy');
+                },
               ),
               SizedBox(
                 height: 14.h,
               ),
               IconAndTextButton(
                 imageUrl: 'assets/images/ic_terms.png',
-                title: 'Terms and Conditions',
-                onTap: () {},
+                title: 'Terms of Service',
+                onTap: () {
+                  launchWebUrl('https://sites.google.com/view/i-song/terms');
+                },
               ),
               SizedBox(
                 height: 14.h,
