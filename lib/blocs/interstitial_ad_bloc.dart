@@ -53,7 +53,6 @@ class InterstitialAdBloc {
   void _loadAd() {
     InterstitialAd.load(
       adUnitId: AdMobHelper.interUnitId,
-      // adUnitId: AdMobHelper.interVideoUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {

@@ -1,11 +1,9 @@
 class AdMobHelper {
-  static const bannerUnitId = "ca-app-pub-3940256099942544/2934735716";
+  static const bannerUnitId = "ca-app-pub-2732460023414306/3635128411";
 
-  static const interUnitId = "ca-app-pub-3940256099942544/4411468910";
+  static const interUnitId = "ca-app-pub-2732460023414306/6981925609";
 
-  static const interVideoUnitId = "ca-app-pub-3940256099942544/5135589807";
+  static const appOpenUnitId = "ca-app-pub-2732460023414306/4519413793";
 
-  static const appOpenUnitId = "ca-app-pub-3940256099942544/5662855259";
-
-  static const nativeUnitId = "ca-app-pub-3940256099942544/3986624511";
+  static const nativeUnitId = "ca-app-pub-2732460023414306/9033373877";
 }
