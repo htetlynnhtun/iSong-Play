@@ -5,7 +5,7 @@ class AdMobHelper {
 
   static const interVideoUnitId = "ca-app-pub-3940256099942544/5135589807";
 
-  static const appOpenUnitId = "ca-app-pub-3940256099942544/5662855259";
+  static const appOpenUnitId = "0";
 
   static const nativeUnitId = "ca-app-pub-3940256099942544/3986624511";
 }
