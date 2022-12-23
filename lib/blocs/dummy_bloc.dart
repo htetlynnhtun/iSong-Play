@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:media_info/media_info.dart';
+// import 'package:media_info/media_info.dart';
 import 'package:mp3_info/mp3_info.dart';
 import 'package:music_app/persistance/box_names.dart';
 import 'package:music_app/persistance/dummy_dao.dart';
@@ -45,7 +45,7 @@ class DummyBloc extends ChangeNotifier {
           artist: 'local',
           thumbnail: '',
           duration: mp3.duration,
-          filePath: file.path,
+          filePath: "file://${file.path}",
           dominantColor: [primaryColor, primaryColor],
           isFavorite: true)
         ..isDownloadFinished = true;
