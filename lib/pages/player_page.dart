@@ -165,21 +165,21 @@ class FavoriteAndTimerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Selector<PlayerBloc, SongVO?>(
-            selector: (_, playerBloc) => playerBloc.nowPlayingSong,
-            shouldRebuild: (_, __) => true,
-            builder: (_, nowPlayingSong, __) {
-              if (nowPlayingSong?.isDownloadFinished ?? false) {
-                return AssetImageButton(
-                  onTap: () => context.read<LibraryBloc>().onTapFavorite(nowPlayingSong!),
-                  width: 26.h,
-                  height: 26.h,
-                  imageUrl: nowPlayingSong!.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
-                  color: nowPlayingSong.isFavorite ? null : Colors.white.withOpacity(0.9),
-                );
-              }
-              return Container();
-            }),
+        // Selector<PlayerBloc, SongVO?>(
+        //     selector: (_, playerBloc) => playerBloc.nowPlayingSong,
+        //     shouldRebuild: (_, __) => true,
+        //     builder: (_, nowPlayingSong, __) {
+        //       if (nowPlayingSong?.isDownloadFinished ?? false) {
+        //         return AssetImageButton(
+        //           onTap: () => context.read<LibraryBloc>().onTapFavorite(nowPlayingSong!),
+        //           width: 26.h,
+        //           height: 26.h,
+        //           imageUrl: nowPlayingSong!.isFavorite ? 'assets/images/ic_favorite_done.png' : 'assets/images/ic_favorite.png',
+        //           color: nowPlayingSong.isFavorite ? null : Colors.white.withOpacity(0.9),
+        //         );
+        //       }
+        //       return Container();
+        //     }),
         const Spacer(),
         Selector<PlayerBloc, bool>(
             selector: (_, playerBloc) => playerBloc.isTimerActive,

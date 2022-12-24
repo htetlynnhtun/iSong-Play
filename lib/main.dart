@@ -10,6 +10,7 @@ import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
+import 'package:music_app/pages/dummy_index_page.dart';
 import 'package:music_app/pages/dummy_page.dart';
 import 'package:music_app/persistance/color_adapter.dart';
 import 'package:music_app/persistance/duration_adapter.dart';
@@ -104,7 +105,7 @@ class MyApp extends StatelessWidget {
             home: child,
           ),
           child: const AppOpenAdWidget(
-            child: DummyView(),
+            child: DummyIndexPage(),
            // child: IndexPage(),
           ),
         ),

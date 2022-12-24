@@ -29,6 +29,7 @@ class DummyView extends StatelessWidget {
           elevation: 0.0,
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               height: 12.h,
@@ -38,6 +39,7 @@ class DummyView extends StatelessWidget {
                 const TitleText(title: 'iSong Play'),
                 const Spacer(),
                 IconButton(
+                  padding: EdgeInsets.all(0),
                     onPressed: () async {
                       FilePickerResult? result = await FilePicker.platform
                           .pickFiles(
@@ -57,13 +59,7 @@ class DummyView extends StatelessWidget {
                       size: 28.r,
                       color: primaryColor,
                     )),
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.settings,
-                      size: 28.r,
-                      color: primaryColor,
-                    )),
+                SizedBox(width: 16.w,),
               ],
             ),
             SizedBox(
@@ -71,34 +67,93 @@ class DummyView extends StatelessWidget {
             ),
             Selector<DummyBloc, List<SongVO>>(
               selector: (context, bloc) => bloc.songs,
-              builder: (context, songs, _) => Expanded(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (_, index) => GestureDetector(
-                    onTap: () {
-                      context
-                          .read<PlayerBloc>()
-                          .onTapSong(index, songs, withBlocking: false);
-                    },
-                    child: SongItemView(
-                      songs[index],
-                      menus: const [
-                        SongItemPopupMenu.addToQueue,
-                        SongItemPopupMenu.addToPlaylist,
-                        SongItemPopupMenu.deleteFromPlaylist,
-                        SongItemPopupMenu.deleteFromLibrary,
-                      ],
-                    ),
-                  ),
-                  separatorBuilder: (_, index) {
-                    return SizedBox(height: 10.h);
-                  },
-                  itemCount: songs.length,
-                ),
-              ),
+              builder: (context, songs, _) => songs.isNotEmpty
+                  ? Expanded(
+                      child: ListView.separated(
+                        padding: EdgeInsets.symmetric(horizontal: 16.r),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (_, index) => GestureDetector(
+                          onTap: () {
+                            context
+                                .read<PlayerBloc>()
+                                .onTapSong(index, songs, withBlocking: false);
+                          },
+                          child: SongItemView(
+                            songs[index],
+                            menus: const [
+                              SongItemPopupMenu.addToQueue,
+                              SongItemPopupMenu.addToPlaylist,
+                              SongItemPopupMenu.deleteFromPlaylist,
+                              SongItemPopupMenu.deleteFromLibrary,
+                            ],
+                          ),
+                        ),
+                        separatorBuilder: (_, index) {
+                          return SizedBox(height: 10.h);
+                        },
+                        itemCount: songs.length,
+                      ),
+                    )
+                  : const ImportSongView(),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class ImportSongView extends StatelessWidget {
+  const ImportSongView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: InkWell(
+        onTap: ()async{
+          FilePickerResult? result = await FilePicker.platform
+              .pickFiles(
+              allowMultiple: true,
+              type: FileType.custom,
+              allowedExtensions: ['mp3', 'm4a'],
+              withData: true);
+
+          if (result != null) {
+            context.read<DummyBloc>().onTapPlus(result);
+          } else {
+            // User canceled the picker
+          }
+        },
+        child: Container(
+          margin: EdgeInsets.only(top: 62.h),
+          padding: EdgeInsets.all(22.r),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(16.r)),
+              border: Border.all(color: primaryColor, width: 2)),
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/images/ic_import.png',
+                scale: 5,
+                color: primaryColor,
+              ),
+              SizedBox(
+                height: 8.h,
+              ),
+              Text(
+                'Import your songs',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22.sp,
+                  color: primaryColor,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
