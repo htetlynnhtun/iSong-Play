@@ -77,7 +77,7 @@ class SongItemView extends StatelessWidget {
               SizedBox(
                 width: 16.w,
               ),
-              if (showMenuButton)
+              if (!showMenuButton)
                 PopupMenuButton<SongItemPopupMenu>(
                   padding: context.isMobile() ? EdgeInsets.only(right: 8.w) : EdgeInsets.only(right: 16.w),
                   icon: Icon(

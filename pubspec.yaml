@@ -63,6 +63,8 @@ dependencies:
   multiple_result: ^1.0.4
   flutter_native_splash: ^2.2.8
   url_launcher: ^6.1.5
+  file_picker: ^5.2.4
+  mp3_info: ^0.2.0
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:music_app/persistance/box_names.dart';
 
 class SongDao {
   static final SongDao _singleton = SongDao._internal();
+
   SongDao._internal();
   factory SongDao() {
     return _singleton;

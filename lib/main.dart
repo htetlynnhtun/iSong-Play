@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:music_app/blocs/dummy_bloc.dart';
 import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
+import 'package:music_app/pages/dummy_index_page.dart';
+import 'package:music_app/pages/dummy_page.dart';
 import 'package:music_app/persistance/color_adapter.dart';
 import 'package:music_app/persistance/duration_adapter.dart';
 import 'package:music_app/theme/app_theme.dart';
@@ -53,6 +56,7 @@ void main() async {
   await Hive.openBox<SongVO>(trendingSongsBox);
   await Hive.openBox<RecentSearchVO>(recentSearchBox);
   await Hive.openBox<SongVO>(songBox);
+  await Hive.openBox<SongVO>(dummyBox);
   await Hive.openBox<PlaylistVo>(playlistBox);
   await Hive.openBox<MusicSectionVO>(musicSectionBox);
   await Hive.openBox<RecentTrackVO>(recentTracksBox);
@@ -79,6 +83,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeBloc()),
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
+        ChangeNotifierProvider(create: (_) => DummyBloc()),
         Provider<InterstitialAdBloc>(
           create: (_) => InterstitialAdBloc(),
           lazy: false,
@@ -100,7 +105,8 @@ class MyApp extends StatelessWidget {
             home: child,
           ),
           child: const AppOpenAdWidget(
-            child: IndexPage(),
+            child: DummyIndexPage(),
+           // child: IndexPage(),
           ),
         ),
       ),
