@@ -6,7 +6,6 @@ import 'package:music_app/resources/colors.dart';
 import 'package:music_app/utils/extension.dart';
 import 'package:music_app/widgets/app_bar_back_icon.dart';
 import 'package:music_app/vos/song_vo.dart';
-import 'package:music_app/widgets/ads/native_ad_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/app_bar_title.dart';
@@ -119,13 +118,7 @@ class SongsDetailPage extends StatelessWidget {
                         menus: menus,
                       ),
                     ),
-                    separatorBuilder: (context, index) {
-                      if (index == 1 || (index > 1 && index % 14 == 0)) {
-                        return const NativeAdWidget();
-                      } else {
-                        return SizedBox(height: 10.h);
-                      }
-                    },
+                    separatorBuilder: (context, index) => SizedBox(height: 10.h),
                     itemCount: songs.length,
                   ),
                 ),

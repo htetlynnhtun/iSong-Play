@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/pages/music_list_detail_page.dart';
 import 'package:music_app/resources/colors.dart';
@@ -43,8 +42,6 @@ class MusicSectionView extends StatelessWidget {
                 onTap: () async {
                   try {
                     final songs = await context.read<PlayerBloc>().onTapMusicList(musicList.playlistId);
-                    context.read<InterstitialAdBloc>().onNewPageTransition();
-                    context.read<InterstitialAdBloc>().showAd(onDone: () {
                       navigateToNextPageWithNavBar(
                         context,
                         MusicListDetailPage(
@@ -52,7 +49,6 @@ class MusicSectionView extends StatelessWidget {
                           musicListVO: musicList,
                         ),
                       );
-                    });
                   } catch (error) {
                     showCupertinoDialog(
                       context: context,

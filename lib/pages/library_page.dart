@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/pages/playlist_detail_page.dart';
 import 'package:music_app/pages/setting_page.dart';
@@ -77,25 +76,25 @@ class LibraryPage extends StatelessWidget {
               shouldRebuild: (_, __) => true,
               builder: (_, playlists, __) {
                 return ListView.separated(
-                    padding: EdgeInsets.only(left: 16.w,bottom: 12.h),
-                    itemBuilder: (context, index) {
-                      final playlistVo = playlists[index];
-                      return PlaylistItemView(
-                        playlistVO: playlistVo,
-                        onTap: () {
-                          context.read<LibraryBloc>().onViewPlaylistDetail(playlistVo);
-                          context.read<InterstitialAdBloc>().onNewPageTransition();
-                          context.read<InterstitialAdBloc>().showAd(onDone: () {
-                            navigateToNextPageWithNavBar(
-                              context,
-                              const PlaylistDetailPage(),
-                            );
-                          });
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) =>  SizedBox(height: 12.h),
-                    itemCount: playlists.length);
+                  padding: EdgeInsets.only(left: 16.w, bottom: 12.h),
+                  itemBuilder: (context, index) {
+                    final playlistVo = playlists[index];
+                    return PlaylistItemView(
+                      playlistVO: playlistVo,
+                      onTap: () {
+                        context
+                            .read<LibraryBloc>()
+                            .onViewPlaylistDetail(playlistVo);
+                        navigateToNextPageWithNavBar(
+                          context,
+                          const PlaylistDetailPage(),
+                        );
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                  itemCount: playlists.length,
+                );
               },
             ),
           )
@@ -123,16 +122,13 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
               songs: songs.length,
               imageUrl: 'assets/images/ic_library.png',
               onTap: () {
-                context.read<InterstitialAdBloc>().onNewPageTransition();
-                context.read<InterstitialAdBloc>().showAd(onDone: () {
-                  navigateToNextPageWithNavBar(
-                    context,
-                    const SongsDetailPage(
-                      title: 'Your Song',
-                      isFavorite: false,
-                    ),
-                  );
-                });
+                navigateToNextPageWithNavBar(
+                  context,
+                  const SongsDetailPage(
+                    title: 'Your Song',
+                    isFavorite: false,
+                  ),
+                );
               },
             ),
             SizedBox(
@@ -143,8 +139,6 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
               songs: songs.where((e) => e.isFavorite).length,
               imageUrl: 'assets/images/ic_library_favorite.png',
               onTap: () {
-                context.read<InterstitialAdBloc>().onNewPageTransition();
-                context.read<InterstitialAdBloc>().showAd(onDone: () {
                   navigateToNextPageWithNavBar(
                     context,
                     const SongsDetailPage(
@@ -152,7 +146,6 @@ class YourSongAndFavouriteHeaderView extends StatelessWidget {
                       isFavorite: true,
                     ),
                   );
-                });
               },
             ),
           ],

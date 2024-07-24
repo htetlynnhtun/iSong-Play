@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:music_app/blocs/dummy_bloc.dart';
-import 'package:music_app/blocs/interstitial_ad_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
@@ -21,7 +19,6 @@ import 'package:music_app/vos/playlist_vo.dart';
 import 'package:music_app/vos/recent_search_vo.dart';
 import 'package:music_app/vos/recent_track_vo.dart';
 import 'package:music_app/vos/song_vo.dart';
-import 'package:music_app/widgets/app_open_ad_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_app/blocs/home_bloc.dart';
@@ -34,12 +31,6 @@ late SharedPreferences prefs;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final statuses = (await MobileAds.instance.initialize()).adapterStatuses;
-  statuses.forEach((key, value) {
-    // if (value.state == AdapterInitializationState.ready) {
-    debugPrint('Adapter status for $key: ${value.description}');
-    // }
-  });
 
   prefs = await SharedPreferences.getInstance();
   await Hive.initFlutter();
@@ -84,11 +75,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
         ChangeNotifierProvider(create: (_) => DummyBloc()),
-        Provider<InterstitialAdBloc>(
-          create: (_) => InterstitialAdBloc(),
-          lazy: false,
-          dispose: (_, bloc) => bloc.dispose(),
-        ),
       ],
       child: Selector<ThemeBloc, ThemeMode?>(
         selector: (context, bloc) => bloc.themeMode,
@@ -104,10 +90,7 @@ class MyApp extends StatelessWidget {
             title: 'Music App',
             home: child,
           ),
-          child: const AppOpenAdWidget(
-            child: DummyIndexPage(),
-           // child: IndexPage(),
-          ),
+          child: const DummyIndexPage(),
         ),
       ),
     );

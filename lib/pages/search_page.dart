@@ -1,11 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:music_app/blocs/search_bloc.dart';
 import 'package:music_app/utils/extension.dart';
-import 'package:music_app/widgets/ads/banner_ad_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../resources/colors.dart';
