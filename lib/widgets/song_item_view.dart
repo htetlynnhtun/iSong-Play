@@ -26,8 +26,8 @@ class SongItemView extends StatelessWidget {
     this.isUpNext = false,
     this.isLoading = false,
     this.showMenuButton = true,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class SongItemView extends StatelessWidget {
               SizedBox(
                 width: 16.w,
               ),
-              if (!showMenuButton)
+              if (showMenuButton)
                 PopupMenuButton<SongItemPopupMenu>(
                   padding: context.isMobile()
                       ? EdgeInsets.only(right: 8.w)

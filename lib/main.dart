@@ -1,15 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:music_app/blocs/dummy_bloc.dart';
 import 'package:music_app/blocs/library_bloc.dart';
 import 'package:music_app/blocs/network_connection_bloc.dart';
 import 'package:music_app/blocs/player_bloc.dart';
 import 'package:music_app/blocs/theme_bloc.dart';
-import 'package:music_app/pages/dummy_index_page.dart';
-import 'package:music_app/pages/dummy_page.dart';
 import 'package:music_app/persistance/color_adapter.dart';
 import 'package:music_app/persistance/duration_adapter.dart';
 import 'package:music_app/theme/app_theme.dart';
@@ -47,7 +42,6 @@ void main() async {
   await Hive.openBox<SongVO>(trendingSongsBox);
   await Hive.openBox<RecentSearchVO>(recentSearchBox);
   await Hive.openBox<SongVO>(songBox);
-  await Hive.openBox<SongVO>(dummyBox);
   await Hive.openBox<PlaylistVo>(playlistBox);
   await Hive.openBox<MusicSectionVO>(musicSectionBox);
   await Hive.openBox<RecentTrackVO>(recentTracksBox);
@@ -58,7 +52,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -74,7 +68,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeBloc()),
         ChangeNotifierProvider(create: (_) => SearchBloc()),
         ChangeNotifierProvider(create: (_) => ThemeBloc()),
-        ChangeNotifierProvider(create: (_) => DummyBloc()),
       ],
       child: Selector<ThemeBloc, ThemeMode?>(
         selector: (context, bloc) => bloc.themeMode,
@@ -90,7 +83,7 @@ class MyApp extends StatelessWidget {
             title: 'Music App',
             home: child,
           ),
-          child: const DummyIndexPage(),
+          child: const IndexPage(),
         ),
       ),
     );
