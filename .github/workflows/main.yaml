@@ -1,4 +1,4 @@
-name: Build an unsigned apk
+name: Build Android release apk
 
 on:
   pull_request:
