@@ -26,6 +26,8 @@ jobs:
             TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
             mkdir "${TMP_KEYSTORE_FILE_PATH}"
             echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/isongplay.keystore
+            ls "${TMP_KEYSTORE_FILE_PATH}"
+            pwd
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
